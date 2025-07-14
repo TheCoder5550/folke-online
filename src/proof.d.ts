@@ -1,11 +1,13 @@
+type Step = StepBox | StepLine;
+
 interface Proof {
   premises: string[];
   conclusion: string;
-  steps: (StepBox | StepLine)[];
+  steps: Step[];
 }
 
 interface StepBox {
-  steps: (StepBox | StepLine)[];
+  steps: Step[];
 }
 
 interface StepLine {
@@ -13,3 +15,5 @@ interface StepLine {
   rule: string;
   arguments: string[];
 }
+
+type StepPath = number[]

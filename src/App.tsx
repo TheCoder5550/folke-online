@@ -1,107 +1,79 @@
-import { useState, type JSX } from 'react'
+import { createContext, useState, type JSX } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import ProofSingleRow from './components/ProofSingleRow'
 import ProofBox from './components/ProofBox'
 import ProofContainer from './components/ProofContainer'
+import { countRowsInStep, isStepLine, setArgument, setRule, setStatement } from './helpers/proof-helper'
+import { useImmer } from 'use-immer'
+
+interface ProofContextData {
+  setStatement: (path: StepPath, statement: string) => void,
+  setRule: (path: StepPath, rule: string) => void,
+  setArgument: (path: StepPath, index: number, argument: string) => void,
+}
+
+export const ProofContext = createContext<ProofContextData>({
+  setStatement: () => {},
+  setRule: () => {},
+  setArgument: () => {},
+});
 
 function App() {
   const [count, setCount] = useState(0)
 
-  const proof: Proof = {
-    premises: ["A", "B"],
-    conclusion: "A & B",
-    steps: [
-      {
-        statement: "A",
-        rule: "premise",
-        arguments: [],
-      },
-      {
-        statement: "B",
-        rule: "premise",
-        arguments: [],
-      },
-      {
-        statement: "A & B",
-        rule: "&I",
-        arguments: ["1", "2"],
-      },
+  const [proof, setProof] = useImmer(defaultProof);
 
-      {
-        steps: [
-          {
-            statement: "A & B",
-            rule: "&I",
-            arguments: ["1", "2"],
-          },
-          {
-            statement: "A & B",
-            rule: "&I",
-            arguments: ["1", "2"],
-          },
-          {
-            statement: "A & B",
-            rule: "&I",
-            arguments: ["1", "2"],
-          },
-          {
-            statement: "A & B",
-            rule: "&I",
-            arguments: ["1", "2"],
-          },
-        ]
-      },
-      {
-        steps: [
-          {
-            statement: "A & B",
-            rule: "&I",
-            arguments: ["1", "2"],
-          },
-          {
-            statement: "A & B",
-            rule: "&I",
-            arguments: ["1", "2"],
-          },
-          {
-            steps: [
-              {
-                statement: "A & B",
-                rule: "&I",
-                arguments: ["1", "2"],
-              },
-              {
-                statement: "A & B",
-                rule: "&I",
-                arguments: ["1", "2"],
-              },
-              {
-                statement: "A & B",
-                rule: "&I",
-                arguments: ["1", "2"],
-              },
-              {
-                statement: "A & B",
-                rule: "&I",
-                arguments: ["1", "2"],
-              },
-            ]
-          },
-          {
-            statement: "A & B",
-            rule: "&I",
-            arguments: ["1", "2"],
-          },
-          {
-            statement: "A & B",
-            rule: "&I",
-            arguments: ["1", "2"],
-          },
-        ]
-      }
-    ]
+  const _setStatement = (path: StepPath, statement: string) => {
+    setProof(draft => {
+      setStatement(draft, path, statement)
+    });
+  };
+
+  const _setRule = (path: StepPath, rule: string) => {
+    setProof(draft => {
+      setRule(draft, path, rule)
+    });
+  };
+
+  const _setArgument = (path: StepPath, index: number, argument: string) => {
+    setProof(draft => {
+      setArgument(draft, path, index, argument)
+    });
+  };
+
+  const proofContextData = {
+    setStatement: _setStatement,
+    setRule: _setRule,
+    setArgument: _setArgument
+  };
+
+  function renderSteps(lineNumber: number, path: StepPath, steps: Step[]) {
+    const children: JSX.Element[] = [];
+
+    for (let i = 0; i < steps.length; i++) {
+      const nextPath = [...path, i];
+      children.push(renderSingleStep(lineNumber, nextPath, steps[i]));
+      lineNumber += countRowsInStep(steps[i]);
+    }
+
+    return children;
+  }
+
+  function renderSingleStep(lineNumber: number, path: StepPath, step: Step) {
+    if (isStepLine(step)) {
+      return (
+        <ProofSingleRow lineNumber={lineNumber} path={path} step={step} />
+      )
+    }
+    else {
+      return (
+        <ProofBox>
+          {renderSteps(lineNumber, path, step.steps)}
+        </ProofBox>
+      )
+    }
   }
 
   return (
@@ -127,56 +99,114 @@ function App() {
         Click on the Vite and React logos to learn more
       </p>
 
+      <ProofContext value={proofContextData}>
+        {proof.premises.map(p => (
+          <span>{p}, </span>
+        ))}
 
+        <span>Conclusion: {proof.conclusion}</span>
 
-      <ProofContainer>
-        {renderSteps(1, proof.steps)}
-      </ProofContainer>
+        <ProofContainer>
+          {renderSteps(1, [], proof.steps)}
+        </ProofContainer>
+      </ProofContext>
     </>
   )
 }
 
-function renderSteps(lineNumber: number, steps: (StepBox | StepLine)[]) {
-  const children: JSX.Element[] = [];
+const defaultProof: Proof = {
+  premises: ["A", "B"],
+  conclusion: "A & B",
+  steps: [
+    {
+      statement: "A",
+      rule: "premise",
+      arguments: [],
+    },
+    {
+      statement: "B",
+      rule: "premise",
+      arguments: [],
+    },
+    {
+      statement: "A & B",
+      rule: "&I",
+      arguments: ["1", "2"],
+    },
 
-  for (let i = 0; i < steps.length; i++) {
-    children.push(renderSingleStep(lineNumber, steps[i]));
-    lineNumber += countRowsInStep(steps[i]);
-  }
-
-  return children;
-}
-
-function renderSingleStep(lineNumber: number, step: StepBox | StepLine) {
-  if (isStepLine(step)) {
-    return (
-      <ProofSingleRow lineNumber={lineNumber} step={step} />
-    )
-  }
-  else {
-    return (
-      <ProofBox>
-        {renderSteps(lineNumber, step.steps)}
-      </ProofBox>
-    )
-  }
-}
-
-function countRowsInStep(step: StepBox | StepLine): number {
-  if (isStepLine(step)) {
-    return 1;
-  }
-  else {
-    return sum(step.steps.map(countRowsInStep));
-  }
-}
-
-function isStepLine(step: StepBox | StepLine): step is StepLine {
-  return (step as StepLine).statement !== undefined;
-}
-
-function sum(list: number[]): number {
-  return list.reduce((a, b) => a + b, 0);
-}
+    {
+      steps: [
+        {
+          statement: "A & B",
+          rule: "&I",
+          arguments: ["1", "2"],
+        },
+        {
+          statement: "A & B",
+          rule: "&I",
+          arguments: ["1", "2"],
+        },
+        {
+          statement: "A & B",
+          rule: "&I",
+          arguments: ["1", "2"],
+        },
+        {
+          statement: "A & B",
+          rule: "&I",
+          arguments: ["1", "2"],
+        },
+      ]
+    },
+    {
+      steps: [
+        {
+          statement: "A & B",
+          rule: "&I",
+          arguments: ["1", "2"],
+        },
+        {
+          statement: "A & B",
+          rule: "&I",
+          arguments: ["1", "2"],
+        },
+        {
+          steps: [
+            {
+              statement: "A & B",
+              rule: "&I",
+              arguments: ["1", "2"],
+            },
+            {
+              statement: "A & B",
+              rule: "&I",
+              arguments: ["1", "2"],
+            },
+            {
+              statement: "A & B",
+              rule: "&I",
+              arguments: ["1", "2"],
+            },
+            {
+              statement: "A & B",
+              rule: "&I",
+              arguments: ["1", "2"],
+            },
+          ]
+        },
+        {
+          statement: "A & B",
+          rule: "&I",
+          arguments: ["1", "2"],
+        },
+        {
+          statement: "A & B",
+          rule: "&I",
+          arguments: ["1", "2"],
+        },
+      ]
+    }
+  ]
+};
 
 export default App

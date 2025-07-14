@@ -70,3 +70,7 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+input[type=text] {
+  padding: 0.25rem 0.5rem;
+}
