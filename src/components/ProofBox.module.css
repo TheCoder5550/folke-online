@@ -1,0 +1,12 @@
+.proof-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  padding: 0.5rem;
+  padding-left: 2rem;
+  padding-right: 0;
+
+  border: 1px solid black;
+  border-right: none;
+}

@@ -1,0 +1,35 @@
+.proof-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.number {
+  position: absolute;
+  left: 0;
+  width: 2rem;
+
+  text-align: right;
+}
+
+.statement-input {
+  flex-grow: 1;
+}
+
+.rule-args-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+
+  width: 300px;
+}
+
+.rule-args-container input {
+  width: 50%;
+}
+
+.rule-name {
+  flex-grow: 1;
+}
