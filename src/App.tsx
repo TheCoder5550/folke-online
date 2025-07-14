@@ -100,8 +100,8 @@ function App() {
       </p>
 
       <ProofContext value={proofContextData}>
-        {proof.premises.map(p => (
-          <span>{p}, </span>
+        {proof.premises.map((p, index) => (
+          <span key={p}>{p}, </span>
         ))}
 
         <span>Conclusion: {proof.conclusion}</span>
