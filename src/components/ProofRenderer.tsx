@@ -1,154 +1,42 @@
-import { type JSX } from "react";
-import { convertToBox, convertToLine, countRowsInStep, createNewBox, createNewLine, getPathToLastRow, insertAfter, insertBefore, isStepLine, makeSpecialCharacters, removeFromProof, setArgument, setRule, setStatement } from '../helpers/proof-helper'
-import { useImmer } from 'use-immer'
-import ProofSingleRow from "./ProofSingleRow";
-import ProofBox from "./ProofBox";
 import StepsContainer from "./StepsContainer";
-import { ProofContext, type ProofContextData } from "../helpers/ProofContext";
+import { ProofDispatchActionTypeEnum, useProof, useProofDispatch } from "../helpers/ProofContext";
+import StepsRenderer from "./StepsRenderer";
+import { makeSpecialCharacters } from "../helpers/proof-helper";
 
 export default function ProofRenderer() {
-  const [proof, setProof] = useImmer(defaultProof);
+  // const [proof, setProof] = useImmer(defaultProof);
 
-  const _setStatement = (path: StepPath, statement: string) => {
-    setProof(draft => {
-      setStatement(draft, path, statement)
-    });
-  };
+  const proof = useProof();
+  const proofDispatch = useProofDispatch();
 
-  const _setRule = (path: StepPath, rule: string) => {
-    setProof(draft => {
-      setRule(draft, path, rule)
-    });
-  };
+  if (!proof || !proofDispatch) {
+    return (
+      <span>No proof :(</span>
+    )
+  }
 
-  const _setArgument = (path: StepPath, index: number, argument: string) => {
-    setProof(draft => {
-      setArgument(draft, path, index, argument)
-    });
-  };
+  const insertLineAfterLast = () => {
+    proofDispatch({
+      type: ProofDispatchActionTypeEnum.InsertLineAfterLast,
+    })
+  }
 
-  const remove = (path: StepPath) => {
-    setProof(draft => {
-      removeFromProof(draft, path)
-    });
-  };
-
-  const _insertLineBefore = (path: StepPath) => {
-    setProof(draft => {
-      insertBefore(draft, path, createNewLine())
-    });
-  };
-
-  const _insertLineAfter = (path: StepPath) => {
-    setProof(draft => {
-      insertAfter(draft, path, createNewLine())
-    });
-  };
-
-  const _insertBoxBefore = (path: StepPath) => {
-    setProof(draft => {
-      insertBefore(draft, path, createNewBox())
-    });
-  };
-
-  const _insertBoxAfter = (path: StepPath) => {
-    setProof(draft => {
-      insertAfter(draft, path, createNewBox())
-    });
-  };
-
-  const toBox = (path: StepPath) => {
-    setProof(draft => {
-      convertToBox(draft, path)
-    });
-  };
-
-  const toLine = (path: StepPath) => {
-    setProof(draft => {
-      convertToLine(draft, path)
-    });
-  };
-
-  const proofContextData: ProofContextData = {
-    setStatement: _setStatement,
-    setRule: _setRule,
-    setArgument: _setArgument,
-    remove,
-    insertBefore: _insertLineBefore,
-    insertAfter: _insertLineAfter,
-    toBox,
-    toLine
-  };
-
-  const insertLineAfterLast = () => _insertLineAfter(getPathToLastRow(proof));
-  const insertBoxAfterLast = () => _insertBoxAfter(getPathToLastRow(proof));
+  const insertBoxAfterLast = () => {
+    proofDispatch({
+      type: ProofDispatchActionTypeEnum.InsertBoxAfterLast,
+    })
+  }
 
   return (
-    <ProofContext value={proofContextData}>
-      <StepsContainer>
-        <span>{proof.premises.join(", ")} {makeSpecialCharacters("=>")} {proof.conclusion}</span>
+    <StepsContainer>
+      <span>{proof.premises.join(", ")} {makeSpecialCharacters("=>")} {proof.conclusion}</span>
 
-        {renderSteps(1, [], proof.steps)}
+      <StepsRenderer />
 
-        <div style={{ display: "flex", gap: "0.5rem" }}>
-          <button type="button" onClick={insertLineAfterLast}>+ New line</button>
-          <button type="button" onClick={insertBoxAfterLast}>+ New box</button>
-        </div>
-      </StepsContainer>
-    </ProofContext>
+      <div style={{ display: "flex", gap: "0.5rem" }}>
+        <button type="button" onClick={insertLineAfterLast}>+ New line</button>
+        <button type="button" onClick={insertBoxAfterLast}>+ New box</button>
+      </div>
+    </StepsContainer>
   )
 }
-
-function renderSteps(lineNumber: number, path: StepPath, steps: Step[]) {
-  const children: JSX.Element[] = [];
-
-  for (let i = 0; i < steps.length; i++) {
-    const nextPath = [...path, i];
-    children.push(renderSingleStep(lineNumber, nextPath, steps[i]));
-    lineNumber += countRowsInStep(steps[i]);
-  }
-
-  return children;
-}
-
-function renderSingleStep(lineNumber: number, path: StepPath, step: Step) {
-  const key = path.join(",");
-
-  if (isStepLine(step)) {
-    return (
-      <ProofSingleRow key={key} lineNumber={lineNumber} path={path} step={step} />
-    )
-  }
-  else {
-    return (
-      <ProofBox key={key}>
-        {renderSteps(lineNumber, path, step.steps)}
-      </ProofBox>
-    )
-  }
-}
-
-const defaultProof: Proof = {
-  premises: ["A", "B"],
-  conclusion: "A ∧ B",
-  steps: [
-    {
-      statement: "A",
-      rule: "premise",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "B",
-      rule: "premise",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "A ∧ B",
-      rule: "∧I",
-      arguments: ["1", "2"],
-      usedArguments: 2,
-    },
-  ]
-};

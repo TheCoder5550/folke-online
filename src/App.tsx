@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import ErrorBoundary from './components/ErrorBoundary'
 import ProofRenderer from './components/ProofRenderer'
+import { ProofProvider } from './helpers/ProofContext'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -32,7 +33,9 @@ function App() {
       </p>
 
       <ErrorBoundary>
-        <ProofRenderer></ProofRenderer>
+        <ProofProvider>
+          <ProofRenderer />
+        </ProofProvider>
       </ErrorBoundary>
     </>
   )

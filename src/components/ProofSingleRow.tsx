@@ -1,9 +1,9 @@
-import { use, type JSX } from "react";
+import { type JSX } from "react";
 import styles from "./ProofSingleRow.module.css"
 import { makeSpecialCharacters } from "../helpers/proof-helper";
 import { TbBox, TbBoxOff, TbRowInsertBottom, TbRowInsertTop } from "react-icons/tb";
 import { FaDeleteLeft } from "react-icons/fa6";
-import { ProofContext } from "../helpers/ProofContext";
+import { ProofDispatchActionTypeEnum, useProofDispatch } from "../helpers/ProofContext";
 
 interface ProofSingleRowProps {
   lineNumber: number;
@@ -12,16 +12,65 @@ interface ProofSingleRowProps {
 }
 
 export default function ProofSingleRow(props: ProofSingleRowProps) {
-  const proofContext = use(ProofContext);
+  const dispatch = useProofDispatch();
+  if (!dispatch) {
+    return (
+      <span>WWWWAAAAAhhh</span>
+    )
+  }
 
-  const setStatement = (e: React.ChangeEvent<HTMLInputElement>) => proofContext.setStatement(props.path, makeSpecialCharacters(e.currentTarget.value));
-  const setRule = (e: React.ChangeEvent<HTMLInputElement>) => proofContext.setRule(props.path, makeSpecialCharacters(e.currentTarget.value));
-  const setArgument = (index: number, e: React.ChangeEvent<HTMLInputElement>) => proofContext.setArgument(props.path, index, makeSpecialCharacters(e.currentTarget.value));
-  const remove = () => proofContext.remove(props.path);
-  const insertBefore = () => proofContext.insertBefore(props.path);
-  const insertAfter = () => proofContext.insertAfter(props.path);
-  const toBox = () => proofContext.toBox(props.path);
-  const toLine = () => proofContext.toLine(props.path);
+  const setStatement = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch({
+      type: ProofDispatchActionTypeEnum.SetStatement,
+      path: props.path,
+      statement: makeSpecialCharacters(e.currentTarget.value)
+    })
+  }
+  const setRule = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch({
+      type: ProofDispatchActionTypeEnum.SetRule,
+      path: props.path,
+      rule: makeSpecialCharacters(e.currentTarget.value)
+    })
+  }
+  const setArgument = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch({
+      type: ProofDispatchActionTypeEnum.SetArgument,
+      path: props.path,
+      index: index,
+      argument: makeSpecialCharacters(e.currentTarget.value)
+    })
+  }
+  const remove = () => {
+    dispatch({
+      type: ProofDispatchActionTypeEnum.Remove,
+      path: props.path,
+    })
+  }
+  const insertBefore = () => {
+    dispatch({
+      type: ProofDispatchActionTypeEnum.InsertLineBefore,
+      path: props.path,
+    })
+  }
+  const insertAfter = () => {
+    dispatch({
+      type: ProofDispatchActionTypeEnum.InsertLineAfter,
+      path: props.path,
+    })
+  }
+  const toBox = () => {
+    dispatch({
+      type: ProofDispatchActionTypeEnum.ToBox,
+      path: props.path,
+    })
+  }
+  const toLine = () => {
+    dispatch({
+      type: ProofDispatchActionTypeEnum.ToLine,
+      path: props.path,
+    })
+  }
 
   const argumentInputs: JSX.Element[] = [];
   for (let i = 0; i < props.step.usedArguments; i++) {
