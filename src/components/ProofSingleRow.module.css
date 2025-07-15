@@ -5,12 +5,19 @@
   gap: 0.5rem;
 }
 
+.proof-row input {
+  font-family: monospace;
+  font-size: 1rem;
+}
+
 .number {
   position: absolute;
   left: 0;
   width: 2rem;
 
   text-align: right;
+
+  user-select: none;
 }
 
 .statement-input {
@@ -32,4 +39,36 @@
 
 .rule-name {
   flex-grow: 1;
+}
+
+.actions {
+  position: absolute;
+  right: 0;
+  transform: translateX(100%);
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.actions button {
+  visibility: hidden;
+}
+
+.proof-row:hover {
+  outline: 2px solid black;
+  outline-offset: 2px;
+}
+
+.proof-row:hover .actions button,
+.actions:hover button {
+  visibility: visible;
+}
+
+.action-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
