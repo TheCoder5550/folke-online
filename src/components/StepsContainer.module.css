@@ -1,8 +1,11 @@
-.proof-container {
+.steps-container {
   position: relative;
 
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  /* gap: 0.5rem; */
   padding-left: 2.5rem;
+
+
+  width: 700px;
 }

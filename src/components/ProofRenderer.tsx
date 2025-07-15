@@ -4,8 +4,6 @@ import StepsRenderer from "./StepsRenderer";
 import { makeSpecialCharacters } from "../helpers/proof-helper";
 
 export default function ProofRenderer() {
-  // const [proof, setProof] = useImmer(defaultProof);
-
   const proof = useProof();
   const proofDispatch = useProofDispatch();
 

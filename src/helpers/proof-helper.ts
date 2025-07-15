@@ -186,8 +186,7 @@ export function convertToBox(proof: Proof, path: StepPath) {
 }
 
 export function convertToLine(proof: Proof, path: StepPath) {
-  const pathToParentBox = [...path];
-  pathToParentBox.pop();
+  const pathToParentBox = getParent(path);
 
   return applyToProofStep(proof, pathToParentBox, (old) => {
     if (isStepLine(old)) {
@@ -258,6 +257,12 @@ export function countRowsInStep(step: Step): number {
 
 export function isStepLine(step: Step): step is StepLine {
   return (step as StepLine).statement !== undefined;
+}
+
+export function getParent(path: StepPath): StepPath {
+  const pathToParentBox = [...path];
+  pathToParentBox.pop();
+  return pathToParentBox;
 }
 
 export function makeSpecialCharacters(text: string) {

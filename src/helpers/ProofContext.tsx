@@ -1,6 +1,6 @@
 import { createContext, use } from "react";
 import { useImmerReducer } from "use-immer";
-import { convertToBox, convertToLine, createNewBox, createNewLine, getPathToLastRow, insertAfter, insertBefore, removeFromProof, setArgument, setRule, setStatement } from "./proof-helper";
+import { convertToBox, convertToLine, createNewBox, createNewLine, getParent, getPathToLastRow, insertAfter, insertBefore, removeFromProof, setArgument, setRule, setStatement } from "./proof-helper";
 
 export const ProofDispatchActionTypeEnum = {
   SetStatement: "SetStatement",
@@ -15,6 +15,8 @@ export const ProofDispatchActionTypeEnum = {
   ToLine: "ToLine",
   InsertLineAfterLast: "InsertLineAfterLast",
   InsertBoxAfterLast: "InsertBoxAfterLast",
+  CloseBoxWithLine: "CloseBoxWithLine",
+  CloseBoxWithBox: "CloseBoxWithBox",
 } as const;
 
 type ProofDispatchAction =
@@ -67,6 +69,14 @@ type ProofDispatchAction =
     }
   | {
       type: typeof ProofDispatchActionTypeEnum.InsertBoxAfterLast;
+    }
+  | {
+      type: typeof ProofDispatchActionTypeEnum.CloseBoxWithLine;
+      path: StepPath;
+    }
+  | {
+      type: typeof ProofDispatchActionTypeEnum.CloseBoxWithBox;
+      path: StepPath;
     }
 
 const ProofDispatchContext = createContext<React.Dispatch<ProofDispatchAction> | null>(null);
@@ -141,6 +151,14 @@ function reducer(draft: Proof, action: ProofDispatchAction) {
     }
     case ProofDispatchActionTypeEnum.InsertBoxAfterLast: {
       insertAfter(draft, getPathToLastRow(draft), createNewBox())
+      break;
+    }
+    case ProofDispatchActionTypeEnum.CloseBoxWithLine: {
+      insertAfter(draft, getParent(action.path), createNewLine());
+      break;
+    }
+    case ProofDispatchActionTypeEnum.CloseBoxWithBox: {
+      insertAfter(draft, getParent(action.path), createNewBox());
       break;
     }
   }

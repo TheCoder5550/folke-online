@@ -4,6 +4,7 @@ import { makeSpecialCharacters } from "../helpers/proof-helper";
 import { TbBox, TbBoxOff, TbRowInsertBottom, TbRowInsertTop } from "react-icons/tb";
 import { FaDeleteLeft } from "react-icons/fa6";
 import { ProofDispatchActionTypeEnum, useProofDispatch } from "../helpers/ProofContext";
+import { PiKeyReturnFill } from "react-icons/pi";
 
 interface ProofSingleRowProps {
   lineNumber: number;
@@ -71,6 +72,12 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
       path: props.path,
     })
   }
+  const closeBox = () => {
+    dispatch({
+      type: ProofDispatchActionTypeEnum.CloseBoxWithLine,
+      path: props.path,
+    })
+  }
 
   const argumentInputs: JSX.Element[] = [];
   for (let i = 0; i < props.step.usedArguments; i++) {
@@ -98,20 +105,23 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
       </div>
 
       <div className={styles["actions"]}>
-        <button type="button" className={styles["action-button"]} style={{ background: "red" }} onClick={remove}>
+        <button type="button" title="Remove line" className={styles["action-button"]} style={{ background: "red" }} onClick={remove}>
           <FaDeleteLeft />
         </button>
-        <button type="button" className={styles["action-button"]} onClick={insertBefore}>
+        <button type="button" title="Insert line above" className={styles["action-button"]} onClick={insertBefore}>
           <TbRowInsertTop />
         </button>
-        <button type="button" className={styles["action-button"]} onClick={insertAfter}>
+        <button type="button" title="Insert line below" className={styles["action-button"]} onClick={insertAfter}>
           <TbRowInsertBottom />
         </button>
-        <button type="button" className={styles["action-button"]} onClick={toBox}>
+        <button type="button" title="Convert line to box" className={styles["action-button"]} onClick={toBox}>
           <TbBox />
         </button>
-        <button type="button" className={styles["action-button"]} onClick={toLine}>
+        <button type="button" title="Undo box" className={styles["action-button"]} onClick={toLine}>
           <TbBoxOff />
+        </button>
+        <button type="button" title="Close box (Insert line below box)" className={styles["action-button"]} onClick={closeBox}>
+          <PiKeyReturnFill />
         </button>
       </div>
     </div>

@@ -1,3 +1,29 @@
+# Folke online
+Web version of [Folke](https://github.com/lambducas/folke)
+
+## Development
+Tech-stack:
+* **React**: to simplify state managment, supports components with JSX, update only parts of UI that changes state
+* **Typescript**: add types to javascript
+* **Vite**: Compile typescript and allows for hot reloading
+
+Requirements (windows):
+* Docker with WSL enabled
+* VSCode with dev container extensions installed
+
+Install:
+1. Clone the repo inside WSL
+1. Open the cloned repo in VSCode
+1. Re-open in dev container
+1. Install dependencies:
+    ```bash
+    npm install
+    ```
+1. Start dev server with hot reloading enabled
+    ```bash
+    npm run dev
+    ```
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
