@@ -14,11 +14,6 @@ interface ProofSingleRowProps {
 
 export default function ProofSingleRow(props: ProofSingleRowProps) {
   const dispatch = useProofDispatch();
-  if (!dispatch) {
-    return (
-      <span>WWWWAAAAAhhh</span>
-    )
-  }
 
   const setStatement = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({

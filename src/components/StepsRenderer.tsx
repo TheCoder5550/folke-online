@@ -6,13 +6,6 @@ import { useProof } from "../helpers/ProofContext";
 
 export default function StepsRenderer() {
   const proof = useProof();
-  
-  if (!proof) {
-    return (
-      <span>No proof provided!</span>
-    )
-  }
-
   return renderSteps(1, [], proof.steps);
 }
 

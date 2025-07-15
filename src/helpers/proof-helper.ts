@@ -1,10 +1,12 @@
 import { sum } from "./generic-helper";
 
-export const EMPTY_PROOF: Proof = {
-  premises: [],
-  conclusion: "",
-  steps: []
-} as const;
+export function createEmptyProof(): Proof {
+  return {
+    premises: [],
+    conclusion: "",
+    steps: []
+  }
+}
 
 export function createNewLine(): StepLine {
   return {

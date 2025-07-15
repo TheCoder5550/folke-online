@@ -1,6 +1,6 @@
 import { createContext, use } from "react";
 import { useImmerReducer } from "use-immer";
-import { convertToBox, convertToLine, createNewBox, createNewLine, getParent, getPathToLastRow, insertAfter, insertBefore, removeFromProof, setArgument, setRule, setStatement } from "./proof-helper";
+import { convertToBox, convertToLine, createEmptyProof, createNewBox, createNewLine, getParent, getPathToLastRow, insertAfter, insertBefore, removeFromProof, setArgument, setRule, setStatement } from "./proof-helper";
 
 export const ProofDispatchActionTypeEnum = {
   SetStatement: "SetStatement",
@@ -79,9 +79,8 @@ type ProofDispatchAction =
       path: StepPath;
     }
 
-const ProofDispatchContext = createContext<React.Dispatch<ProofDispatchAction> | null>(null);
-
-const ProofContext = createContext<Proof | null>(null);
+const ProofDispatchContext = createContext<React.Dispatch<ProofDispatchAction>>(() => {});
+const ProofContext = createContext<Proof>(createEmptyProof());
 
 export function ProofProvider({ children }: React.PropsWithChildren) {
   const [proof, dispatch] = useImmerReducer(reducer, defaultProof);

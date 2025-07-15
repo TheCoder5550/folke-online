@@ -7,12 +7,6 @@ export default function ProofRenderer() {
   const proof = useProof();
   const proofDispatch = useProofDispatch();
 
-  if (!proof || !proofDispatch) {
-    return (
-      <span>No proof :(</span>
-    )
-  }
-
   const insertLineAfterLast = () => {
     proofDispatch({
       type: ProofDispatchActionTypeEnum.InsertLineAfterLast,
