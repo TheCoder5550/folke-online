@@ -63,27 +63,37 @@ export function removeFromProof(proof: Proof, path: StepPath) {
     }
   }
 
+  removeInvalidFromProof(proof);
+
   return proof;
 }
 
-// function removeInvalidFromProof(proof: Proof): Proof {
-//   proof.steps
+function removeInvalidFromProof(proof: Proof): Proof {
+  proof.steps = removeInvalidFromSteps(proof.steps);
+  return proof;
+}
 
-//   return proof;
-// }
+function removeInvalidFromSteps(steps: Step[]): Step[] {
+  return steps.map(s => {
+    if (isStepLine(s)) {
+      return s;
+    }
+    else {
+      return {
+        steps: removeInvalidFromSteps(s.steps)
+      }
+    }
+  }).filter(isValidStep);
+}
 
-// function removeInvalidFromSteps(steps: Step[]) {
-//   return steps.filter(isValidStep);
-// }
-
-// function isValidStep(step: Step) {
-//   if (isStepLine(step)) {
-//     return true;
-//   }
-//   else {
-//     return step.steps.length > 0;
-//   }
-// }
+function isValidStep(step: Step) {
+  if (isStepLine(step)) {
+    return true;
+  }
+  else {
+    return step.steps.length > 0;
+  }
+}
 
 export function insertAfter(proof: Proof, path: StepPath, step: Step) {
   const pathCopy = [...path];

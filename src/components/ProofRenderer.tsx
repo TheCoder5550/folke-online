@@ -54,15 +54,35 @@ export default function ProofRenderer() {
     });
   };
 
-  const _insertBefore = (path: StepPath) => {
+  const _insertLineBefore = (path: StepPath) => {
     setProof(draft => {
       insertBefore(draft, path, { statement: "", rule: "", arguments: [] })
     });
   };
 
-  const _insertAfter = (path: StepPath) => {
+  const _insertLineAfter = (path: StepPath) => {
     setProof(draft => {
       insertAfter(draft, path, { statement: "", rule: "", arguments: [] })
+    });
+  };
+
+  const _insertBoxBefore = (path: StepPath) => {
+    setProof(draft => {
+      insertBefore(draft, path, {
+        steps: [
+          { statement: "", rule: "", arguments: [] }
+        ]
+      })
+    });
+  };
+
+  const _insertBoxAfter = (path: StepPath) => {
+    setProof(draft => {
+      insertAfter(draft, path, {
+        steps: [
+          { statement: "", rule: "", arguments: [] }
+        ]
+      })
     });
   };
 
@@ -83,13 +103,14 @@ export default function ProofRenderer() {
     setRule: _setRule,
     setArgument: _setArgument,
     remove,
-    insertBefore: _insertBefore,
-    insertAfter: _insertAfter,
+    insertBefore: _insertLineBefore,
+    insertAfter: _insertLineAfter,
     toBox,
     toLine
   };
 
-  const insertAfterLast = () => _insertAfter(getPathToLastRow(proof));
+  const insertLineAfterLast = () => _insertLineAfter(getPathToLastRow(proof));
+  const insertBoxAfterLast = () => _insertBoxAfter(getPathToLastRow(proof));
 
   return (
     <ProofContext value={proofContextData}>
@@ -99,8 +120,8 @@ export default function ProofRenderer() {
         {renderSteps(1, [], proof.steps)}
 
         <div style={{ display: "flex", gap: "0.5rem" }}>
-          <button type="button" onClick={insertAfterLast}>+ New line</button>
-          {/* <button type="button">+ New box</button> */}
+          <button type="button" onClick={insertLineAfterLast}>+ New line</button>
+          <button type="button" onClick={insertBoxAfterLast}>+ New box</button>
         </div>
       </StepsContainer>
     </ProofContext>
