@@ -1,9 +1,9 @@
-import { use } from "react";
+import { use, type JSX } from "react";
 import styles from "./ProofSingleRow.module.css"
-import { ProofContext } from "./ProofRenderer";
 import { makeSpecialCharacters } from "../helpers/proof-helper";
 import { TbBox, TbBoxOff, TbRowInsertBottom, TbRowInsertTop } from "react-icons/tb";
 import { FaDeleteLeft } from "react-icons/fa6";
+import { ProofContext } from "../helpers/ProofContext";
 
 interface ProofSingleRowProps {
   lineNumber: number;
@@ -22,7 +22,21 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
   const insertAfter = () => proofContext.insertAfter(props.path);
   const toBox = () => proofContext.toBox(props.path);
   const toLine = () => proofContext.toLine(props.path);
-  
+
+  const argumentInputs: JSX.Element[] = [];
+  for (let i = 0; i < props.step.usedArguments; i++) {
+    const index = i;
+    const arg = props.step.arguments[index] ?? "";
+    argumentInputs.push(
+      <TextField
+        placeholder={"Arg. " + (index + 1)}
+        key={props.path.join(",") + "-" + index}
+        value={arg}
+        onChange={e => setArgument(index, e)}
+      />
+    )
+  }
+
   return (
     <div className={styles["proof-row"]}>
       <span className={styles["number"]}>
@@ -31,9 +45,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
       <TextField placeholder="Empty statement" className={styles["statement-input"]} value={props.step.statement} onChange={setStatement} />
       <div className={styles["rule-args-container"]}>
         <TextField placeholder="Empty rule" className={styles["rule-name"]} value={props.step.rule} onChange={setRule} />
-        {props.step.arguments.map((arg, index) => (
-          <TextField placeholder={"Arg. " + (index + 1)} key={props.path.join(",") + "-" + index} value={arg} onChange={e => setArgument(index, e)} />
-        ))}
+        {argumentInputs}
       </div>
 
       <div className={styles["actions"]}>

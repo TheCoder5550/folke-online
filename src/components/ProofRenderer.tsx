@@ -1,31 +1,10 @@
-import { createContext, type JSX } from "react";
-import { convertToBox, convertToLine, countRowsInStep, getPathToLastRow, insertAfter, insertBefore, isStepLine, makeSpecialCharacters, removeFromProof, setArgument, setRule, setStatement } from '../helpers/proof-helper'
+import { type JSX } from "react";
+import { convertToBox, convertToLine, countRowsInStep, createNewBox, createNewLine, getPathToLastRow, insertAfter, insertBefore, isStepLine, makeSpecialCharacters, removeFromProof, setArgument, setRule, setStatement } from '../helpers/proof-helper'
 import { useImmer } from 'use-immer'
 import ProofSingleRow from "./ProofSingleRow";
 import ProofBox from "./ProofBox";
 import StepsContainer from "./StepsContainer";
-
-interface ProofContextData {
-  setStatement: (path: StepPath, statement: string) => void,
-  setRule: (path: StepPath, rule: string) => void,
-  setArgument: (path: StepPath, index: number, argument: string) => void,
-  remove: (path: StepPath) => void,
-  insertBefore: (path: StepPath) => void,
-  insertAfter: (path: StepPath) => void,
-  toBox: (path: StepPath) => void,
-  toLine: (path: StepPath) => void,
-}
-
-export const ProofContext = createContext<ProofContextData>({
-  setStatement: () => {},
-  setRule: () => {},
-  setArgument: () => {},
-  remove: () => {},
-  insertBefore: () => {},
-  insertAfter: () => {},
-  toBox: () => {},
-  toLine: () => {},
-});
+import { ProofContext, type ProofContextData } from "../helpers/ProofContext";
 
 export default function ProofRenderer() {
   const [proof, setProof] = useImmer(defaultProof);
@@ -56,33 +35,25 @@ export default function ProofRenderer() {
 
   const _insertLineBefore = (path: StepPath) => {
     setProof(draft => {
-      insertBefore(draft, path, { statement: "", rule: "", arguments: [] })
+      insertBefore(draft, path, createNewLine())
     });
   };
 
   const _insertLineAfter = (path: StepPath) => {
     setProof(draft => {
-      insertAfter(draft, path, { statement: "", rule: "", arguments: [] })
+      insertAfter(draft, path, createNewLine())
     });
   };
 
   const _insertBoxBefore = (path: StepPath) => {
     setProof(draft => {
-      insertBefore(draft, path, {
-        steps: [
-          { statement: "", rule: "", arguments: [] }
-        ]
-      })
+      insertBefore(draft, path, createNewBox())
     });
   };
 
   const _insertBoxAfter = (path: StepPath) => {
     setProof(draft => {
-      insertAfter(draft, path, {
-        steps: [
-          { statement: "", rule: "", arguments: [] }
-        ]
-      })
+      insertAfter(draft, path, createNewBox())
     });
   };
 
@@ -165,16 +136,19 @@ const defaultProof: Proof = {
       statement: "A",
       rule: "premise",
       arguments: [],
+      usedArguments: 0,
     },
     {
       statement: "B",
       rule: "premise",
       arguments: [],
+      usedArguments: 0,
     },
     {
       statement: "A ∧ B",
       rule: "∧I",
       arguments: ["1", "2"],
+      usedArguments: 2,
     },
   ]
 };

@@ -6,6 +6,23 @@ export const EMPTY_PROOF: Proof = {
   steps: []
 } as const;
 
+export function createNewLine(): StepLine {
+  return {
+    statement: "",
+    rule: "",
+    arguments: [],
+    usedArguments: 0,
+  }
+}
+
+export function createNewBox(): StepBox {
+  return {
+    steps: [
+      createNewLine()
+    ]
+  }
+}
+
 export function setStatement(proof: Proof, path: StepPath, statement: string) {
   return applyToProofStep(proof, path, (old) => {
     if (!isStepLine(old)) {
@@ -21,6 +38,11 @@ export function setRule(proof: Proof, path: StepPath, rule: string) {
   return applyToProofStep(proof, path, (old) => {
     if (!isStepLine(old)) {
       throw new Error("Not a line");
+    }
+
+    const foundRule = ruleMetaData[rule];
+    if (foundRule) {
+      old.usedArguments = foundRule.nrArguments;
     }
 
     old.rule = rule;
@@ -302,3 +324,133 @@ const characterLookupTable = [
   ["_8", "₈"],
   ["_9", "₉"]
 ].reverse();
+
+const ruleMetaData: { [id: string]: RuleMetaData | undefined } = {
+  "assume": {
+    name: "Assumption",
+    description: "",
+    nrArguments: 0,
+  },
+  "fresh": {
+    name: "Fresh",
+    description: "",
+    nrArguments: 0,
+  },
+  "copy": {
+    name: "Copy",
+    description: "",
+    nrArguments: 1,
+  },
+  "∧I": {
+    name: "Conjunction introduction",
+    description: "",
+    nrArguments: 2,
+  },
+  "∧EL": {
+    name: "Left conjunction elimination",
+    description: "",
+    nrArguments: 1,
+  },
+  "∧ER": {
+    name: "Right conjunction elimination",
+    description: "",
+    nrArguments: 1,
+  },
+  "∨IL": {
+    name: "Left disjunction introduction",
+    description: "",
+    nrArguments: 1,
+  },
+  "∨IR": {
+    name: "Right disjunction introduction",
+    description: "",
+    nrArguments: 1,
+  },
+  "∨E": {
+    name: "Disjunction elimination",
+    description: "",
+    nrArguments: 3,
+  },
+  "→I": {
+    name: "Implication introduction",
+    description: "",
+    nrArguments: 1,
+  },
+  "→E": {
+    name: "Implication elimination",
+    description: "",
+    nrArguments: 2,
+  },
+  "¬I": {
+    name: "Negation introduction",
+    description: "",
+    nrArguments: 1,
+  },
+  "¬E": {
+    name: "Negation elimination",
+    description: "",
+    nrArguments: 2,
+  },
+  "⊥E": {
+    name: "Contradiction elimination",
+    description: "",
+    nrArguments: 1,
+  },
+  "¬¬I": {
+    name: "Double negation introduction",
+    description: "",
+    nrArguments: 1,
+  },
+  "¬¬E": {
+    name: "Double negation elimination",
+    description: "",
+    nrArguments: 1,
+  },
+  "MT": {
+    name: "Modus tollens",
+    description: "",
+    nrArguments: 2,
+  },
+  "PBC": {
+    name: "Proof by contradiction",
+    description: "",
+    nrArguments: 1,
+  },
+  "LEM": {
+    name: "Law of excluded middle",
+    description: "",
+    nrArguments: 0,
+  },
+  "=I": {
+    name: "Equality introduction",
+    description: "",
+    nrArguments: 0,
+  },
+  "=E": {
+    name: "Equality elimination",
+    description: "",
+    nrArguments: 3,
+    argumentLabels: ["", "", "𝝓(u)≡"],
+    argumentInputLengths: [45, 45, 150]
+  },
+  "∀E": {
+    name: "Universal elimination",
+    description: "",
+    nrArguments: 2,
+  },
+  "∀I": {
+    name: "Universal introduction",
+    description: "",
+    nrArguments: 1,
+  },
+  "∃E": {
+    name: "Existential elimination",
+    description: "",
+    nrArguments: 2,
+  },
+  "∃I": {
+    name: "Existential introduction",
+    description: "",
+    nrArguments: 1,
+  }
+};
