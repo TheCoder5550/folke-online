@@ -30,6 +30,6 @@ RUN apk add --update --no-cache shadow bash curl ca-certificates jq unzip zstd m
 USER node
 
 RUN source /home/node/.ghc-wasm/env \
-    && export PATH=~/opt/bin:$PATH
+    && export PATH=/usr/local/bin:$PATH
 
 # RUN chmod 777 /home/node/.ghc-wasm
