@@ -42,6 +42,7 @@ export default tseslint.config([
       "@typescript-eslint/no-unsafe-function-type": "error",
 
       "@typescript-eslint/no-unused-vars": "warn",
+      "prefer-const": "warn",
     }
   },
 ])

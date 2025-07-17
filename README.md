@@ -12,9 +12,9 @@ Requirements (windows):
 * VSCode with dev container extensions installed
 
 Install:
-1. Clone the repo inside WSL
+1. Clone the repo inside WSL (hot reloading doesn't work otherwise)
 1. Open the cloned repo in VSCode
-1. Re-open in dev container
+1. Re-open in dev container (to use the correct node version)
 1. Install dependencies:
     ```bash
     npm install
