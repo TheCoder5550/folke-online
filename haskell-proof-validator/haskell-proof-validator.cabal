@@ -21,6 +21,7 @@ executable haskell-proof-validator
 
     build-depends:
         , base
+        , folke
     --  , aeson
     --  , bytestring
     --  , Cabal-syntax

@@ -1,0 +1,45 @@
+ArgRange. Arg   ::= Integer "-" Integer;
+ArgLine.  Arg   ::= Integer;
+ArgTerm.  Arg   ::= Term;
+ArgForm.  Arg   ::= Term ":=" Form;
+ArgNil.   Arg   ::= "";
+separator Arg   ",";
+
+FormPar.     Form5 ::= "(" Form ")";
+FormBot.     Form4 ::= "bot";
+FormEq.      Form4 ::= Term "=" Term;
+FormPred.    Form4 ::= Pred;
+
+FormAll.     Form3 ::= "∀" Ident Form3;
+FormAllDot.  Form3 ::= "∀" Ident "." Form3;
+FormSome.    Form3 ::= "∃" Ident Form3;
+FormSomeDot. Form3 ::= "∃" Ident "." Form3;
+FormNot.     Form3 ::= "!" Form3;
+
+FormAnd.     Form2 ::= Form2 "&" Form3; --left-associative(c convention)
+FormOr.      Form2 ::= Form2 "|" Form3; --left-associative(c convention)
+
+FormImpl.    Form1 ::= Form2 "->" Form1; --right-associative(book)
+
+FormNil.     Form ::= "";
+
+_. Form4 ::= Form5;
+_. Form3 ::= Form4;
+_. Form2 ::= Form3;
+_. Form1 ::= Form2;
+_. Form ::= Form1;
+
+separator nonempty Form ",";
+
+Pred0. Pred ::= Ident;
+PredN. Pred ::= Ident "(" [Term] ")";
+Term0. Term ::= Ident;
+TermN. Term ::= Ident "(" [Term] ")";
+
+LabelLine.  Label ::= Integer ":";
+LabelRange. Label ::= Integer "-" Integer ":";
+separator   Label "";
+
+separator nonempty Term ",";
+separator nonempty Ident ",";
+comment "#";

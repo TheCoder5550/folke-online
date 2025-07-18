@@ -13,7 +13,8 @@ rm -rf output
 mkdir output
 
 # Build cabal project
-wasm32-wasi-cabal v2-build exe:haskell-proof-validator
+# wasm32-wasi-cabal v2-build exe:haskell-proof-validator
+wasm32-wasi-cabal build exe:haskell-proof-validator
 
 # Find and copy bult .wasm file to output dir
 cp "$(listbin haskell-proof-validator)" output/haskell-proof-validator.wasm

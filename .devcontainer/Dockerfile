@@ -22,14 +22,21 @@ RUN apk add git
 # USER node
 # RUN echo 'https://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories
 
+# To fix: /usr/bin/env: unrecognized option: S 
+RUN apk add --no-cache coreutils
+
+# Install ghc-wasm where node user can access it 
 ENV PREFIX="/home/node/.ghc-wasm"
 
+# Install ghc-wasm and make user node owner of the folder
 RUN apk add --update --no-cache shadow bash curl ca-certificates jq unzip zstd make \
     && curl https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/bootstrap.sh | sh \
     && chown -R node:node /home/node/.ghc-wasm
 
 USER node
 
+# Add ghc-wasm to PATH (for node user!) and place alpines node first in PATH
+# to not use ghc-wasms node by default
 RUN source /home/node/.ghc-wasm/env \
     && export PATH=/usr/local/bin:$PATH
 

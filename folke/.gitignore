@@ -1,0 +1,26 @@
+**/.DS_Store
+
+# Ignore all object files
+**/*.o
+
+# Ignore all BNFC generated files
+src/Makefile
+src/Makefile.bak
+
+src/Logic/*
+!src/Logic/Abs.hs
+!src/Logic/Lex.hs
+!src/Logic/Par.hs
+
+# Ignore dist-newstyle because merge conflict in this dir are not fun
+dist-newstyle/
+
+# Ignore proof editor preferences/settings
+preferences.json
+persistent_state.json
+Settings.json
+_tmp/
+
+# Ignore generated installer
+installer/windows/output
+installer/macos/output

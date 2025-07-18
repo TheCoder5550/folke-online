@@ -1,0 +1,11 @@
+packages:
+  .
+  ./custom-monomer
+  ./custom-Hclip
+  ./nativefiledialog-hs
+
+package sdl2
+  flags: -recent-ish
+
+package bsc-project
+  flags: +stb_truetype

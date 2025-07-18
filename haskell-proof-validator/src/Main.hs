@@ -1,3 +1,5 @@
+import Folke.Backend.Helpers (severity)
+
 foreign export javascript "my_fac"
   fac :: Word -> Word
 

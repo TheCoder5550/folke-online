@@ -1,1 +1,3 @@
-packages: .
+packages: . ../folke
+
+-- allow-newer: folke:base
