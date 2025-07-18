@@ -26,6 +26,7 @@ ENV PREFIX="/home/node/.ghc-wasm"
 
 RUN apk add --update --no-cache shadow bash curl ca-certificates jq unzip zstd make \
     && curl https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/bootstrap.sh | sh \
+    && chown -R node:node /home/node/.ghc-wasm
 
 USER node
 

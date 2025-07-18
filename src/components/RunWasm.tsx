@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import WASM_MODULE_URL from '../../haskell-proof-validator/output/hello.wasm?url'
+import WASM_MODULE_URL from '../../haskell-proof-validator/output/haskell-proof-validator.wasm?url'
 import ghc_wasm_jsffi from "../../haskell-proof-validator/output/ghc_wasm_jsffi.js";
 import { WASI, ConsoleStdout, OpenFile, File } from "@bjorn3/browser_wasi_shim";
 

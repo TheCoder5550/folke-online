@@ -25,3 +25,4 @@ dist-ssr
 
 # Haskell
 haskell-proof-validator/output
+dist-newstyle

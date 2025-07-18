@@ -1,0 +1,31 @@
+cabal-version: 3.0
+
+name: haskell-proof-validator
+version: 0
+
+executable haskell-proof-validator
+    main-is: Main.hs
+    hs-source-dirs: src
+    -- other-modules:
+    --     ForeignUtils
+    -- c-sources: cbits/init.c
+    default-language: GHC2021
+    ghc-options:
+        -Wall
+        -Wunused-packages
+        -no-hs-main
+        -optl-mexec-model=reactor
+        "-optl-Wl\
+        \,--export=my_fac\
+        \"
+
+    build-depends:
+        , base
+    --  , aeson
+    --  , bytestring
+    --  , Cabal-syntax
+    --  , containers
+    --  , fourmolu
+    --  , ghc-lib-parser
+    --  , ghc-syntax-highlighter-themed
+    --  , text
