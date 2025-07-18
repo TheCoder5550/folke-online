@@ -17,7 +17,7 @@ import Shared.FESequent as FE
 import Backend.Environment
 import Backend.Helpers
 
-import Frontend.Parse (parseProofFromJSON)
+import Shared.Parse (parseProofFromJSON)
 import qualified Data.List as List
 import qualified Data.Map as Map
 

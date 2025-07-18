@@ -178,8 +178,8 @@ convertToFEError (Err warns _env err) = feError
 -- | Convert a warning to a frontend-friendly format
 convertWarning :: Warning -> FEErrorWhere
 convertWarning w = case warnLocation w of
-  Nothing -> FEGlobal (show w)
-  Just l -> FELocal l (show w)
+  Nothing -> FEGlobal (Prelude.show w)
+  Just l -> FELocal l (Prelude.show w)
 
 severity :: Int -> Severity
 severity i | i>=3=High

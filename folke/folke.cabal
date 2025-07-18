@@ -15,8 +15,6 @@ maintainer:         lucasmol@student.chalmers.se
 category:           Math
 build-type:         Simple
 
-extra-doc-files:    CHANGELOG.md
-
 common warnings
     ghc-options: -Wall
 
@@ -24,17 +22,15 @@ library
     import:           warnings
     exposed-modules:  Backend.TypeChecker
                     , Backend.Environment
-                    , Frontend.Types
                     , Backend.Helpers
                     , Backend.Types
-                    , Frontend.Parse
                     , Logic.Abs
                     , Logic.Par
                     , Logic.Lex
                     , Shared.Messages
-                    , Frontend.Helper.General
                     , Shared.FESequent
                     , Shared.SpecialCharacters
+                    , Shared.Parse
     build-depends:    base ^>=4.21.0.0
                     , mtl
                     , containers
@@ -44,7 +40,7 @@ library
                     , aeson
                     , aeson-pretty
                     , bytestring
-                    , text-show
+                    --, text-show
                     , lens
                     --, monomer
                     , random
@@ -54,6 +50,8 @@ library
                     , utf8-string
                     , extra
                     -- base 4.17.2.1
+
+    build-tool-depends: alex:alex, happy:happy
 
     default-extensions: OverloadedStrings
     hs-source-dirs:   src
