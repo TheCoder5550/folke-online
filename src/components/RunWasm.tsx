@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import WASM_MODULE_URL from '../../haskell-proof-validator/output/haskell-proof-validator.wasm?url'
-import ghc_wasm_jsffi from "../../haskell-proof-validator/output/ghc_wasm_jsffi.js";
+import WASM_MODULE_URL from '../../folke-wasm-wrapper/output/folke-wasm-wrapper.wasm?url'
+import ghc_wasm_jsffi from "../../folke-wasm-wrapper/output/ghc_wasm_jsffi.js";
 import { WASI, ConsoleStdout, OpenFile, File } from "@bjorn3/browser_wasi_shim";
 import { isStepLine } from "../helpers/proof-helper.js";
 import { useProof } from "../helpers/ProofContext.js";

@@ -13,15 +13,15 @@ rm -rf output
 mkdir output
 
 # Build cabal project
-# wasm32-wasi-cabal v2-build exe:haskell-proof-validator
-wasm32-wasi-cabal build exe:haskell-proof-validator
+# wasm32-wasi-cabal v2-build exe:folke-wasm-wrapper
+wasm32-wasi-cabal build exe:folke-wasm-wrapper
 
 # Find and copy bult .wasm file to output dir
-cp "$(listbin haskell-proof-validator)" output/haskell-proof-validator.wasm
+cp "$(listbin folke-wasm-wrapper)" output/folke-wasm-wrapper.wasm
 
 # Create js file to specify imports for WebAssembly.instantiate
 /home/node/.ghc-wasm/nodejs/bin/node $(wasm32-wasi-ghc --print-libdir)/post-link.mjs \
-  -i ./output/haskell-proof-validator.wasm \
+  -i ./output/folke-wasm-wrapper.wasm \
   -o ./output/ghc_wasm_jsffi.js
 
 # # Compile Haskell to WASM
