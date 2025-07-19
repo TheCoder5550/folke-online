@@ -3,7 +3,8 @@
 {-# OPTIONS_GHC -Wno-name-shadowing #-}
 module Backend.TypeChecker (
     -- * Main API functions
-    checkJson,
+    checkJsonString,
+    checkJsonFile,
     checkFE,
     handleFrontendMessage,
     parseForm,
@@ -45,22 +46,26 @@ handleFrontendMessage (CheckFEDocument (doc, (userSensitivity, acpActive))) =
               else convertToFEError $ checkFE doc
 
 -- | Check a proof from a JSON file
-checkJson :: FilePath -> Result ()
-checkJson filePath =  do
+checkJsonString :: String -> Result ()
+checkJsonString jsonData =  do
+    -- Process the JSON content
+    jsonText <- Ok [] (pack jsonData)
+    doc <- case parseProofFromJSON jsonText of
+        Nothing -> Err [] newEnv (createSyntaxError newEnv "Failed to parse JSON proof")
+        Just s -> Ok [] s
+
+    -- Check the proof with the backend
+    checkFE doc
+
+-- | Check a proof from a JSON file
+checkJsonFile :: FilePath -> Result ()
+checkJsonFile filePath =  do
     -- Read the file content
     fileContent <- case unsafePerformIO (try (readFile filePath) :: IO (Either SomeException String)) of
         Left err -> Err [] newEnv (createSyntaxError newEnv $ "Error reading file: " ++ show err)
         Right content -> Ok [] content
 
-    -- Process the JSON content
-    jsonText <- Ok [] (pack fileContent)
-    doc <- case parseProofFromJSON jsonText of
-        Nothing -> Err [] newEnv (createSyntaxError newEnv "Failed to parse JSON proof")
-        Just s -> Ok [] s
-
-
-    -- Check the proof with the backend
-    checkFE doc
+    checkJsonString fileContent
 
 ----------------------------------------------------------------------
 -- Frontend Sequent Checking

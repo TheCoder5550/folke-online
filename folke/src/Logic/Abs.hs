@@ -24,7 +24,9 @@ data Form
     | FormEq Term Term
     | FormPred Pred
     | FormAll Ident Form
+    | FormAllDot Ident Form
     | FormSome Ident Form
+    | FormSomeDot Ident Form
     | FormNot Form
     | FormAnd Form Form
     | FormOr Form Form
