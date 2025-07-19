@@ -6,7 +6,8 @@
   padding: 0.25rem;
 }
 
-.proof-row input {
+.proof-row input,
+.rule-name {
   font-family: monospace;
   font-size: 1rem;
 }
@@ -34,7 +35,7 @@
   width: 300px;
 }
 
-.rule-args-container input {
+.rule-args-container > * {
   width: 50%;
 }
 

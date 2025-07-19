@@ -42,7 +42,7 @@ export function setRule(proof: Proof, path: StepPath, rule: string) {
       throw new Error("Not a line");
     }
 
-    const foundRule = ruleMetaData[rule];
+    const foundRule = RULE_META_DATA[rule];
     if (foundRule) {
       old.usedArguments = foundRule.nrArguments;
     }
@@ -332,7 +332,12 @@ const characterLookupTable = [
   ["_9", "₉"]
 ].reverse();
 
-const ruleMetaData: { [id: string]: RuleMetaData | undefined } = {
+export const RULE_META_DATA: { [id: string]: RuleMetaData | undefined } = {
+  "premise": {
+    name: "Premise",
+    description: "",
+    nrArguments: 0,
+  },
   "assume": {
     name: "Assumption",
     description: "",

@@ -1,0 +1,39 @@
+.container {
+  position: relative;
+  display: inline-flex;
+}
+
+.field {
+  width: 100%;
+}
+
+.list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+
+  z-index: 1;
+  background: white;
+  border: 1px solid black;
+}
+
+.list-item {
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+}
+
+.list-item:hover {
+  background: rgba(0, 255, 0, 0.2);
+}
+
+.list-item:active {
+  background: rgba(0, 255, 0, 0.4);
+}
+
+.list-item.selected {
+  background: lime;
+}

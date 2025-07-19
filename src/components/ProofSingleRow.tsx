@@ -1,10 +1,11 @@
 import { type JSX } from "react";
 import styles from "./ProofSingleRow.module.css"
-import { makeSpecialCharacters } from "../helpers/proof-helper";
+import { makeSpecialCharacters, RULE_META_DATA } from "../helpers/proof-helper";
 import { TbBox, TbBoxOff, TbRowInsertBottom, TbRowInsertTop } from "react-icons/tb";
 import { FaDeleteLeft } from "react-icons/fa6";
 import { ProofDispatchActionTypeEnum, useProofDispatch } from "../helpers/ProofContext";
 import { PiKeyReturnFill } from "react-icons/pi";
+import AutocompleteInput, { type Suggestion } from "./AutocompleteInput";
 
 interface ProofSingleRowProps {
   lineNumber: number;
@@ -23,10 +24,16 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     })
   }
   const setRule = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRuleFromString(e.currentTarget.value);
+  }
+  const selectRule = (item: Suggestion) => {
+    setRuleFromString(item.value);
+  }
+  const setRuleFromString = (rule: string) => {
     dispatch({
       type: ProofDispatchActionTypeEnum.SetRule,
       path: props.path,
-      rule: makeSpecialCharacters(e.currentTarget.value)
+      rule: makeSpecialCharacters(rule)
     })
   }
   const setArgument = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,6 +95,14 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     )
   }
 
+  const suggestions: Suggestion[] = [];
+  for (const [key] of Object.entries(RULE_META_DATA)) {
+    suggestions.push({
+      label: key,
+      value: key
+    });
+  }
+
   return (
     <div className={styles["proof-row"]}>
       <span className={styles["number"]}>
@@ -95,7 +110,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
       </span>
       <TextField placeholder="Empty statement" className={styles["statement-input"]} value={props.step.statement} onChange={setStatement} />
       <div className={styles["rule-args-container"]}>
-        <TextField placeholder="Empty rule" className={styles["rule-name"]} value={props.step.rule} onChange={setRule} />
+        <AutocompleteInput suggestions={suggestions} placeholder="Empty rule" containerClassName={styles["rule-name"]} value={props.step.rule} onChange={setRule} onSelectItem={selectRule} />
         {argumentInputs}
       </div>
 
