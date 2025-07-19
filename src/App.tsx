@@ -7,10 +7,9 @@ import { ProofProvider } from './helpers/ProofContext'
 function App() {
   return (
     <>
-      <RunWasm />
-
       <ErrorBoundary>
         <ProofProvider>
+          <RunWasm />
           <ProofRenderer />
         </ProofProvider>
       </ErrorBoundary>

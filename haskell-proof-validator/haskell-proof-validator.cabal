@@ -16,17 +16,13 @@ executable haskell-proof-validator
         -no-hs-main
         -optl-mexec-model=reactor
         "-optl-Wl\
+        \,--export=hs_init\
+        \,--export=malloc\
+        \,--export=free\
         \,--export=my_fac\
+        \,--export=checkJsonString\
         \"
 
     build-depends:
         , base
         , folke
-    --  , aeson
-    --  , bytestring
-    --  , Cabal-syntax
-    --  , containers
-    --  , fourmolu
-    --  , ghc-lib-parser
-    --  , ghc-syntax-highlighter-themed
-    --  , text
