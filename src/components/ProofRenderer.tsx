@@ -1,12 +1,9 @@
 import StepsContainer from "./StepsContainer";
 import StepsRenderer from "./StepsRenderer";
-import { makeSpecialCharacters } from "../helpers/proof-helper";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-store";
+import { makeSpecialCharacters } from "../helpers/special-characters";
 
 export default function ProofRenderer() {
-  // const proof = useProof();
-  // const proofDispatch = useProofDispatch();
-
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const dispatch = useProofStore((state) => state.dispatch);
   const premises = useProofStore((state) => state.proof.premises.join(", "));

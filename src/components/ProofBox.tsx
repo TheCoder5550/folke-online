@@ -2,7 +2,7 @@ import { memo } from "react";
 import { isFlatLine } from "../helpers/proof-helper";
 import useProofStore from "../stores/proof-store";
 import styles from "./ProofBox.module.css"
-import { RenderUUIDMemo } from "./StepsRenderer";
+import { RenderStepMemo } from "./RenderStep";
 
 interface ProofBoxProps {
   uuid: UUID;
@@ -23,7 +23,7 @@ export default function ProofBox(props: ProofBoxProps) {
   return (
     <div className={styles["proof-box"]}>
       {uuids.map(uuid => (
-        <RenderUUIDMemo key={uuid} uuid={uuid} />
+        <RenderStepMemo key={uuid} uuid={uuid} />
       ))}
     </div>
   )

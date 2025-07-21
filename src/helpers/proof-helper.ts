@@ -1,4 +1,5 @@
 import { getUUID, insertAtIndex, logProxy, sum } from "./generic-helper";
+import { RULE_META_DATA } from "./rules-data";
 
 export function createEmptyProof(): Proof {
   return {
@@ -252,7 +253,6 @@ export function convertToLine(proof: FlatProof, uuid: UUID) {
 export function closeBoxWith(proof: FlatProof, uuid: UUID, insertThis: FlatStep) {
   const step = getStep(proof, uuid);
   const parentUUID = step.parent;
-  logProxy(step);
   if (!parentUUID) {
     throw new Error("Can't close main proof")
   }
@@ -261,8 +261,6 @@ export function closeBoxWith(proof: FlatProof, uuid: UUID, insertThis: FlatStep)
   if (isFlatLine(parentStep)) {
     throw new Error("Must be box")
   }
-
-  console.log(parentStep.steps.indexOf(uuid), parentStep.steps, uuid);
 
   if (parentStep.steps.indexOf(uuid) !== parentStep.steps.length - 1) {
     throw new Error("Must use this action on last line in box")
@@ -290,24 +288,6 @@ export function getUUIDOfLastRow(proof: FlatProof): UUID | null {
   return findUUID(proof.steps);
 }
 
-// export function getPathToLastRow(proof: Proof): StepPath {
-//   const path: StepPath = [];
-//   let list = proof.steps;
-
-//   while (list.length !== 0) {
-//     path.push(list.length - 1);
-//     const lastElement = list[list.length - 1];
-
-//     if (isStepLine(lastElement)) {
-//       break;
-//     }
-    
-//     list = lastElement.steps;
-//   }
-
-//   return path;
-// }
-
 export function countRowsInStep(step: Step): number {
   if (isStepLine(step)) {
     return 1;
@@ -323,12 +303,6 @@ export function isStepLine(step: Step): step is StepLine {
 
 export function isFlatLine(step: FlatStep): step is FlatLine {
   return (step as FlatLine).statement !== undefined;
-}
-
-export function getParent(path: StepPath): StepPath {
-  const pathToParentBox = [...path];
-  pathToParentBox.pop();
-  return pathToParentBox;
 }
 
 export function flattenProof(proof: Proof): FlatProof {
@@ -394,203 +368,3 @@ export function unflattenProof(proof: FlatProof): Proof {
     steps: unflattenSteps(proof.steps)
   }
 }
-
-export function makeSpecialCharacters(text: string) {
-  for (const [key, value] of characterLookupTable) {
-    text = text.replaceAll(key, value);
-  }
-  return text;
-}
-
-const characterLookupTable = [
-  // Negate
-  ["!", "¬"],
-  ["~", "¬"],
-  ["not", "¬"],
-
-  // Implies
-  [">", "→"],
-  ["->", "→"],
-  ["¬>", "→"], // Fix for when "-" becomes negation
-
-  // And
-  ["&", "∧"],
-  ["^", "∧"],
-  ["*", "∧"],
-  ["and", "∧"],
-  ["con", "∧"],
-
-  // Or
-  ["|", "∨"],
-  //["v", "∨"],
-  ["+", "∨"],
-  ["f∨", "for"], // Disable `or` replacement when writing forall
-  ["or", "∨"],
-  ["dis", "∨"],
-
-  // Bottom
-  ["bot", "⊥"],
-  ["#", "⊥"],
-  ["XX", "⊥"],
-
-  // For all
-  ["all", "∀"],
-  ["forall", "∀"],
-  // ["A", "∀"],
-
-  // There exists
-  ["exists", "∃"],
-  ["some", "∃"],
-  // ["E", "∃"],
-
-  // Sequent
-  ["=/>", "⊬"],
-  ["=>", "⊢"],
-
-  // Subscript
-  ["_0", "₀"],
-  ["_1", "₁"],
-  ["_2", "₂"],
-  ["_3", "₃"],
-  ["_4", "₄"],
-  ["_5", "₅"],
-  ["_6", "₆"],
-  ["_7", "₇"],
-  ["_8", "₈"],
-  ["_9", "₉"]
-].reverse();
-
-export const RULE_META_DATA: { [id: string]: RuleMetaData | undefined } = {
-  "premise": {
-    name: "Premise",
-    description: "",
-    nrArguments: 0,
-  },
-  "assume": {
-    name: "Assumption",
-    description: "",
-    nrArguments: 0,
-  },
-  "fresh": {
-    name: "Fresh",
-    description: "",
-    nrArguments: 0,
-  },
-  "copy": {
-    name: "Copy",
-    description: "",
-    nrArguments: 1,
-  },
-  "∧I": {
-    name: "Conjunction introduction",
-    description: "",
-    nrArguments: 2,
-  },
-  "∧EL": {
-    name: "Left conjunction elimination",
-    description: "",
-    nrArguments: 1,
-  },
-  "∧ER": {
-    name: "Right conjunction elimination",
-    description: "",
-    nrArguments: 1,
-  },
-  "∨IL": {
-    name: "Left disjunction introduction",
-    description: "",
-    nrArguments: 1,
-  },
-  "∨IR": {
-    name: "Right disjunction introduction",
-    description: "",
-    nrArguments: 1,
-  },
-  "∨E": {
-    name: "Disjunction elimination",
-    description: "",
-    nrArguments: 3,
-  },
-  "→I": {
-    name: "Implication introduction",
-    description: "",
-    nrArguments: 1,
-  },
-  "→E": {
-    name: "Implication elimination",
-    description: "",
-    nrArguments: 2,
-  },
-  "¬I": {
-    name: "Negation introduction",
-    description: "",
-    nrArguments: 1,
-  },
-  "¬E": {
-    name: "Negation elimination",
-    description: "",
-    nrArguments: 2,
-  },
-  "⊥E": {
-    name: "Contradiction elimination",
-    description: "",
-    nrArguments: 1,
-  },
-  "¬¬I": {
-    name: "Double negation introduction",
-    description: "",
-    nrArguments: 1,
-  },
-  "¬¬E": {
-    name: "Double negation elimination",
-    description: "",
-    nrArguments: 1,
-  },
-  "MT": {
-    name: "Modus tollens",
-    description: "",
-    nrArguments: 2,
-  },
-  "PBC": {
-    name: "Proof by contradiction",
-    description: "",
-    nrArguments: 1,
-  },
-  "LEM": {
-    name: "Law of excluded middle",
-    description: "",
-    nrArguments: 0,
-  },
-  "=I": {
-    name: "Equality introduction",
-    description: "",
-    nrArguments: 0,
-  },
-  "=E": {
-    name: "Equality elimination",
-    description: "",
-    nrArguments: 3,
-    argumentLabels: ["", "", "𝝓(u)≡"],
-    argumentInputLengths: [45, 45, 150]
-  },
-  "∀E": {
-    name: "Universal elimination",
-    description: "",
-    nrArguments: 2,
-  },
-  "∀I": {
-    name: "Universal introduction",
-    description: "",
-    nrArguments: 1,
-  },
-  "∃E": {
-    name: "Existential elimination",
-    description: "",
-    nrArguments: 2,
-  },
-  "∃I": {
-    name: "Existential introduction",
-    description: "",
-    nrArguments: 1,
-  }
-};

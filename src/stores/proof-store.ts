@@ -1,7 +1,6 @@
 import {combine, devtools} from 'zustand/middleware';
 import {immer} from 'zustand/middleware/immer';
-import { closeBoxWith, convertToBox, convertToLine, createNewBox, createNewLine, flattenProof, getParent, getUUIDOfLastRow, insertAfter, insertBefore, insertInto, isFlatLine, isStepLine, removeFromProof, setArgument, setRule, setStatement } from '../helpers/proof-helper';
-import { createWithEqualityFn } from 'zustand/traditional';
+import { closeBoxWith, convertToBox, convertToLine, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, insertAfter, insertBefore, insertInto, removeFromProof, setArgument, setRule, setStatement } from '../helpers/proof-helper';
 import { create } from 'zustand';
 
 const defaultProof = {
@@ -26,326 +25,349 @@ const defaultProof = {
       arguments: ["1", "2"],
       usedArguments: 2,
     },
-    {
-      steps: [
-        {
-          steps: [
-            {
-              statement: "A",
-              rule: "",
-              arguments: [],
-              usedArguments: 0,
-            },
-            {
-              statement: "B",
-              rule: "",
-              arguments: [],
-              usedArguments: 0,
-            },
-            {
-              statement: "C",
-              rule: "",
-              arguments: [],
-              usedArguments: 0,
-            },
-            {
-              steps: [
-                {
-                  statement: "A",
-                  rule: "",
-                  arguments: [],
-                  usedArguments: 0,
-                },
-                {
-                  statement: "B",
-                  rule: "",
-                  arguments: [],
-                  usedArguments: 0,
-                },
-                {
-                  statement: "C",
-                  rule: "",
-                  arguments: [],
-                  usedArguments: 0,
-                },
-                {
-                  steps: [
-                    {
-                      statement: "A",
-                      rule: "",
-                      arguments: [],
-                      usedArguments: 0,
-                    },
-                    {
-                      statement: "B",
-                      rule: "",
-                      arguments: [],
-                      usedArguments: 0,
-                    },
-                    {
-                      statement: "C",
-                      rule: "",
-                      arguments: [],
-                      usedArguments: 0,
-                    },
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      statement: "Hello 1",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "",
-      rule: "",
-      arguments: [],
-      usedArguments: 0,
-    },
-  ]
-};
+  ],
+}
+// const defaultProof = {
+//   premises: ["A", "B"],
+//   conclusion: "A ∧ B",
+//   steps: [
+//     {
+//       statement: "A",
+//       rule: "premise",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "B",
+//       rule: "premise",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "A ∧ B",
+//       rule: "∧I",
+//       arguments: ["1", "2"],
+//       usedArguments: 2,
+//     },
+//     {
+//       steps: [
+//         {
+//           steps: [
+//             {
+//               statement: "A",
+//               rule: "",
+//               arguments: [],
+//               usedArguments: 0,
+//             },
+//             {
+//               statement: "B",
+//               rule: "",
+//               arguments: [],
+//               usedArguments: 0,
+//             },
+//             {
+//               statement: "C",
+//               rule: "",
+//               arguments: [],
+//               usedArguments: 0,
+//             },
+//             {
+//               steps: [
+//                 {
+//                   statement: "A",
+//                   rule: "",
+//                   arguments: [],
+//                   usedArguments: 0,
+//                 },
+//                 {
+//                   statement: "B",
+//                   rule: "",
+//                   arguments: [],
+//                   usedArguments: 0,
+//                 },
+//                 {
+//                   statement: "C",
+//                   rule: "",
+//                   arguments: [],
+//                   usedArguments: 0,
+//                 },
+//                 {
+//                   steps: [
+//                     {
+//                       statement: "A",
+//                       rule: "",
+//                       arguments: [],
+//                       usedArguments: 0,
+//                     },
+//                     {
+//                       statement: "B",
+//                       rule: "",
+//                       arguments: [],
+//                       usedArguments: 0,
+//                     },
+//                     {
+//                       statement: "C",
+//                       rule: "",
+//                       arguments: [],
+//                       usedArguments: 0,
+//                     },
+//                   ]
+//                 }
+//               ]
+//             }
+//           ]
+//         }
+//       ]
+//     },
+//     {
+//       statement: "Hello 1",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//     {
+//       statement: "",
+//       rule: "",
+//       arguments: [],
+//       usedArguments: 0,
+//     },
+//   ]
+// };
 const defaultFlatProof = flattenProof(defaultProof);
-console.log(defaultFlatProof);
 
 export const ProofDispatchActionTypeEnum = {
   SetStatement: "SetStatement",
