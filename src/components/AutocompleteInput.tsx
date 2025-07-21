@@ -47,7 +47,15 @@ export default function AutocompleteInput(props: AutocompleteInputProps) {
   };
 
   const keydown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
-    if (e.code === "ArrowUp") {
+    const openKeys = "abcdefghijklmnopqrstuvwxyzåäö0123456789 §½!\"#¤%&/()=?\`¨'*^-_.:,;<>|@£$€{[]}\\";
+    if ((openKeys.includes(e.key) || e.code === "Backspace") && !listVisible) {
+      setListVisible(true);
+    }
+
+    if (e.code === "Tab") {
+      setListVisible(false);
+    }
+    else if (e.code === "ArrowUp") {
       if (listVisible) {
         selectNextItem(-1);   
       }
@@ -75,26 +83,20 @@ export default function AutocompleteInput(props: AutocompleteInputProps) {
       e.preventDefault();
     }
     else {
-      const nextIndex = 0;
-      if (listRef.current) {
-        const items = listRef.current.querySelectorAll("." + styles["list-item"]);
-        items[nextIndex].scrollIntoView({
-          block: "nearest"
-        });
-      }
-      setSelectedIndex(nextIndex); 
+      resetSelectedItem();
+      return props.onKeyDown?.(e);
     }
+  };
 
-    if (e.code === "Tab") {
-      setListVisible(false);
+  const resetSelectedItem = () => {
+    const nextIndex = 0;
+    if (listRef.current) {
+      const items = listRef.current.querySelectorAll("." + styles["list-item"]);
+      items[nextIndex].scrollIntoView({
+        block: "nearest"
+      });
     }
-
-    const openKeys = "abcdefghijklmnopqrstuvwxyzåäö0123456789 §½!\"#¤%&/()=?\`¨'*^-_.:,;<>|@£$€{[]}\\";
-    if ((openKeys.includes(e.key) || e.code === "Backspace") && !listVisible) {
-      setListVisible(true);
-    }
-
-    return props.onKeyDown?.(e);
+    setSelectedIndex(nextIndex); 
   };
 
   const selectNextItem = (direction: number) => {
