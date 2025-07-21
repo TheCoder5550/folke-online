@@ -3,7 +3,7 @@ import WASM_MODULE_URL from '../../folke-wasm-wrapper/output/folke-wasm-wrapper.
 import ghc_wasm_jsffi from "../../folke-wasm-wrapper/output/ghc_wasm_jsffi.js";
 import { WASI, ConsoleStdout, OpenFile, File } from "@bjorn3/browser_wasi_shim";
 import { isStepLine } from "../helpers/proof-helper.js";
-import { useProof } from "../helpers/ProofContext.js";
+import useProofStore from "../stores/proof-store.js";
 
 type HaskellInstance = WebAssembly.Instance & {
   exports: HaskellExports
@@ -32,7 +32,7 @@ const encoder = new TextEncoder()
 const decoder = new TextDecoder()
 
 export default function RunWasm() {
-  const proof = useProof();
+  const proof = useProofStore((state) => state.proof);
   const [hs, setHS] = useState<HaskellExports>();
   const [result, setResult] = useState<CheckProofResult>();
 

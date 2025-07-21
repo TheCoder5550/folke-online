@@ -26,3 +26,39 @@ interface RuleMetaData {
   argumentLabels?: string[];
   argumentInputLengths?: number[];
 }
+
+/*
+  Flat proof
+*/
+
+type UUID = string;
+
+interface FlatProof {
+  premises: string[];
+  conclusion: string;
+  steps: UUID[];
+  stepLookup: StepLookup;
+}
+
+type StepLookup = {
+  [id: UUID]: FlatStep | undefined
+};
+
+type FlatStep = FlatBox | FlatLine;
+
+interface FlatLine {
+  uuid: UUID;
+  parent: UUID | null;
+
+  statement: string;
+  rule: string;
+  arguments: string[];
+  usedArguments: number;
+}
+
+interface FlatBox {
+  uuid: UUID;
+  parent: UUID | null;
+  
+  steps: UUID[];
+}
