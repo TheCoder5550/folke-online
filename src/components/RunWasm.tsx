@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import WASM_MODULE_URL from '../../folke-wasm-wrapper/output/folke-wasm-wrapper.wasm?url'
 import ghc_wasm_jsffi from "../../folke-wasm-wrapper/output/ghc_wasm_jsffi.js";
 import { WASI, ConsoleStdout, OpenFile, File } from "@bjorn3/browser_wasi_shim";
-import { isStepLine } from "../helpers/proof-helper.js";
+import { isStepLine, unflattenProof } from "../helpers/proof-helper.js";
 import useProofStore from "../stores/proof-store.js";
 
 type HaskellInstance = WebAssembly.Instance & {
@@ -86,7 +86,8 @@ export default function RunWasm() {
       return;
     }
 
-    const haskellJSON = proofToHaskellJSON(proof);
+    const unflattenedProof = unflattenProof(proof);
+    const haskellJSON = proofToHaskellJSON(unflattenedProof);
     console.log(haskellJSON);
     const inputBytes = encoder.encode(haskellJSON);
 
@@ -97,6 +98,7 @@ export default function RunWasm() {
 
       const resultBytes = new Uint8Array(hs.memory.buffer, resultPtr, length);
       const output = decoder.decode(resultBytes);
+      console.log(output);
       const json = JSON.parse(output) as CheckProofResult;
       setResult(json);
     }).catch(console.error);

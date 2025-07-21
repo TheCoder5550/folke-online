@@ -26,6 +26,6 @@ checkJsonStringWrapper ptr len = do
 
   let outString = case (checkJsonString jsonData) of
                     Ok _ _ -> "{ \"correct\": true }"
-                    Err _ _ err -> "{ \"correct\": false, \"message\": \"" ++ errMessage err ++ maybe "" (": " ++) (errContext err) ++ "\", \"location\": " ++ maybe "\"global\"" show (errLocation err) ++ " }"
+                    Err _ _ err -> "{ \"correct\": false, \"message\": \"" ++ errMessage err ++ maybe "" (": " ++) (errContext err) ++ "\", \"location\": \"" ++ maybe "global" show (errLocation err) ++ "\" }"
 
   newCString outString

@@ -368,6 +368,33 @@ export function flattenProof(proof: Proof): FlatProof {
   }
 }
 
+export function unflattenProof(proof: FlatProof): Proof {
+  const unflattenSteps = (uuids: UUID[]): Step[] => {
+    return uuids.map(uuid => {
+      const step = getStep(proof, uuid);
+      if (isFlatLine(step)) {
+        return {
+          statement: step.statement,
+          rule: step.rule,
+          arguments: step.arguments,
+          usedArguments: step.usedArguments,
+        }
+      }
+      else {
+        return {
+          steps: unflattenSteps(step.steps)
+        }
+      }
+    })
+  };
+
+  return {
+    premises: proof.premises,
+    conclusion: proof.conclusion,
+    steps: unflattenSteps(proof.steps)
+  }
+}
+
 export function makeSpecialCharacters(text: string) {
   for (const [key, value] of characterLookupTable) {
     text = text.replaceAll(key, value);
