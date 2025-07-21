@@ -127,10 +127,10 @@ export default function AutocompleteInput(props: AutocompleteInputProps) {
       setListVisible(false);
     };
 
-    document.addEventListener("click", click);
+    document.addEventListener("mousedown", click);
 
     return () => {
-      document.removeEventListener("click", click);
+      document.removeEventListener("mousedown", click);
       setListVisible(false);
     };
   }, []);
