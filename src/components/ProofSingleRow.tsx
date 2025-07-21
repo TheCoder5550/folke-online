@@ -10,9 +10,9 @@ import { useShallow } from "zustand/shallow";
 import { makeSpecialCharacters } from "../helpers/special-characters";
 import { RULE_META_DATA } from "../helpers/rules-data";
 import TextField from "./TextField";
+import { LineNumberMemo } from "./LineNumber";
 
 interface ProofSingleRowProps {
-  lineNumber: number;
   uuid: string;
 }
 
@@ -146,7 +146,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
   return (
     <div className={styles["proof-row"]}>
       <span className={styles["number"]}>
-        {props.lineNumber}.
+        <LineNumberMemo uuid={props.uuid} />
       </span>
       <TextField placeholder="Empty statement" className={styles["statement-input"]} value={step.statement} onChange={setStatement} onKeyDown={keydown} />
       <div className={styles["rule-args-container"]}>

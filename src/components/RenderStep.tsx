@@ -13,7 +13,7 @@ export function RenderStep(props: { uuid: UUID }) {
   });
 
   if (isLine) {
-    return <ProofSingleRowMemo lineNumber={0} uuid={props.uuid} />
+    return <ProofSingleRowMemo uuid={props.uuid} />
   }
   else {
     return <ProofBoxMemo uuid={props.uuid} />

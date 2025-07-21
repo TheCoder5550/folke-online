@@ -62,6 +62,24 @@ export function setArgument(proof: FlatProof, uuid: UUID, index: number, argumen
   step.arguments[index] = argument;
 }
 
+function getLine(proof: FlatProof, uuid: UUID): FlatLine {
+  const step = getStep(proof, uuid);
+  if (!isFlatLine(step)) {
+    throw new Error("Requested step is not a line")
+  }
+
+  return step;
+}
+
+function getBox(proof: FlatProof, uuid: UUID): FlatBox {
+  const step = getStep(proof, uuid);
+  if (isFlatLine(step)) {
+    throw new Error("Requested step is not a box")
+  }
+
+  return step;
+}
+
 function getStep(proof: FlatProof, uuid: UUID): FlatStep {
   const step = proof.stepLookup[uuid];
   if (!step) {
@@ -288,12 +306,40 @@ export function getUUIDOfLastRow(proof: FlatProof): UUID | null {
   return findUUID(proof.steps);
 }
 
-export function countRowsInStep(step: Step): number {
-  if (isStepLine(step)) {
+export function getLineNumber(proof: FlatProof, row: UUID): number {
+  let nextStep: UUID | null = row;
+  let lineNumber = 1;
+
+  while (nextStep != null) {
+    const step = getStep(proof, nextStep);
+    const parentUUID = step.parent;
+
+    let steps: UUID[] = [];
+    if (parentUUID) {
+      steps = getBox(proof, parentUUID).steps;
+    }
+    else {
+      steps = proof.steps;
+    }
+
+    for (let i = 0; i < steps.indexOf(step.uuid); i++) {
+      lineNumber += countRowsInStep(proof, steps[i]);
+    }
+
+    nextStep = parentUUID;
+  }
+
+  return lineNumber;
+}
+
+function countRowsInStep(proof: FlatProof, uuid: UUID): number {
+  const step = getStep(proof, uuid);
+
+  if (isFlatLine(step)) {
     return 1;
   }
   else {
-    return sum(step.steps.map(countRowsInStep));
+    return sum(step.steps.map(uuid => countRowsInStep(proof, uuid)));
   }
 }
 
