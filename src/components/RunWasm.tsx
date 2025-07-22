@@ -34,7 +34,7 @@ const decoder = new TextDecoder()
 export default function RunWasm() {
   const proof = useProofStore((state) => state.proof);
   const [hs, setHS] = useState<HaskellExports>();
-  const [result, setResult] = useState<CheckProofResult>();
+  const [result, setResult] = useState<CheckProofResult | null>();
 
   useEffect(() => {
     async function loadWasm() {
@@ -79,6 +79,10 @@ export default function RunWasm() {
 
     loadWasm().catch(console.error);
   }, []);
+
+  useEffect(() => {
+    setResult(null);
+  }, [proof]);
 
   const handleClick = () => {
     if (!hs) {
