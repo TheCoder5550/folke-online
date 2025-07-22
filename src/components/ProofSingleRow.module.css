@@ -7,7 +7,8 @@
 }
 
 .proof-row input,
-.rule-name {
+.rule-name,
+.number {
   font-family: monospace;
   font-size: 1rem;
 }

@@ -340,6 +340,8 @@ export function getLineNumber(proof: FlatProof, row: UUID): number {
   let nextStep: UUID | null = row;
   let lineNumber = 1;
 
+  lineNumber += proof.premises.length;
+
   while (nextStep != null) {
     const step = getStep(proof, nextStep);
     const parentUUID = step.parent;

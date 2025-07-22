@@ -7,18 +7,18 @@ const defaultProof = {
   premises: ["A", "B"],
   conclusion: "A ∧ B",
   steps: [
-    {
-      statement: "A",
-      rule: "premise",
-      arguments: [],
-      usedArguments: 0,
-    },
-    {
-      statement: "B",
-      rule: "premise",
-      arguments: [],
-      usedArguments: 0,
-    },
+    // {
+    //   statement: "A",
+    //   rule: "premise",
+    //   arguments: [],
+    //   usedArguments: 0,
+    // },
+    // {
+    //   statement: "B",
+    //   rule: "premise",
+    //   arguments: [],
+    //   usedArguments: 0,
+    // },
     {
       statement: "A ∧ B",
       rule: "∧I",

@@ -2,11 +2,12 @@ import StepsContainer from "./StepsContainer";
 import StepsRenderer from "./StepsRenderer";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-store";
 import { makeSpecialCharacters } from "../helpers/special-characters";
+import Premise from "./Premise";
 
 export default function ProofRenderer() {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const dispatch = useProofStore((state) => state.dispatch);
-  const premises = useProofStore((state) => state.proof.premises.join(", "));
+  const premises = useProofStore((state) => state.proof.premises);
   const conclusion = useProofStore((state) => state.proof.conclusion);
 
   const insertLineAfterLast = () => {
@@ -23,7 +24,11 @@ export default function ProofRenderer() {
 
   return (
     <StepsContainer>
-      <span>{premises} {makeSpecialCharacters("=>")} {conclusion}</span>
+      <span>{premises.join(", ")} {makeSpecialCharacters("=>")} {conclusion}</span>
+
+      {premises.map((premise, index) => (
+        <Premise key={index} premise={premise} lineNumber={(index + 1).toString()} />
+      ))}
 
       <StepsRenderer />
 
