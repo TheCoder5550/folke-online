@@ -447,3 +447,55 @@ export function unflattenProof(proof: FlatProof): Proof {
     steps: unflattenSteps(proof.steps)
   }
 }
+
+export function proofToHaskellProof(proof: Proof): HaskellProof {
+  const convertStep = (step: Step): HaskellStep => {
+    if (isStepLine(step)) {
+      return {
+        tag: "Line",
+        _arguments: step.arguments,
+        _usedArguments: step.usedArguments,
+        _rule: step.rule,
+        _statement: step.statement,
+      }
+    }
+    else {
+      return {
+        tag: "SubProof",
+        contents: step.steps.map(convertStep)
+      }
+    }
+  };
+
+  return {
+    _sequent: {
+      _conclusion: proof.conclusion,
+      _premises: proof.premises,
+      _steps: proof.steps.map(convertStep)
+    },
+  };
+}
+
+export function haskellProofToProof(proof: HaskellProof): Proof {
+  const convertStep = (step: HaskellStep): Step => {
+    if (step.tag === "Line") {
+      return {
+        arguments: step._arguments,
+        usedArguments: step._usedArguments,
+        rule: step._rule,
+        statement: step._statement,
+      }
+    }
+    else {
+      return {
+        steps: step.contents.map(convertStep)
+      }
+    }
+  };
+
+  return {
+    premises: proof._sequent._premises,
+    conclusion: proof._sequent._conclusion,
+    steps: proof._sequent._steps.map(convertStep),
+  }
+}

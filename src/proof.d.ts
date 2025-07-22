@@ -62,3 +62,26 @@ interface FlatBox {
   
   steps: UUID[];
 }
+
+/*
+  Haskell proof structure
+*/
+
+interface HaskellProof {
+  _sequent: {
+    _conclusion: string;
+    _premises: string[];
+    _steps: HaskellStep[];
+  }
+}
+
+type HaskellStep = {
+  tag: "Line";
+  _arguments: string[];
+  _rule: string;
+  _statement: string;
+  _usedArguments: number;
+} | {
+  tag: "SubProof",
+  contents: HaskellStep[]
+}

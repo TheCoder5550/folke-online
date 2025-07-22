@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import WASM_MODULE_URL from '../../folke-wasm-wrapper/output/folke-wasm-wrapper.wasm?url'
 import ghc_wasm_jsffi from "../../folke-wasm-wrapper/output/ghc_wasm_jsffi.js";
 import { WASI, ConsoleStdout, OpenFile, File } from "@bjorn3/browser_wasi_shim";
-import { isStepLine, unflattenProof } from "../helpers/proof-helper.js";
+import { proofToHaskellProof, unflattenProof } from "../helpers/proof-helper.js";
 import useProofStore from "../stores/proof-store.js";
 
 type HaskellInstance = WebAssembly.Instance & {
@@ -87,9 +87,9 @@ export default function RunWasm() {
     }
 
     const unflattenedProof = unflattenProof(proof);
-    const haskellJSON = proofToHaskellJSON(unflattenedProof);
+    const haskellJSON = proofToHaskellProof(unflattenedProof);
     console.log(haskellJSON);
-    const inputBytes = encoder.encode(haskellJSON);
+    const inputBytes = encoder.encode(JSON.stringify(haskellJSON));
 
     withBytesPtr(hs, inputBytes, async (inputPtr, inputLen) => {
       const resultPtr: number = await hs.checkJsonString(inputPtr, inputLen);
@@ -133,53 +133,4 @@ const withBytesPtr = async (hs: HaskellExports, bytes: Uint8Array<ArrayBufferLik
   } finally {
     hs.free(ptr)
   }
-}
-
-interface HaskellJSON {
-  _sequent: {
-    _conclusion: string;
-    _premises: string[];
-    _steps: HaskellStep[];
-  }
-}
-
-type HaskellStep = {
-  tag: "Line";
-  _arguments: string[];
-  _rule: string;
-  _statement: string;
-  _usedArguments: number;
-} | {
-  tag: "SubProof",
-  contents: HaskellStep[]
-}
-
-function proofToHaskellJSON(proof: Proof): string {
-  const convertStep = (step: Step): HaskellStep => {
-    if (isStepLine(step)) {
-      return {
-        tag: "Line",
-        _arguments: step.arguments,
-        _usedArguments: step.usedArguments,
-        _rule: step.rule,
-        _statement: step.statement,
-      }
-    }
-    else {
-      return {
-        tag: "SubProof",
-        contents: step.steps.map(convertStep)
-      }
-    }
-  };
-
-  const data: HaskellJSON = {
-    _sequent: {
-      _conclusion: proof.conclusion,
-      _premises: proof.premises,
-      _steps: proof.steps.map(convertStep)
-    },
-  };
-
-  return JSON.stringify(data);
 }

@@ -1,6 +1,6 @@
 import {combine, createJSONStorage, devtools, persist} from 'zustand/middleware';
 import {immer} from 'zustand/middleware/immer';
-import { closeBoxWith, convertToBox, convertToLine, createEmptyProof, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, insertAfter, insertBefore, insertInto, removeFromProof, setArgument, setRule, setStatement } from '../helpers/proof-helper';
+import { closeBoxWith, convertToBox, convertToLine, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, insertAfter, insertBefore, insertInto, removeFromProof, setArgument, setRule, setStatement } from '../helpers/proof-helper';
 import { create } from 'zustand';
 
 const defaultProof = {
@@ -370,6 +370,7 @@ const defaultProof = {
 const defaultFlatProof = flattenProof(defaultProof);
 
 export const ProofDispatchActionTypeEnum = {
+  SetProof: "SetProof",
   Reset: "Reset",
   SetPremises: "SetPremises",
   SetConclusion: "SetConclusion",
@@ -390,6 +391,10 @@ export const ProofDispatchActionTypeEnum = {
 } as const;
 
 type ProofDispatchAction =
+  | {
+      type: typeof ProofDispatchActionTypeEnum.SetProof;
+      proof: FlatProof;
+    }
   | {
       type: typeof ProofDispatchActionTypeEnum.Reset;
     }
@@ -481,6 +486,13 @@ export default useProofStore;
 
 function reducer(draft: FlatProof, action: ProofDispatchAction) {
   switch (action.type) {
+    case ProofDispatchActionTypeEnum.SetProof: {
+      draft.premises = action.proof.premises;
+      draft.conclusion = action.proof.conclusion;
+      draft.steps = action.proof.steps;
+      draft.stepLookup = action.proof.stepLookup;
+      break;
+    }
     case ProofDispatchActionTypeEnum.Reset: {
       draft.premises = [];
       draft.conclusion = "";

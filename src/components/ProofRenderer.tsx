@@ -5,6 +5,7 @@ import { makeSpecialCharacters } from "../helpers/special-characters";
 import RunWasm from "./RunWasm";
 import { TextFieldMemo } from "./TextField";
 import { useEffect, useState } from "react";
+import { flattenProof, haskellProofToProof } from "../helpers/proof-helper";
 
 export default function ProofRenderer() {
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -39,6 +40,25 @@ export default function ProofRenderer() {
     }
   };
 
+  const uploadProof: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    const files = e.target.files;
+    if (!files) {
+      return;
+    }
+
+    const file = files.item(0)
+    file?.text().then(text => {
+      const haskellProof = JSON.parse(text) as HaskellProof;
+      const proof = haskellProofToProof(haskellProof);
+      const flatProof = flattenProof(proof);
+
+      dispatch({
+        type: ProofDispatchActionTypeEnum.SetProof,
+        proof: flatProof
+      })
+    }).catch(console.error);
+  }
+
   const [premiseInput, setPremiseInput] = useState(premises.join(", "));
 
   useEffect(() => {
@@ -60,9 +80,9 @@ export default function ProofRenderer() {
         <h2>Premises</h2>
         <span></span>
         <h2>Conclusion</h2>
-        <TextFieldMemo value={premiseInput} onChange={e => setPremiseInput(makeSpecialCharacters(e.currentTarget.value))} style={{ flexGrow: "1" }} />
+        <TextFieldMemo value={premiseInput} onChange={e => setPremiseInput(makeSpecialCharacters(e.currentTarget.value))} />
         <span>{makeSpecialCharacters("=>")}</span>
-        <TextFieldMemo value={conclusion} onChange={conclusionChange} style={{ flexGrow: "1" }} />
+        <TextFieldMemo value={conclusion} onChange={conclusionChange} />
       </div>
 
       <h2>Proof</h2>
@@ -76,7 +96,10 @@ export default function ProofRenderer() {
 
         <RunWasm />
 
-        <button type="button" onClick={resetProof}>Reset proof</button>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          <button type="button" onClick={resetProof}>Reset proof</button>
+          <input type="file" onChange={uploadProof} />
+        </div>
       </div>
 
       <div style={{ height: "95vh" }} />
