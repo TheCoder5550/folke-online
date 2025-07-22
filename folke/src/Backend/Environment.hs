@@ -617,6 +617,8 @@ cmp _ _ _ = False
 -- | Copy rule (identity)
 ruleCopy :: Env -> [(Integer, Arg)] -> Formula -> Result Formula
 ruleCopy _ [(_, ArgForm form)] _ = Ok [] form
+ruleCopy env [(i, _)] _ = Err [] env (createRuleArgError env i 
+                             "Must be a reference to a line.")
 ruleCopy env forms _ = Err [] env (createArgCountError env 
                        (toInteger $ List.length forms) 1)
 
