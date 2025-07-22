@@ -26,3 +26,5 @@ executable folke-wasm-wrapper
     build-depends:
         , base
         , folke
+        , aeson==2.2.3.0
+        , bytestring==0.12.2.0
