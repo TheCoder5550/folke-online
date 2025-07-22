@@ -230,13 +230,15 @@ checkStepFE env step = case step of
                 else Err [] env (createTypeError env "A premise is not allowed in a subproof.")
 
             -- Handle fresh variables
-            "fresh" -> do
-                let t = Term (unpack $ replaceSpecialSymbolsInverse form) []
-                env1 <- regTerm env t
-                env2 <- addFresh env1 t
-                -- Register the reference for this line
-                let env_with_ref = addRefs env2 [currentRef] (ArgTerm t)
-                Ok [] (env_with_ref, ArgTerm t)
+            "fresh" -> if depth env /= 0
+                then do
+                    let t = Term (unpack $ replaceSpecialSymbolsInverse form) []
+                    env1 <- regTerm env t
+                    env2 <- addFresh env1 t
+                    -- Register the reference for this line
+                    let env_with_ref = addRefs env2 [currentRef] (ArgTerm t)
+                    Ok [] (env_with_ref, ArgTerm t)
+                else Err [] env (createTypeError env "Fresh variables are only allowed in subproofs.")
 
             -- Handle assumptions (for subproofs)
             "assume" -> if depth env /= 0
