@@ -1,6 +1,6 @@
-import {combine, devtools} from 'zustand/middleware';
+import {combine, createJSONStorage, devtools, persist} from 'zustand/middleware';
 import {immer} from 'zustand/middleware/immer';
-import { closeBoxWith, convertToBox, convertToLine, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, insertAfter, insertBefore, insertInto, removeFromProof, setArgument, setRule, setStatement } from '../helpers/proof-helper';
+import { closeBoxWith, convertToBox, convertToLine, createEmptyProof, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, insertAfter, insertBefore, insertInto, removeFromProof, setArgument, setRule, setStatement } from '../helpers/proof-helper';
 import { create } from 'zustand';
 
 const defaultProof = {
@@ -370,6 +370,7 @@ const defaultProof = {
 const defaultFlatProof = flattenProof(defaultProof);
 
 export const ProofDispatchActionTypeEnum = {
+  Reset: "Reset",
   SetPremises: "SetPremises",
   SetConclusion: "SetConclusion",
   SetStatement: "SetStatement",
@@ -389,6 +390,9 @@ export const ProofDispatchActionTypeEnum = {
 } as const;
 
 type ProofDispatchAction =
+  | {
+      type: typeof ProofDispatchActionTypeEnum.Reset;
+    }
   | {
       type: typeof ProofDispatchActionTypeEnum.SetPremises;
       premises: string[];
@@ -456,7 +460,7 @@ type ProofDispatchAction =
       uuid: UUID;
     }
 
-const useProofStore = create(devtools(immer(
+const useProofStore = create(devtools(immer(persist(
 	combine({
 		proof: defaultFlatProof,
 	},
@@ -467,12 +471,23 @@ const useProofStore = create(devtools(immer(
       })
     }
 	})),
-)));
+  {
+    name: 'current-proof-storage',
+    storage: createJSONStorage(() => sessionStorage),
+  },
+))));
 
 export default useProofStore;
 
 function reducer(draft: FlatProof, action: ProofDispatchAction) {
   switch (action.type) {
+    case ProofDispatchActionTypeEnum.Reset: {
+      draft.premises = [];
+      draft.conclusion = "";
+      draft.steps = [];
+      draft.stepLookup = {};
+      break;
+    }
     case ProofDispatchActionTypeEnum.SetPremises: {
       draft.premises = action.premises;
       break;

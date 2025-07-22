@@ -31,12 +31,26 @@ export default function ProofRenderer() {
     })
   }
 
-  const [premiseInput, setPremisInput] = useState(premises.join(", "));
+  const resetProof = () => {
+    if (confirm("Are you sure you want the reset the proof? Everything will be deleted!")) {
+      dispatch({
+        type: ProofDispatchActionTypeEnum.Reset
+      })
+    }
+  };
+
+  const [premiseInput, setPremiseInput] = useState(premises.join(", "));
+
+  useEffect(() => {
+    if (premises.length === 0) {
+      setPremiseInput("");
+    }
+  }, [premises])
 
   useEffect(() => {
     dispatch({
       type: ProofDispatchActionTypeEnum.SetPremises,
-      premises: premiseInput.split(",").map(p => makeSpecialCharacters(p.trim()))
+      premises: premiseInput.split(",").map(p => makeSpecialCharacters(p.trim())).filter(p => p !== "")
     })
   }, [premiseInput])
 
@@ -46,7 +60,7 @@ export default function ProofRenderer() {
         <h2>Premises</h2>
         <span></span>
         <h2>Conclusion</h2>
-        <TextFieldMemo value={premiseInput} onChange={e => setPremisInput(makeSpecialCharacters(e.currentTarget.value))} style={{ flexGrow: "1" }} />
+        <TextFieldMemo value={premiseInput} onChange={e => setPremiseInput(makeSpecialCharacters(e.currentTarget.value))} style={{ flexGrow: "1" }} />
         <span>{makeSpecialCharacters("=>")}</span>
         <TextFieldMemo value={conclusion} onChange={conclusionChange} style={{ flexGrow: "1" }} />
       </div>
@@ -61,6 +75,8 @@ export default function ProofRenderer() {
         </div>
 
         <RunWasm />
+
+        <button type="button" onClick={resetProof}>Reset proof</button>
       </div>
 
       <div style={{ height: "95vh" }} />

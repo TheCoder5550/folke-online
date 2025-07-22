@@ -1,11 +1,12 @@
 import { getUUID, insertAtIndex, logProxy, sum } from "./generic-helper";
 import { RULE_META_DATA } from "./rules-data";
 
-export function createEmptyProof(): Proof {
+export function createEmptyProof(): FlatProof {
   return {
     premises: [],
     conclusion: "",
-    steps: []
+    steps: [],
+    stepLookup: {}
   }
 }
 
