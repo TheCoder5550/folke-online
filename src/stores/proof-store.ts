@@ -468,11 +468,17 @@ type ProofDispatchAction =
 const useProofStore = create(devtools(immer(persist(
 	combine({
 		proof: defaultFlatProof,
+    premiseInput: defaultFlatProof.premises.join(", "),
 	},
 	(set, _get) => ({
     dispatch(action: ProofDispatchAction) {
       set(state => {
-        reducer(state.proof, action);
+        reducer(state, action);
+      })
+    },
+    setPremiseInput(input: string) {
+      set(state => {
+        state.premiseInput = input;
       })
     }
 	})),
@@ -484,80 +490,85 @@ const useProofStore = create(devtools(immer(persist(
 
 export default useProofStore;
 
-function reducer(draft: FlatProof, action: ProofDispatchAction) {
+function reducer(draft: {
+  proof: FlatProof;
+  premiseInput: string;
+}, action: ProofDispatchAction) {
   switch (action.type) {
     case ProofDispatchActionTypeEnum.SetProof: {
-      draft.premises = action.proof.premises;
-      draft.conclusion = action.proof.conclusion;
-      draft.steps = action.proof.steps;
-      draft.stepLookup = action.proof.stepLookup;
+      draft.proof.premises = action.proof.premises;
+      draft.proof.conclusion = action.proof.conclusion;
+      draft.proof.steps = action.proof.steps;
+      draft.proof.stepLookup = action.proof.stepLookup;
+      draft.premiseInput = draft.proof.premises.join(", ");
       break;
     }
     case ProofDispatchActionTypeEnum.Reset: {
-      draft.premises = [];
-      draft.conclusion = "";
-      draft.steps = [];
-      draft.stepLookup = {};
+      draft.proof.premises = [];
+      draft.proof.conclusion = "";
+      draft.proof.steps = [];
+      draft.proof.stepLookup = {};
+      draft.premiseInput = "";
       break;
     }
     case ProofDispatchActionTypeEnum.SetPremises: {
-      draft.premises = action.premises;
+      draft.proof.premises = action.premises;
       break;
     }
     case ProofDispatchActionTypeEnum.SetConclusion: {
-      draft.conclusion = action.conclusion;
+      draft.proof.conclusion = action.conclusion;
       break;
     }
     case ProofDispatchActionTypeEnum.SetStatement: {
-      setStatement(draft, action.uuid, action.statement);
+      setStatement(draft.proof, action.uuid, action.statement);
       break;
     }
     case ProofDispatchActionTypeEnum.SetRule: {
-      setRule(draft, action.uuid, action.rule);
+      setRule(draft.proof, action.uuid, action.rule);
       break;
     }
     case ProofDispatchActionTypeEnum.SetArgument: {
-      setArgument(draft, action.uuid, action.index, action.argument)
+      setArgument(draft.proof, action.uuid, action.index, action.argument)
       break;
     }
     case ProofDispatchActionTypeEnum.Remove: {
-      removeFromProof(draft, action.uuid)
+      removeFromProof(draft.proof, action.uuid)
       break;
     }
     case ProofDispatchActionTypeEnum.InsertLineBefore: {
-      insertBefore(draft, action.uuid, createNewLine())
+      insertBefore(draft.proof, action.uuid, createNewLine())
       break;
     }
     case ProofDispatchActionTypeEnum.InsertLineAfter: {
-      insertAfter(draft, action.uuid, createNewLine())
+      insertAfter(draft.proof, action.uuid, createNewLine())
       break;
     }
     case ProofDispatchActionTypeEnum.InsertBoxBefore: {
       const box = createNewBox();
-      insertBefore(draft, action.uuid, box);
-      insertInto(draft, box.uuid, createNewLine());
+      insertBefore(draft.proof, action.uuid, box);
+      insertInto(draft.proof, box.uuid, createNewLine());
       break;
     }
     case ProofDispatchActionTypeEnum.InsertBoxAfter: {
       const box = createNewBox();
-      insertAfter(draft, action.uuid, box);
-      insertInto(draft, box.uuid, createNewLine());
+      insertAfter(draft.proof, action.uuid, box);
+      insertInto(draft.proof, box.uuid, createNewLine());
       break;
     }
     case ProofDispatchActionTypeEnum.ToBox: {
-      convertToBox(draft, action.uuid)
+      convertToBox(draft.proof, action.uuid)
       break;
     }
     case ProofDispatchActionTypeEnum.ToLine: {
-      convertToLine(draft, action.uuid)
+      convertToLine(draft.proof, action.uuid)
       break;
     }
     case ProofDispatchActionTypeEnum.InsertLineAfterLast: {
-      const lastRow = getUUIDOfLastRow(draft);
+      const lastRow = getUUIDOfLastRow(draft.proof);
       if (!lastRow) {
         const line = createNewLine();
-        draft.stepLookup[line.uuid] = line;
-        draft.steps.push(line.uuid);
+        draft.proof.stepLookup[line.uuid] = line;
+        draft.proof.steps.push(line.uuid);
 
         return;
       }
@@ -569,13 +580,13 @@ function reducer(draft: FlatProof, action: ProofDispatchAction) {
       break;
     }
     case ProofDispatchActionTypeEnum.InsertBoxAfterLast: {
-      const lastRow = getUUIDOfLastRow(draft);
+      const lastRow = getUUIDOfLastRow(draft.proof);
       if (!lastRow) {
         const box = createNewBox();
-        draft.stepLookup[box.uuid] = box;
-        draft.steps.push(box.uuid);
+        draft.proof.stepLookup[box.uuid] = box;
+        draft.proof.steps.push(box.uuid);
 
-        insertInto(draft, box.uuid, createNewLine());
+        insertInto(draft.proof, box.uuid, createNewLine());
 
         return;
       }
@@ -587,11 +598,11 @@ function reducer(draft: FlatProof, action: ProofDispatchAction) {
       break;
     }
     case ProofDispatchActionTypeEnum.CloseBoxWithLine: {
-      closeBoxWith(draft, action.uuid, createNewLine());
+      closeBoxWith(draft.proof, action.uuid, createNewLine());
       break;
     }
     case ProofDispatchActionTypeEnum.CloseBoxWithBox: {
-      closeBoxWith(draft, action.uuid, createNewBox());
+      closeBoxWith(draft.proof, action.uuid, createNewBox());
       break;
     }
   }

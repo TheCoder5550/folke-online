@@ -4,13 +4,16 @@ import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-stor
 import { makeSpecialCharacters } from "../helpers/special-characters";
 import RunWasm from "./RunWasm";
 import { TextFieldMemo } from "./TextField";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { flattenProof, haskellProofToProof } from "../helpers/proof-helper";
 
 export default function ProofRenderer() {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const dispatch = useProofStore((state) => state.dispatch);
-  const premises = useProofStore((state) => state.proof.premises);
+  // const premises = useProofStore((state) => state.proof.premises);
+  const premiseInput = useProofStore((state) => state.premiseInput);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setPremiseInput = useProofStore((state) => state.setPremiseInput);
   const conclusion = useProofStore((state) => state.proof.conclusion);
 
   const insertLineAfterLast = () => {
@@ -58,14 +61,6 @@ export default function ProofRenderer() {
       })
     }).catch(console.error);
   }
-
-  const [premiseInput, setPremiseInput] = useState(premises.join(", "));
-
-  useEffect(() => {
-    if (premises.length === 0) {
-      setPremiseInput("");
-    }
-  }, [premises])
 
   useEffect(() => {
     dispatch({
