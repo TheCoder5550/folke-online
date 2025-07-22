@@ -6,6 +6,16 @@
   padding: 0.25rem;
 }
 
+.proof-row input:placeholder-shown {
+  background: #dadada;
+  border: 1px solid black;
+  border-radius: 2px;
+  opacity: 0.5;
+}
+.proof-row input:placeholder-shown::placeholder {
+  color: #777;
+}
+
 .proof-row input,
 .rule-name,
 .number {
