@@ -370,6 +370,8 @@ const defaultProof = {
 const defaultFlatProof = flattenProof(defaultProof);
 
 export const ProofDispatchActionTypeEnum = {
+  SetPremises: "SetPremises",
+  SetConclusion: "SetConclusion",
   SetStatement: "SetStatement",
   SetRule: "SetRule",
   SetArgument: "SetArgument",
@@ -387,6 +389,14 @@ export const ProofDispatchActionTypeEnum = {
 } as const;
 
 type ProofDispatchAction =
+  | {
+      type: typeof ProofDispatchActionTypeEnum.SetPremises;
+      premises: string[];
+    }
+  | {
+      type: typeof ProofDispatchActionTypeEnum.SetConclusion;
+      conclusion: string;
+    }
   | {
       type: typeof ProofDispatchActionTypeEnum.SetStatement;
       uuid: UUID;
@@ -463,6 +473,14 @@ export default useProofStore;
 
 function reducer(draft: FlatProof, action: ProofDispatchAction) {
   switch (action.type) {
+    case ProofDispatchActionTypeEnum.SetPremises: {
+      draft.premises = action.premises;
+      break;
+    }
+    case ProofDispatchActionTypeEnum.SetConclusion: {
+      draft.conclusion = action.conclusion;
+      break;
+    }
     case ProofDispatchActionTypeEnum.SetStatement: {
       setStatement(draft, action.uuid, action.statement);
       break;
@@ -531,7 +549,7 @@ function reducer(draft: FlatProof, action: ProofDispatchAction) {
         draft.steps.push(box.uuid);
 
         insertInto(draft, box.uuid, createNewLine());
-        
+
         return;
       }
 

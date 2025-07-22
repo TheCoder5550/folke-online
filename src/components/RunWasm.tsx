@@ -104,13 +104,13 @@ export default function RunWasm() {
     }).catch(console.error);
   }
 
+  if (!hs) {
+    return <span>Starting wasm...</span>
+  }
+
   return (
-    <div style={{ padding: "1rem" }}>
-      {hs ? (
-        <span>Wasm running</span>
-      ) : (
-        <span>Starting wasm...</span>
-      )}
+    <div>
+      <button type="button" onClick={handleClick}>Check proof</button>
 
       {result && (
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -120,8 +120,6 @@ export default function RunWasm() {
           )}
         </div>
       )}
-
-      <button type="button" onClick={handleClick}>Check proof</button>
     </div>
   )
 }
