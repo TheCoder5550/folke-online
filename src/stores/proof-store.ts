@@ -510,6 +510,10 @@ function reducer(draft: FlatProof, action: ProofDispatchAction) {
     case ProofDispatchActionTypeEnum.InsertLineAfterLast: {
       const lastRow = getUUIDOfLastRow(draft);
       if (!lastRow) {
+        const line = createNewLine();
+        draft.stepLookup[line.uuid] = line;
+        draft.steps.push(line.uuid);
+
         return;
       }
 
@@ -522,6 +526,12 @@ function reducer(draft: FlatProof, action: ProofDispatchAction) {
     case ProofDispatchActionTypeEnum.InsertBoxAfterLast: {
       const lastRow = getUUIDOfLastRow(draft);
       if (!lastRow) {
+        const box = createNewBox();
+        draft.stepLookup[box.uuid] = box;
+        draft.steps.push(box.uuid);
+
+        insertInto(draft, box.uuid, createNewLine());
+        
         return;
       }
 
