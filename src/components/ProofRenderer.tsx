@@ -75,9 +75,9 @@ export default function ProofRenderer() {
         <h2>Premises</h2>
         <span></span>
         <h2>Conclusion</h2>
-        <TextFieldMemo value={premiseInput} onChange={e => setPremiseInput(makeSpecialCharacters(e.currentTarget.value))} />
+        <TextFieldMemo value={premiseInput} onChange={e => setPremiseInput(makeSpecialCharacters(e.currentTarget.value))} style={{ fontFamily: "monospace", fontSize: "1rem" }} />
         <span>{makeSpecialCharacters("=>")}</span>
-        <TextFieldMemo value={conclusion} onChange={conclusionChange} />
+        <TextFieldMemo value={conclusion} onChange={conclusionChange} style={{ fontFamily: "monospace", fontSize: "1rem" }} />
       </div>
 
       <h2>Proof</h2>
