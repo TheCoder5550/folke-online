@@ -1,16 +1,16 @@
-import { memo, type JSX } from "react";
+import { memo, useCallback, type JSX } from "react";
 import styles from "./ProofSingleRow.module.css"
-import { isFlatLine } from "../helpers/proof-helper";
+import { canCloseBox, canConvertToLine, isFlatLine } from "../helpers/proof-helper";
 import { TbBox, TbBoxOff, TbRowInsertBottom, TbRowInsertTop } from "react-icons/tb";
-import { FaDeleteLeft } from "react-icons/fa6";
 import { PiKeyReturnFill } from "react-icons/pi";
 import AutocompleteInput, { type Suggestion } from "./AutocompleteInput";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-store";
 import { useShallow } from "zustand/shallow";
 import { makeSpecialCharacters } from "../helpers/special-characters";
 import { RULE_META_DATA } from "../helpers/rules-data";
-import TextField from "./TextField";
+import TextField, { TextFieldMemo } from "./TextField";
 import { LineNumberMemo } from "./LineNumber";
+import { MdDelete } from "react-icons/md";
 
 interface ProofSingleRowProps {
   uuid: string;
@@ -23,18 +23,20 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
   const dispatch = useProofStore((state) => state.dispatch);
   const uuid = props.uuid;
   const step = useProofStore(useShallow((state) => state.proof.stepLookup[uuid]));
+  const toLineEnabled = useProofStore((state) => canConvertToLine(state.proof, uuid));
+  const closeBoxEnabled = useProofStore((state) => canCloseBox(state.proof, uuid));
 
   if (!step || !isFlatLine(step)) {
     return <></>
   }
 
-  const setStatement = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const setStatement = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({
       type: ProofDispatchActionTypeEnum.SetStatement,
       uuid,
       statement: makeSpecialCharacters(e.currentTarget.value)
     })
-  }
+  }, [ dispatch, uuid ]);
   const setRule = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRuleFromString(e.currentTarget.value);
   }
@@ -56,12 +58,12 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
       argument: makeSpecialCharacters(e.currentTarget.value)
     })
   }
-  const remove = () => {
+  const remove = useCallback(() => {
     dispatch({
       type: ProofDispatchActionTypeEnum.Remove,
       uuid,
     })
-  }
+  }, [ dispatch, uuid ]);
   const insertBefore = () => {
     dispatch({
       type: ProofDispatchActionTypeEnum.InsertLineBefore,
@@ -74,26 +76,26 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
       uuid,
     })
   }
-  const toBox = () => {
+  const toBox = useCallback(() => {
     dispatch({
       type: ProofDispatchActionTypeEnum.ToBox,
       uuid,
     })
-  }
-  const toLine = () => {
+  }, [ dispatch, uuid ]);
+  const toLine = useCallback(() => {
     dispatch({
       type: ProofDispatchActionTypeEnum.ToLine,
       uuid,
     })
-  }
-  const closeBox = () => {
+  }, [ dispatch, uuid ]);
+  const closeBox = useCallback(() => {
     dispatch({
       type: ProofDispatchActionTypeEnum.CloseBoxWithLine,
       uuid,
     })
-  }
+  }, [ dispatch, uuid ]);
 
-  const keydown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+  const keydown: React.KeyboardEventHandler<HTMLInputElement> = useCallback((e) => {
     if (e.code === "KeyB" && e.ctrlKey) {
       toBox();
     }
@@ -103,7 +105,10 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     else if (e.code === "Enter" && e.ctrlKey) {
       closeBox();
     }
-  }
+    else if (e.code === "Delete") {
+      remove();
+    }
+  }, [ toBox, toLine, closeBox, remove ]);
 
   const keydownLastInput: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.code === "KeyB" && e.ctrlKey) {
@@ -117,6 +122,9 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     }
     else if (e.code === "Enter" && !e.ctrlKey) {
       insertAfter();
+    }
+    else if (e.code === "Delete") {
+      remove();
     }
   }
 
@@ -148,7 +156,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
       <span className={styles["number"]}>
         <LineNumberMemo uuid={props.uuid} />
       </span>
-      <TextField placeholder="Empty statement" className={styles["statement-input"]} value={step.statement} onChange={setStatement} onKeyDown={keydown} />
+      <TextFieldMemo focusOnAdd placeholder="Empty statement" className={styles["statement-input"]} value={step.statement} onChange={setStatement} onKeyDown={keydown} />
       <div className={styles["rule-args-container"]}>
         <AutocompleteInput
           suggestions={suggestions}
@@ -164,7 +172,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
 
       <div className={styles["actions"]}>
         <button type="button" title="Remove line" className={styles["action-button"]} onClick={remove}>
-          <FaDeleteLeft />
+          <MdDelete />
         </button>
         <button type="button" title="Insert line above" className={styles["action-button"]} onClick={insertBefore}>
           <TbRowInsertTop />
@@ -175,12 +183,16 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
         <button type="button" title="Convert line to box" className={styles["action-button"]} onClick={toBox}>
           <TbBox />
         </button>
-        <button type="button" title="Undo box" className={styles["action-button"]} onClick={toLine}>
-          <TbBoxOff />
-        </button>
-        <button type="button" title="Close box (Insert line below box)" className={styles["action-button"]} onClick={closeBox}>
-          <PiKeyReturnFill />
-        </button>
+        {toLineEnabled && (
+          <button type="button" title="Undo box" className={styles["action-button"]} onClick={toLine}>
+            <TbBoxOff />
+          </button>
+        )}
+        {closeBoxEnabled && (
+          <button type="button" title="Close box (Insert line below box)" className={styles["action-button"]} onClick={closeBox}>
+            <PiKeyReturnFill />
+          </button>
+        )}
       </div>
     </div>
   )

@@ -268,6 +268,21 @@ export function convertToLine(proof: FlatProof, uuid: UUID) {
   });
 }
 
+export function canConvertToLine(proof: FlatProof, uuid: UUID): boolean {
+  const line = getLine(proof, uuid);
+  const parentUUID = line.parent;
+  if (!parentUUID) {
+    return false;
+  }
+
+  const parentBox = getBox(proof, parentUUID);
+  if (parentBox.steps.length !== 1) {
+    return false;
+  }
+
+  return true;
+}
+
 export function closeBoxWith(proof: FlatProof, uuid: UUID, insertThis: FlatStep) {
   const step = getStep(proof, uuid);
   const parentUUID = step.parent;
@@ -285,6 +300,21 @@ export function closeBoxWith(proof: FlatProof, uuid: UUID, insertThis: FlatStep)
   }
 
   return insertAfter(proof, parentUUID, insertThis);
+}
+
+export function canCloseBox(proof: FlatProof, uuid: UUID): boolean {
+  const line = getLine(proof, uuid);
+  const parentUUID = line.parent;
+  if (!parentUUID) {
+    return false;
+  }
+
+  const parentBox = getBox(proof, parentUUID);
+  if (parentBox.steps.indexOf(uuid) !== parentBox.steps.length - 1) {
+    return false;
+  }
+
+  return true;
 }
 
 export function getUUIDOfLastRow(proof: FlatProof): UUID | null {
