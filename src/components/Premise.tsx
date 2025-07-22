@@ -1,9 +1,12 @@
+import { memo } from "react";
 import rowStyles from "./ProofSingleRow.module.css"
 
 interface PremiseProps {
   premise: string;
   lineNumber: string;
 }
+
+export const PremiseMemo = memo(Premise);
 
 export default function Premise(props: PremiseProps) {
   return (

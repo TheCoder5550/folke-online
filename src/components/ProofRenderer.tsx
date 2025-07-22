@@ -2,7 +2,6 @@ import StepsContainer from "./StepsContainer";
 import StepsRenderer from "./StepsRenderer";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-store";
 import { makeSpecialCharacters } from "../helpers/special-characters";
-import Premise from "./Premise";
 import RunWasm from "./RunWasm";
 import { TextFieldMemo } from "./TextField";
 import { useEffect, useState } from "react";
@@ -53,9 +52,6 @@ export default function ProofRenderer() {
       </div>
 
       <h2>Proof</h2>
-      {premises.map((premise, index) => (
-        <Premise key={index} premise={premise} lineNumber={(index + 1).toString()} />
-      ))}
       <StepsRenderer />
 
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", padding: "0.25rem" }}>
