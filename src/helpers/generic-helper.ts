@@ -1,5 +1,7 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export function getUUID() {
-  return (Math.random() + 1).toString(36).substring(7);
+  return uuidv4();
 }
 
 export function sum(list: number[]): number {
