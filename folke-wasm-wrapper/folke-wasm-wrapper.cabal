@@ -27,4 +27,4 @@ executable folke-wasm-wrapper
         , base
         , folke
         , aeson==2.2.3.0
-        , bytestring==0.12.2.0
+        , utf8-string==1.0.2

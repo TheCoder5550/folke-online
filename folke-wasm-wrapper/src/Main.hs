@@ -11,7 +11,7 @@ import Data.Maybe (maybe)
 import Data.Aeson ( encode )
 import Data.Aeson ( defaultOptions )
 import Data.Aeson.TH ( deriveJSON )
-import Data.ByteString.Lazy.Char8 (unpack)
+import Data.ByteString.Lazy.UTF8 (toString)
 
 data JSONResult = JSONResult {
   correct :: Bool,
@@ -42,6 +42,6 @@ checkJsonStringWrapper ptr len = do
                     Ok _ _ -> JSONResult { correct = True, message = Nothing, location = Nothing }
                     Err _ _ err ->JSONResult { correct = False, message = Just (errMessage err ++ maybe "" (": " ++) (errContext err)), location = Just (maybe "global" show (errLocation err)) }
 
-  let outString = unpack (encode outJSON)
+  let outString = toString (encode outJSON)
 
   newCString outString
