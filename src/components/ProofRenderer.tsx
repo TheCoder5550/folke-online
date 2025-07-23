@@ -1,20 +1,17 @@
+import "./ProofRenderer.css";
+import styles from "./ProofRenderer.module.css";
 import StepsContainer from "./StepsContainer";
 import StepsRenderer from "./StepsRenderer";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-store";
 import { makeSpecialCharacters } from "../helpers/special-characters";
 import RunWasm from "./RunWasm";
-import { TextFieldMemo } from "./TextField";
-import { useEffect } from "react";
 import { flattenProof, haskellProofToProof } from "../helpers/proof-helper";
+import { PremiseFieldMemo } from "./PremiseField";
+import { ConclusionFieldMemo } from "./ConclusionField";
 
 export default function ProofRenderer() {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const dispatch = useProofStore((state) => state.dispatch);
-  // const premises = useProofStore((state) => state.proof.premises);
-  const premiseInput = useProofStore((state) => state.premiseInput);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setPremiseInput = useProofStore((state) => state.setPremiseInput);
-  const conclusion = useProofStore((state) => state.proof.conclusion);
 
   const insertLineAfterLast = () => {
     dispatch({
@@ -25,13 +22,6 @@ export default function ProofRenderer() {
   const insertBoxAfterLast = () => {
     dispatch({
       type: ProofDispatchActionTypeEnum.InsertBoxAfterLast,
-    })
-  }
-
-  const conclusionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch({
-      type: ProofDispatchActionTypeEnum.SetConclusion,
-      conclusion: makeSpecialCharacters(e.currentTarget.value)
     })
   }
 
@@ -62,28 +52,24 @@ export default function ProofRenderer() {
     }).catch(console.error);
   }
 
-  useEffect(() => {
-    dispatch({
-      type: ProofDispatchActionTypeEnum.SetPremises,
-      premises: premiseInput.split(",").map(p => makeSpecialCharacters(p.trim())).filter(p => p !== "")
-    })
-  }, [premiseInput])
-
   return (
     <StepsContainer>
-      <div style={{ display: "grid", gap: "0.5rem", gridTemplateColumns: "1fr auto 1fr" }}>
-        <h2>Premises</h2>
-        <span></span>
-        <h2>Conclusion</h2>
-        <TextFieldMemo value={premiseInput} onChange={e => setPremiseInput(makeSpecialCharacters(e.currentTarget.value))} style={{ fontFamily: "monospace", fontSize: "1rem" }} />
-        <span>{makeSpecialCharacters("=>")}</span>
-        <TextFieldMemo value={conclusion} onChange={conclusionChange} style={{ fontFamily: "monospace", fontSize: "1rem" }} />
+      <div className={styles["align"]}>
+        <div className={styles["premise-conclusion-container"]}>
+          <h2>Premises</h2>
+          <span></span>
+          <h2>Conclusion</h2>
+          <PremiseFieldMemo />
+          <span>{makeSpecialCharacters("=>")}</span>
+          <ConclusionFieldMemo />
+        </div>
+
+        <h2>Proof</h2>
       </div>
 
-      <h2>Proof</h2>
       <StepsRenderer />
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", padding: "0.25rem" }}>
+      <div className={styles["align"]} style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
         <div style={{ display: "flex", gap: "0.5rem" }}>
           <button type="button" onClick={insertLineAfterLast}>+ New line</button>
           <button type="button" onClick={insertBoxAfterLast}>+ New box</button>

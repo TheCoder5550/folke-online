@@ -1,0 +1,4 @@
+.icon {
+  color: rgb(var(--error-color-rgb));
+  margin-right: 0.3rem;
+}

@@ -11,6 +11,7 @@ import { RULE_META_DATA } from "../helpers/rules-data";
 import TextField, { TextFieldMemo } from "./TextField";
 import { LineNumberMemo } from "./LineNumber";
 import { MdDelete } from "react-icons/md";
+import { trimPrefix } from "../helpers/generic-helper";
 
 interface ProofSingleRowProps {
   uuid: string;
@@ -52,12 +53,14 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
       rule: makeSpecialCharacters(rule)
     })
   }
-  const setArgument = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const setArgument = (index: number, argument: string) => {
+    argument = makeSpecialCharacters(argument);
+
     dispatch({
       type: ProofDispatchActionTypeEnum.SetArgument,
       uuid,
       index: index,
-      argument: makeSpecialCharacters(e.currentTarget.value)
+      argument: argument
     })
   }
   const remove = useCallback(() => {
@@ -132,16 +135,30 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
 
   const argumentInputs: JSX.Element[] = [];
   for (let i = 0; i < step.usedArguments; i++) {
-    const arg = step.arguments[i] ?? "";
+    let arg = step.arguments[i] ?? "";
+    let prefix = "";
     const isLast = (i === step.usedArguments - 1);
+    const ruleData = RULE_META_DATA[step.rule];
+    const inputWidth = ruleData?.argumentInputLengths?.[i];
+
+    if (step.rule === "=E" && i === 2) {
+      arg = trimPrefix(arg, "u:=");
+      prefix = "u:="
+    }
+
     argumentInputs.push(
-      <TextField
-        placeholder={"Arg. " + (i + 1)}
-        key={i.toString()}
-        value={arg}
-        onChange={e => setArgument(i, e)}
-        onKeyDown={isLast ? keydownLastInput : keydown}
-      />
+      <div key={i.toString()} className={styles["argument-container"]} style={inputWidth == undefined ? {} : { width: inputWidth + "px" }}>
+        {ruleData && ruleData.argumentLabels && ruleData.argumentLabels[i] !== "" && (
+          <span>{ruleData.argumentLabels[i]}</span>
+        )}
+
+        <TextField
+          placeholder={"Arg. " + (i + 1)}
+          value={arg}
+          onChange={e => setArgument(i, prefix + e.currentTarget.value)}
+          onKeyDown={isLast ? keydownLastInput : keydown}
+        />
+      </div>
     )
   }
 
@@ -200,7 +217,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
       </div>
 
       {hasError && errorMessage && (
-        <span style={{ color: "red" }}>{errorMessage}</span>
+        <span className={"error-message"}>{errorMessage}</span>
       )}
     </>
   )

@@ -1,0 +1,6 @@
+.error-message {
+  color: rgb(var(--error-color-rgb));
+  padding: 0.25rem;
+  padding-top: 0;
+  margin-top: -0.125rem;
+}

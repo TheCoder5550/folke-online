@@ -8,8 +8,6 @@
 
 .proof-row input:placeholder-shown {
   background: #dadada;
-  border: 1px solid black;
-  border-radius: 2px;
   opacity: 0.5;
 }
 .proof-row input:placeholder-shown::placeholder {
@@ -17,19 +15,9 @@
 }
 
 .proof-row.error input {
-  border: 1px solid;
-  border-radius: 2px;
-
-  color: rgb(255, 0, 0);
-  border-color: red;
-  background-color: rgb(255, 240, 240);
-}
-
-.proof-row input,
-.rule-name,
-.number {
-  font-family: monospace;
-  font-size: 1rem;
+  color: rgb(var(--error-color-rgb));
+  border-color: rgb(var(--error-color-rgb));
+  background-color: rgb(var(--error-background-rgb));
 }
 
 .number {
@@ -41,6 +29,8 @@
   align-items: center;
   justify-content: end;
 
+  font-family: monospace;
+  font-size: 1rem;
   user-select: none;
 }
 
@@ -58,12 +48,15 @@
   flex-shrink: 0;
 }
 
-.rule-args-container > * {
-  width: 60px;
-}
-
 .rule-name {
   flex-grow: 1;
+}
+
+.argument-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 60px;
 }
 
 .actions {

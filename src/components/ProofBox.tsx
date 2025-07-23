@@ -3,6 +3,7 @@ import { getLineNumber, isFlatLine } from "../helpers/proof-helper";
 import useProofStore from "../stores/proof-store";
 import styles from "./ProofBox.module.css"
 import { RenderStepMemo } from "./RenderStep";
+import { useShallow } from "zustand/shallow";
 
 interface ProofBoxProps {
   uuid: UUID;
@@ -14,14 +15,14 @@ export default function ProofBox(props: ProofBoxProps) {
   const hasError = useProofStore((state) => state.result?.location == getLineNumber(state.proof, props.uuid));
   const errorMessage = useProofStore((state) => state.result?.message);
 
-  const uuids = useProofStore((state) => {
+  const uuids = useProofStore(useShallow((state) => {
     const step = state.proof.stepLookup[props.uuid]
     if (!step || isFlatLine(step)) {
       return [];
     }
 
     return step.steps;
-  });
+  }));
 
   return (
     <>
@@ -32,7 +33,7 @@ export default function ProofBox(props: ProofBoxProps) {
       </div>
 
       {hasError && errorMessage && (
-        <span style={{ color: "red" }}>{errorMessage}</span>
+        <span className={"error-message"}>{errorMessage}</span>
       )}
     </>
   )

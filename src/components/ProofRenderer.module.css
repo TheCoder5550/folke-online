@@ -1,0 +1,9 @@
+.align {
+  padding: 0.25rem;
+}
+
+.premise-conclusion-container {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr auto 1fr;
+}

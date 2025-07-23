@@ -2,6 +2,7 @@ import { memo } from "react";
 import { getLineNumber } from "../helpers/proof-helper";
 import useProofStore from "../stores/proof-store";
 import { BiSolidErrorAlt } from "react-icons/bi";
+import styles from "./LineNumber.module.css";
 
 interface LineNumberProps {
   uuid: UUID;
@@ -14,7 +15,7 @@ export default function LineNumber(props: LineNumberProps) {
   const hasError = useProofStore((state) => state.result?.location == lineNumber);
 
   if (hasError) {
-    return <BiSolidErrorAlt color="red" />
+    return <BiSolidErrorAlt className={styles["icon"]} />
   }
 
   return (

@@ -20,3 +20,10 @@ export function insertAtIndex<T>(arr: T[], index: number, item: T): T[] {
 export function logProxy(proxy: object) {
   console.log(JSON.parse(JSON.stringify(proxy)));
 }
+
+export function trimPrefix(str: string, prefix: string) {
+  prefix = prefix.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+  return str.replace(new RegExp(
+    "^(" + prefix + ")", "g"
+  ), "");
+}

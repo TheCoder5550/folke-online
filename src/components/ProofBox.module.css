@@ -15,6 +15,6 @@
 }
 
 .proof-box.error {
-  border-color: red;
-  background-color: rgb(255, 240, 240);
+  border-color: rgb(var(--error-color-rgb));
+  background-color: rgb(var(--error-background-rgb));
 }

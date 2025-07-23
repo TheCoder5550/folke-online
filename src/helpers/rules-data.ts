@@ -109,7 +109,7 @@ export const RULE_META_DATA: { [id: string]: RuleMetaData | undefined } = {
     description: "",
     nrArguments: 3,
     argumentLabels: ["", "", "𝝓(u)≡"],
-    argumentInputLengths: [45, 45, 150]
+    argumentInputLengths: [35, 35, 150]
   },
   "∀E": {
     name: "Universal elimination",
