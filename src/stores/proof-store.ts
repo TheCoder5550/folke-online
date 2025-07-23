@@ -468,7 +468,7 @@ type ProofDispatchAction =
 const useProofStore = create(devtools(immer(persist(
 	combine({
 		proof: defaultFlatProof,
-    premiseInput: defaultFlatProof.premises.join(", "),
+    premiseInput: defaultFlatProof.premises.join("; "),
     result: null as (CheckProofResult | null)
 	},
 	(set, _get) => ({
@@ -506,7 +506,7 @@ function reducer(draft: {
       draft.proof.conclusion = action.proof.conclusion;
       draft.proof.steps = action.proof.steps;
       draft.proof.stepLookup = action.proof.stepLookup;
-      draft.premiseInput = draft.proof.premises.join(", ");
+      draft.premiseInput = draft.proof.premises.join("; ");
       break;
     }
     case ProofDispatchActionTypeEnum.Reset: {

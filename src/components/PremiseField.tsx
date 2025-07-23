@@ -15,7 +15,7 @@ export default function PremiseField() {
   useEffect(() => {
     dispatch({
       type: ProofDispatchActionTypeEnum.SetPremises,
-      premises: premiseInput.split(",").map(p => makeSpecialCharacters(p.trim())).filter(p => p !== "")
+      premises: premiseInput.split(";").map(p => makeSpecialCharacters(p.trim())).filter(p => p !== "")
     })
   }, [premiseInput])
 
