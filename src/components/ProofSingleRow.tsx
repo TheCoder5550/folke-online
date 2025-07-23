@@ -2,7 +2,6 @@ import { memo, useCallback, type JSX } from "react";
 import styles from "./ProofSingleRow.module.css"
 import { canCloseBox, canConvertToLine, getLineNumber, isFlatLine } from "../helpers/proof-helper";
 import { TbBox, TbBoxOff, TbRowInsertBottom, TbRowInsertTop } from "react-icons/tb";
-import { PiKeyReturnFill } from "react-icons/pi";
 import AutocompleteInput, { type Suggestion } from "./AutocompleteInput";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-store";
 import { useShallow } from "zustand/shallow";
@@ -11,7 +10,8 @@ import { RULE_META_DATA } from "../helpers/rules-data";
 import TextField, { TextFieldMemo } from "./TextField";
 import { LineNumberMemo } from "./LineNumber";
 import { MdDelete } from "react-icons/md";
-import { trimPrefix } from "../helpers/generic-helper";
+import { cls, trimPrefix } from "../helpers/generic-helper";
+import { IoReturnDownBack } from "react-icons/io5";
 
 interface ProofSingleRowProps {
   uuid: string;
@@ -191,7 +191,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
         </div>
 
         <div className={styles["actions"]}>
-          <button type="button" title="Remove line" className={styles["action-button"]} onClick={remove}>
+          <button type="button" title="Remove line" className={cls(styles["action-button"], styles["delete"])} onClick={remove}>
             <MdDelete />
           </button>
           <button type="button" title="Insert line above" className={styles["action-button"]} onClick={insertBefore}>
@@ -210,7 +210,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
           )}
           {closeBoxEnabled && (
             <button type="button" title="Close box (Insert line below box)" className={styles["action-button"]} onClick={closeBox}>
-              <PiKeyReturnFill />
+              <IoReturnDownBack />
             </button>
           )}
         </div>

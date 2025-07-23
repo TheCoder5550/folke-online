@@ -27,3 +27,7 @@ export function trimPrefix(str: string, prefix: string) {
     "^(" + prefix + ")", "g"
   ), "");
 }
+
+export function cls(...args: (string | boolean)[]) {
+  return args.filter(a => typeof a !== "boolean").join(" ");
+}

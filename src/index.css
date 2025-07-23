@@ -16,8 +16,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --error-color-rgb: 255 50 50;
-  --error-background-rgb: 255 240 240;
+  --error-color-rgb: 255, 50, 50;
+  --error-background-rgb: 255, 240, 240;
+
+  --hover-line-rgb: 243, 231, 210;
 }
 
 a {
@@ -86,6 +88,7 @@ input[type=text] {
   min-width: 0;
   padding: 0.25rem 0.5rem;
 
+  background: rgba(255, 255, 255, 0.75);
   border: 1px solid black;
   border-radius: 2px;
   color: inherit;

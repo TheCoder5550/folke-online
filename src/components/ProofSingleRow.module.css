@@ -7,11 +7,13 @@
 }
 
 .proof-row input:placeholder-shown {
-  background: #dadada;
+  background: #ececec;
+  border-color: #888;
   opacity: 0.5;
 }
 .proof-row input:placeholder-shown::placeholder {
-  color: #777;
+  color: #535353;
+  font-size: 0.85rem;
 }
 
 .proof-row.error input {
@@ -22,8 +24,9 @@
 
 .number {
   position: absolute;
-  left: 0;
-  width: 2rem;
+  left: 0.25rem;
+  width: 2.25rem;
+  padding-right: 0.25rem;
 
   display: flex;
   align-items: center;
@@ -68,24 +71,45 @@
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem;
-}
-
-.actions button {
-  visibility: hidden;
-}
-
-.proof-row:hover {
-  background: #dadada;
-}
-
-.proof-row:hover .actions button,
-.actions:hover button {
-  visibility: visible;
+  padding-left: 0.5rem;
 }
 
 .action-button {
   display: flex;
   justify-content: center;
   align-items: center;
+
+  border: 1px solid;
+  border-color: rgba(0, 0, 0, 0.2);
+  background: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 2px;
+  padding: 0;
+
+  visibility: hidden;
+}
+
+.action-button.delete {
+  border-color: rgba(var(--error-color-rgb), 0.2);
+  color: rgb(var(--error-color-rgb));
+  background: rgb(var(--error-background-rgb));
+}
+
+.action-button:hover {
+  background: #e4e4e4;
+}
+
+.action-button.delete:hover {
+  background: rgba(var(--error-color-rgb), 0.2);
+}
+
+.proof-row:hover,
+.proof-row:hover .number {
+  background: rgb(var(--hover-line-rgb));
+}
+
+.proof-row:hover .actions button,
+.actions:hover button {
+  visibility: visible;
 }
