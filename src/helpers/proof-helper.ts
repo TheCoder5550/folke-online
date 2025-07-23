@@ -337,8 +337,28 @@ export function getUUIDOfLastRow(proof: FlatProof): UUID | null {
   return findUUID(proof.steps);
 }
 
-export function getLineNumber(proof: FlatProof, row: UUID): number {
-  let nextStep: UUID | null = row;
+function getUUIDOfLastRowInBox(proof: FlatProof, boxUUID: UUID): UUID | null {
+  const findUUID = (uuids: UUID[]): UUID | null => {
+    const lastUUID = uuids[uuids.length - 1];
+    if (!lastUUID) {
+      return null;
+    }
+
+    const lastStep = getStep(proof, lastUUID);
+    if (isFlatLine(lastStep)) {
+      return lastUUID;
+    }
+    else {
+      return findUUID(lastStep.steps);
+    }
+  };
+
+  const box = getBox(proof, boxUUID);
+  return findUUID(box.steps);
+}
+
+export function getLineNumber(proof: FlatProof, uuid: UUID): string {
+  let nextStep: UUID | null = uuid;
   let lineNumber = 1;
 
   lineNumber += proof.premises.length;
@@ -362,7 +382,16 @@ export function getLineNumber(proof: FlatProof, row: UUID): number {
     nextStep = parentUUID;
   }
 
-  return lineNumber;
+  const step = getStep(proof, uuid);
+  if (!isFlatLine(step)) {
+    const lastUUID = getUUIDOfLastRowInBox(proof, uuid)
+    if (!lastUUID) {
+      return "?-?"
+    }
+    return `${lineNumber}-${getLineNumber(proof, lastUUID)}`
+  }
+
+  return lineNumber.toString();
 }
 
 function countRowsInStep(proof: FlatProof, uuid: UUID): number {

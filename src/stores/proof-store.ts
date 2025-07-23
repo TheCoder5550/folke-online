@@ -469,6 +469,7 @@ const useProofStore = create(devtools(immer(persist(
 	combine({
 		proof: defaultFlatProof,
     premiseInput: defaultFlatProof.premises.join(", "),
+    result: null as (CheckProofResult | null)
 	},
 	(set, _get) => ({
     dispatch(action: ProofDispatchAction) {
@@ -479,6 +480,11 @@ const useProofStore = create(devtools(immer(persist(
     setPremiseInput(input: string) {
       set(state => {
         state.premiseInput = input;
+      })
+    },
+    setResult(result: CheckProofResult | null) {
+      set(state => {
+        state.result = result;
       })
     }
 	})),

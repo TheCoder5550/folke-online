@@ -1,6 +1,6 @@
 import { memo, useCallback, type JSX } from "react";
 import styles from "./ProofSingleRow.module.css"
-import { canCloseBox, canConvertToLine, isFlatLine } from "../helpers/proof-helper";
+import { canCloseBox, canConvertToLine, getLineNumber, isFlatLine } from "../helpers/proof-helper";
 import { TbBox, TbBoxOff, TbRowInsertBottom, TbRowInsertTop } from "react-icons/tb";
 import { PiKeyReturnFill } from "react-icons/pi";
 import AutocompleteInput, { type Suggestion } from "./AutocompleteInput";
@@ -25,6 +25,8 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
   const step = useProofStore(useShallow((state) => state.proof.stepLookup[uuid]));
   const toLineEnabled = useProofStore((state) => canConvertToLine(state.proof, uuid));
   const closeBoxEnabled = useProofStore((state) => canCloseBox(state.proof, uuid));
+  const hasError = useProofStore((state) => state.result?.location == getLineNumber(state.proof, props.uuid));
+  const errorMessage = useProofStore((state) => state.result?.message);
 
   if (!step || !isFlatLine(step)) {
     return <></>
@@ -152,48 +154,54 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
   }
 
   return (
-    <div className={styles["proof-row"]}>
-      <span className={styles["number"]}>
-        <LineNumberMemo uuid={props.uuid} />
-      </span>
-      <TextFieldMemo focusOnAdd placeholder="Empty statement" className={styles["statement-input"]} value={step.statement} onChange={setStatement} onKeyDown={keydown} />
-      <div className={styles["rule-args-container"]}>
-        <AutocompleteInput
-          suggestions={suggestions}
-          placeholder="Empty rule"
-          containerClassName={styles["rule-name"]}
-          value={step.rule}
-          onChange={setRule}
-          onSelectItem={selectRule}
-          onKeyDown={step.usedArguments === 0 ? keydownLastInput : keydown}
-        />
-        {argumentInputs}
+    <>
+      <div className={[styles["proof-row"], hasError ? styles["error"] : undefined].join(" ")}>
+        <span className={styles["number"]}>
+          <LineNumberMemo uuid={props.uuid} />
+        </span>
+        <TextFieldMemo focusOnAdd placeholder="Empty statement" className={styles["statement-input"]} value={step.statement} onChange={setStatement} onKeyDown={keydown} />
+        <div className={styles["rule-args-container"]}>
+          <AutocompleteInput
+            suggestions={suggestions}
+            placeholder="Empty rule"
+            containerClassName={styles["rule-name"]}
+            value={step.rule}
+            onChange={setRule}
+            onSelectItem={selectRule}
+            onKeyDown={step.usedArguments === 0 ? keydownLastInput : keydown}
+          />
+          {argumentInputs}
+        </div>
+
+        <div className={styles["actions"]}>
+          <button type="button" title="Remove line" className={styles["action-button"]} onClick={remove}>
+            <MdDelete />
+          </button>
+          <button type="button" title="Insert line above" className={styles["action-button"]} onClick={insertBefore}>
+            <TbRowInsertTop />
+          </button>
+          <button type="button" title="Insert line below" className={styles["action-button"]} onClick={insertAfter}>
+            <TbRowInsertBottom />
+          </button>
+          <button type="button" title="Convert line to box" className={styles["action-button"]} onClick={toBox}>
+            <TbBox />
+          </button>
+          {toLineEnabled && (
+            <button type="button" title="Undo box" className={styles["action-button"]} onClick={toLine}>
+              <TbBoxOff />
+            </button>
+          )}
+          {closeBoxEnabled && (
+            <button type="button" title="Close box (Insert line below box)" className={styles["action-button"]} onClick={closeBox}>
+              <PiKeyReturnFill />
+            </button>
+          )}
+        </div>
       </div>
 
-      <div className={styles["actions"]}>
-        <button type="button" title="Remove line" className={styles["action-button"]} onClick={remove}>
-          <MdDelete />
-        </button>
-        <button type="button" title="Insert line above" className={styles["action-button"]} onClick={insertBefore}>
-          <TbRowInsertTop />
-        </button>
-        <button type="button" title="Insert line below" className={styles["action-button"]} onClick={insertAfter}>
-          <TbRowInsertBottom />
-        </button>
-        <button type="button" title="Convert line to box" className={styles["action-button"]} onClick={toBox}>
-          <TbBox />
-        </button>
-        {toLineEnabled && (
-          <button type="button" title="Undo box" className={styles["action-button"]} onClick={toLine}>
-            <TbBoxOff />
-          </button>
-        )}
-        {closeBoxEnabled && (
-          <button type="button" title="Close box (Insert line below box)" className={styles["action-button"]} onClick={closeBox}>
-            <PiKeyReturnFill />
-          </button>
-        )}
-      </div>
-    </div>
+      {hasError && errorMessage && (
+        <span style={{ color: "red" }}>{errorMessage}</span>
+      )}
+    </>
   )
 }

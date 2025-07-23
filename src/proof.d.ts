@@ -73,6 +73,14 @@ interface HaskellProof {
     _premises: string[];
     _steps: HaskellStep[];
   }
+  _fedUserDefinedRules?: HaskellUserDefinedRule[]
+}
+
+interface HaskellUserDefinedRule {
+  _udrInput: string[];
+  _udrOutput: string;
+  _udrName: string;
+  _udrPath: string;
 }
 
 type HaskellStep = {
@@ -84,4 +92,14 @@ type HaskellStep = {
 } | {
   tag: "SubProof",
   contents: HaskellStep[]
+}
+
+/*
+  Haskell result
+*/
+
+interface CheckProofResult {
+  correct: boolean;
+  message?: string;
+  location?: number | string;
 }

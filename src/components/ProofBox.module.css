@@ -13,3 +13,8 @@
   border: 1px solid black;
   border-right: none;
 }
+
+.proof-box.error {
+  border-color: red;
+  background-color: rgb(255, 240, 240);
+}

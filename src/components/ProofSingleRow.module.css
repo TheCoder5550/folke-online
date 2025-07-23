@@ -16,6 +16,15 @@
   color: #777;
 }
 
+.proof-row.error input {
+  border: 1px solid;
+  border-radius: 2px;
+
+  color: rgb(255, 0, 0);
+  border-color: red;
+  background-color: rgb(255, 240, 240);
+}
+
 .proof-row input,
 .rule-name,
 .number {
@@ -28,7 +37,9 @@
   left: 0;
   width: 2rem;
 
-  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: end;
 
   user-select: none;
 }

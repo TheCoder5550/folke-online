@@ -22,19 +22,14 @@ interface HaskellExports {
   memory: WebAssembly.Memory;
 }
 
-interface CheckProofResult {
-  correct: boolean;
-  message?: string;
-  location?: number | string;
-}
-
 const encoder = new TextEncoder()
 const decoder = new TextDecoder()
 
 export default function RunWasm() {
   const proof = useProofStore((state) => state.proof);
   const [hs, setHS] = useState<HaskellExports>();
-  const [result, setResult] = useState<CheckProofResult | null>();
+  const result = useProofStore((state) => state.result);
+  const setResult = useProofStore((state) => state.setResult);
 
   useEffect(() => {
     async function loadWasm() {
