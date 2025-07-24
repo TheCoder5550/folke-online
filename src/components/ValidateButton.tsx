@@ -1,9 +1,13 @@
+import styles from "./ValidateButton.module.css";
 import { useEffect, useState } from "react"
 import WASM_MODULE_URL from '../../folke-wasm-wrapper/output/folke-wasm-wrapper.wasm?url'
 import ghc_wasm_jsffi from "../../folke-wasm-wrapper/output/ghc_wasm_jsffi.js";
 import { WASI, ConsoleStdout, OpenFile, File } from "@bjorn3/browser_wasi_shim";
 import { proofToHaskellProof, unflattenProof } from "../helpers/proof-helper.js";
 import useProofStore from "../stores/proof-store.js";
+import { HiClipboardDocumentCheck } from "react-icons/hi2";
+import { FaCheckCircle } from "react-icons/fa";
+import { BiSolidErrorAlt } from "react-icons/bi";
 
 type HaskellInstance = WebAssembly.Instance & {
   exports: HaskellExports
@@ -25,10 +29,10 @@ interface HaskellExports {
 const encoder = new TextEncoder()
 const decoder = new TextDecoder()
 
-export default function RunWasm() {
+export default function ValidateButton() {
   const proof = useProofStore((state) => state.proof);
   const [hs, setHS] = useState<HaskellExports>();
-  const result = useProofStore((state) => state.result);
+  const isCorrect = useProofStore((state) => state.result?.correct);
   const setResult = useProofStore((state) => state.setResult);
 
   useEffect(() => {
@@ -108,17 +112,21 @@ export default function RunWasm() {
   }
 
   return (
-    <div>
-      <button type="button" onClick={handleClick}>Check proof</button>
-
-      {result && (
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <span>{result.correct ? "Correct" : "Incorrect"}</span>
-          {!result.correct && (
-            <span>{result.location} - {result.message}</span>
-          )}
-        </div>
+    <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", alignItems: "center" }}>
+      {isCorrect === true && (
+        <span className={styles["correct"]}>
+          <FaCheckCircle /> Correct
+        </span>
       )}
+      {isCorrect === false && (
+        <span className={styles["error"]}>
+          <BiSolidErrorAlt /> Incorrect
+        </span>
+      )}
+
+      <button title="Validate proof" className="action-button" type="button" onClick={handleClick}>
+        <HiClipboardDocumentCheck /> Validate
+      </button>
     </div>
   )
 }

@@ -22,6 +22,12 @@
   background-color: rgb(var(--error-background-rgb));
 }
 
+.proof-row.correct input {
+  color: rgb(var(--correct-color-rgb));
+  border-color: rgb(var(--correct-color-rgb));
+  background-color: rgb(var(--correct-background-rgb));
+}
+
 .number {
   position: absolute;
 

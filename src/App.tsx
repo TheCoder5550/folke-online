@@ -11,10 +11,6 @@ function App() {
           <ProofStoreProvider localStorageName='current-proof-storage'>
             <ProofRenderer />
           </ProofStoreProvider>
-          
-          <ProofStoreProvider localStorageName='TEST-current-proof-storage'>
-            <ProofRenderer />
-          </ProofStoreProvider>
         </div>
       </ErrorBoundary>
     </>

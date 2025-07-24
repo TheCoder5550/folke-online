@@ -19,6 +19,9 @@
   --error-color-rgb: 255, 50, 50;
   --error-background-rgb: 255, 240, 240;
 
+  --correct-color-rgb: 50, 150, 50;
+  --correct-background-rgb: 240, 255, 240;
+
   --hover-line-rgb: 243, 231, 210;
 }
 

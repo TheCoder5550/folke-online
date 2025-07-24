@@ -28,6 +28,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
   const closeBoxEnabled = useProofStore((state) => canCloseBox(state.proof, uuid));
   const hasError = useProofStore((state) => state.result?.location == getLineNumber(state.proof, props.uuid));
   const errorMessage = useProofStore((state) => state.result?.message);
+  const isCorrect = useProofStore((state) => state.result?.correct ?? false);
 
   const lineRef = useRef<HTMLDivElement>(null);
   const startDrag = createDragHandler(lineRef, props.uuid, dispatch);
@@ -175,7 +176,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
 
   return (
     <>
-      <div data-target data-uuid={props.uuid} ref={lineRef} className={[styles["proof-row"], hasError ? styles["error"] : undefined].join(" ")}>
+      <div data-target data-uuid={props.uuid} ref={lineRef} className={cls(styles["proof-row"], hasError && styles["error"], isCorrect && styles["correct"])}>
         <span className={styles["number"]}>
           <LineNumberMemo uuid={props.uuid} />
         </span>

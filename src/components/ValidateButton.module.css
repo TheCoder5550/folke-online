@@ -1,0 +1,25 @@
+.correct,
+.error {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.25em 1em;
+
+  border-radius: 2px;
+  border: 1px solid;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.correct {
+  color: rgb(var(--correct-color-rgb));
+  background: rgb(var(--correct-background-rgb));
+  border-color: rgb(var(--correct-color-rgb));
+}
+
+.error {
+  color: rgb(var(--error-color-rgb));
+  background: rgb(var(--error-background-rgb));
+  border-color: rgb(var(--error-color-rgb));
+}

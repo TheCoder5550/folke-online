@@ -4,10 +4,11 @@ import StepsContainer from "./StepsContainer";
 import StepsRenderer from "./StepsRenderer";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-store";
 import { makeSpecialCharacters } from "../helpers/special-characters";
-import RunWasm from "./RunWasm";
+import ValidateButton from "./ValidateButton";
 import { flattenProof, haskellProofToProof } from "../helpers/proof-helper";
 import { PremiseFieldMemo } from "./PremiseField";
 import { ConclusionFieldMemo } from "./ConclusionField";
+import { LuListRestart } from "react-icons/lu";
 
 export default function ProofRenderer() {
   const dispatch = useProofStore((state) => state.dispatch);
@@ -71,18 +72,20 @@ export default function ProofRenderer() {
 
       <StepsRenderer />
 
-      <div className={styles["align"]} style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+      <div className={styles["align"]} style={{ display: "flex", flexDirection: "row", gap: "0.5rem", justifyContent: "space-between" }}>
         <div style={{ display: "flex", gap: "0.5rem" }}>
-          <button type="button" onClick={insertLineAfterLast}>+ New line</button>
-          <button type="button" onClick={insertBoxAfterLast}>+ New box</button>
+          <button className={"action-button"} type="button" onClick={insertLineAfterLast}>+ New line</button>
+          <button className={"action-button"} type="button" onClick={insertBoxAfterLast}>+ New box</button>
+          <button className={"action-button"} type="button" onClick={resetProof}>
+            <LuListRestart /> Restart
+          </button>
         </div>
 
-        <RunWasm />
+        <ValidateButton />
 
-        <div style={{ display: "flex", gap: "0.5rem" }}>
-          <button type="button" onClick={resetProof}>Reset proof</button>
+        {/* <div style={{ display: "flex", gap: "0.5rem" }}>
           <input type="file" onChange={uploadProof} />
-        </div>
+        </div> */}
       </div>
     </StepsContainer>
   )
