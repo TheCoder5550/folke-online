@@ -146,6 +146,8 @@ export function moveAfter(proof: FlatProof, moveThis: UUID, afterThis: UUID): bo
   }
 
   const movedStep = getStep(proof, moveThis);
+  getStep(proof, afterThis);
+
   removeFromProof(proof, moveThis);
   return insertAfter(proof, afterThis, movedStep);
 }
