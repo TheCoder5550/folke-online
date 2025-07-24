@@ -6,7 +6,9 @@ function App() {
   return (
     <>
       <ErrorBoundary>
-        <ProofRenderer />
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <ProofRenderer />
+        </div>
       </ErrorBoundary>
     </>
   )
