@@ -10,7 +10,6 @@ import { PremiseFieldMemo } from "./PremiseField";
 import { ConclusionFieldMemo } from "./ConclusionField";
 
 export default function ProofRenderer() {
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const dispatch = useProofStore((state) => state.dispatch);
 
   const insertLineAfterLast = () => {
@@ -55,6 +54,9 @@ export default function ProofRenderer() {
   return (
     <StepsContainer>
       <div className={styles["align"]}>
+        {/* <button type="button" onClick={() => undo()}>Undo</button> 
+        <button type="button" onClick={() => redo()}>Redo</button>  */}
+
         <div className={styles["premise-conclusion-container"]}>
           <h2>Premises</h2>
           <span></span>
@@ -82,8 +84,6 @@ export default function ProofRenderer() {
           <input type="file" onChange={uploadProof} />
         </div>
       </div>
-
-      <div style={{ height: "95vh" }} />
     </StepsContainer>
   )
 }

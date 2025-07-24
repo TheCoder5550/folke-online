@@ -21,7 +21,6 @@ interface ProofSingleRowProps {
 export const ProofSingleRowMemo = memo(ProofSingleRow);
 
 export default function ProofSingleRow(props: ProofSingleRowProps) {
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const dispatch = useProofStore((state) => state.dispatch);
   const uuid = props.uuid;
   const step = useProofStore(useShallow((state) => state.proof.stepLookup[uuid]));

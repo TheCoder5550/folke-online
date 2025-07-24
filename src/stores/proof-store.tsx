@@ -1,7 +1,8 @@
-import {combine, createJSONStorage, devtools, persist} from 'zustand/middleware';
-import {immer} from 'zustand/middleware/immer';
+import { createJSONStorage, devtools, persist} from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
 import { closeBoxWith, convertToBox, convertToLine, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, insertAfter, insertBefore, insertInto, moveAfter, removeFromProof, setArgument, setRule, setStatement } from '../helpers/proof-helper';
-import { create } from 'zustand';
+import { createStore, useStore } from 'zustand';
+import { createContext, use, useState } from 'react';
 
 const defaultProof = {
   premises: ["A", "B"],
@@ -471,36 +472,114 @@ export type ProofDispatchAction =
       afterThis: UUID;
     }
 
-const useProofStore = create(devtools(immer(persist(
-	combine({
-		proof: defaultFlatProof,
-    premiseInput: defaultFlatProof.premises.join("; "),
-    result: null as (CheckProofResult | null)
-	},
-	(set, _get) => ({
-    dispatch(action: ProofDispatchAction) {
-      set(state => {
-        reducer(state, action);
-      })
-    },
-    setPremiseInput(input: string) {
-      set(state => {
-        state.premiseInput = input;
-      })
-    },
-    setResult(result: CheckProofResult | null) {
-      set(state => {
-        state.result = result;
-      })
-    }
-	})),
-  {
-    name: 'current-proof-storage',
-    storage: createJSONStorage(() => sessionStorage),
-  },
-))));
+type ProofStore = ReturnType<typeof createProofStore>;
+
+interface ProofState {
+  proof: FlatProof;
+  premiseInput: string;
+  result: CheckProofResult | null;
+  dispatch: (action: ProofDispatchAction) => void;
+  setPremiseInput: (input: string) => void;
+  setResult: (result: CheckProofResult | null) => void;
+}
+
+const ProofStoreContext = createContext<ProofStore | null>(null)
+
+const createProofStore = (initialProof: FlatProof, localStorageName: string) => (
+  createStore<ProofState>()(
+    devtools(
+      immer(
+        persist(
+          (set, _get) => ({
+            proof: initialProof,
+            premiseInput: initialProof.premises.join("; "),
+            result: null,
+
+            dispatch(action: ProofDispatchAction) {
+              set(state => {
+                reducer(state, action);
+              })
+            },
+            setPremiseInput(input: string) {
+              set(state => {
+                state.premiseInput = input;
+              })
+            },
+            setResult(result: CheckProofResult | null) {
+              set(state => {
+                state.result = result;
+              })
+            }
+          }),
+          {
+            name: localStorageName,
+            storage: createJSONStorage(() => sessionStorage),
+          },
+        )
+      )
+    )
+  )
+)
+
+type ProofStoreProviderProps = React.PropsWithChildren & {
+  localStorageName: string;
+  initialProof?: FlatProof;
+}
+
+export const ProofStoreProvider = ({ children, initialProof, localStorageName }: ProofStoreProviderProps) => {
+  initialProof = initialProof ?? defaultFlatProof;
+
+  const [store] = useState(() => createProofStore(initialProof, localStorageName));
+
+  return (
+    <ProofStoreContext value={store}>
+      {children}
+    </ProofStoreContext>
+  )
+}
+
+function useProofStore<T>(selector: (state: ProofState) => T) {
+  const store = use(ProofStoreContext)
+  if (!store) {
+    throw new Error('Missing ProofStoreProvider')
+  }
+  const ups = useStore(store, selector)
+
+  return ups;
+}
 
 export default useProofStore;
+
+// const useProofStoreOld = create(devtools(immer(persist(
+// 	combine({
+// 		proof: defaultFlatProof,
+//     premiseInput: defaultFlatProof.premises.join("; "),
+//     result: null as (CheckProofResult | null)
+// 	},
+// 	(set, _get) => ({
+//     dispatch(action: ProofDispatchAction) {
+//       set(state => {
+//         reducer(state, action);
+//       })
+//     },
+//     setPremiseInput(input: string) {
+//       set(state => {
+//         state.premiseInput = input;
+//       })
+//     },
+//     setResult(result: CheckProofResult | null) {
+//       set(state => {
+//         state.result = result;
+//       })
+//     }
+// 	})),
+//   {
+//     name: 'current-proof-storage',
+//     storage: createJSONStorage(() => sessionStorage),
+//   },
+// ))));
+
+// export default useProofStore;
 
 function reducer(draft: {
   proof: FlatProof;

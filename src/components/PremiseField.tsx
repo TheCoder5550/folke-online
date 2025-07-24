@@ -6,10 +6,8 @@ import { makeSpecialCharacters } from "../helpers/special-characters";
 export const PremiseFieldMemo = memo(PremiseField);
 
 export default function PremiseField() {
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const dispatch = useProofStore((state) => state.dispatch);
   const premiseInput = useProofStore((state) => state.premiseInput);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const setPremiseInput = useProofStore((state) => state.setPremiseInput);
 
   useEffect(() => {

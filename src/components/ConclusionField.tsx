@@ -6,7 +6,6 @@ import { makeSpecialCharacters } from "../helpers/special-characters";
 export const ConclusionFieldMemo = memo(ConclusionField);
 
 export default function ConclusionField() {
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const dispatch = useProofStore((state) => state.dispatch);
   const conclusion = useProofStore((state) => state.proof.conclusion);
 

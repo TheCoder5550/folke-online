@@ -14,7 +14,6 @@ interface ProofBoxProps {
 export const ProofBoxMemo = memo(ProofBox);
 
 export default function ProofBox(props: ProofBoxProps) {
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const dispatch = useProofStore((state) => state.dispatch);
   const hasError = useProofStore((state) => state.result?.location == getLineNumber(state.proof, props.uuid));
   const errorMessage = useProofStore((state) => state.result?.message);
