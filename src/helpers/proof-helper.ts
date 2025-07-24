@@ -1,5 +1,15 @@
 import { getUUID, insertAtIndex, logProxy, sum } from "./generic-helper";
 import { RULE_META_DATA } from "./rules-data";
+import { makeSpecialCharacters } from "./special-characters";
+
+export function createExercise(premises: string[], conclusion: string): FlatProof {
+  return {
+    premises: premises.map(p => makeSpecialCharacters(p)),
+    conclusion: makeSpecialCharacters(conclusion),
+    steps: [],
+    stepLookup: {}
+  }
+}
 
 export function createEmptyProof(): FlatProof {
   return {

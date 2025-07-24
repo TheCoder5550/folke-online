@@ -373,6 +373,7 @@ const defaultFlatProof = flattenProof(defaultProof);
 export const ProofDispatchActionTypeEnum = {
   SetProof: "SetProof",
   Reset: "Reset",
+  Retry: "Retry",
   SetPremises: "SetPremises",
   SetConclusion: "SetConclusion",
   SetStatement: "SetStatement",
@@ -399,6 +400,9 @@ export type ProofDispatchAction =
     }
   | {
       type: typeof ProofDispatchActionTypeEnum.Reset;
+    }
+  | {
+      type: typeof ProofDispatchActionTypeEnum.Retry;
     }
   | {
       type: typeof ProofDispatchActionTypeEnum.SetPremises;
@@ -600,6 +604,11 @@ function reducer(draft: {
       draft.proof.steps = [];
       draft.proof.stepLookup = {};
       draft.premiseInput = "";
+      break;
+    }
+    case ProofDispatchActionTypeEnum.Retry: {
+      draft.proof.steps = [];
+      draft.proof.stepLookup = {};
       break;
     }
     case ProofDispatchActionTypeEnum.SetPremises: {

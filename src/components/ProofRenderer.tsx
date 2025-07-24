@@ -9,6 +9,8 @@ import { flattenProof, haskellProofToProof } from "../helpers/proof-helper";
 import { PremiseFieldMemo } from "./PremiseField";
 import { ConclusionFieldMemo } from "./ConclusionField";
 import { LuListRestart } from "react-icons/lu";
+import GlobalErrorMessage from "./GlobalErrorMessage";
+import { MdDelete } from "react-icons/md";
 
 export default function ProofRenderer() {
   const dispatch = useProofStore((state) => state.dispatch);
@@ -62,9 +64,12 @@ export default function ProofRenderer() {
           <h2>Premises</h2>
           <span></span>
           <h2>Conclusion</h2>
+
           <PremiseFieldMemo />
           <span>{makeSpecialCharacters("=>")}</span>
           <ConclusionFieldMemo />
+
+          <span className={styles["note"]}>Separated by ";"</span>
         </div>
 
         <h2>Proof</h2>
@@ -72,16 +77,20 @@ export default function ProofRenderer() {
 
       <StepsRenderer />
 
-      <div className={styles["align"]} style={{ display: "flex", flexDirection: "row", gap: "0.5rem", justifyContent: "space-between" }}>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
-          <button className={"action-button"} type="button" onClick={insertLineAfterLast}>+ New line</button>
-          <button className={"action-button"} type="button" onClick={insertBoxAfterLast}>+ New box</button>
-          <button className={"action-button"} type="button" onClick={resetProof}>
-            <LuListRestart /> Restart
-          </button>
-        </div>
+      <div className={styles["align"]} style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+        <GlobalErrorMessage />
 
-        <ValidateButton />
+        <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            <button className={"action-button"} type="button" onClick={insertLineAfterLast}>+ New line</button>
+            <button className={"action-button"} type="button" onClick={insertBoxAfterLast}>+ New box</button>
+            <button className={"action-button"} type="button" onClick={resetProof}>
+              <MdDelete /> Clear
+            </button>
+          </div>
+
+          <ValidateButton />
+        </div>
 
         {/* <div style={{ display: "flex", gap: "0.5rem" }}>
           <input type="file" onChange={uploadProof} />
