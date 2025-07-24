@@ -96,12 +96,22 @@
   background: rgb(var(--error-background-rgb));
 }
 
+.action-button.drag {
+  width: auto;
+  border: none;
+  cursor: grab;
+}
+
 .action-button:hover {
   background: #e4e4e4;
 }
 
 .action-button.delete:hover {
   background: rgba(var(--error-color-rgb), 0.2);
+}
+
+.action-button.drag:hover {
+  background: none;
 }
 
 .proof-row:hover,

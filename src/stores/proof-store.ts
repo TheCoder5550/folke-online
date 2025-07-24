@@ -1,6 +1,6 @@
 import {combine, createJSONStorage, devtools, persist} from 'zustand/middleware';
 import {immer} from 'zustand/middleware/immer';
-import { closeBoxWith, convertToBox, convertToLine, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, insertAfter, insertBefore, insertInto, removeFromProof, setArgument, setRule, setStatement } from '../helpers/proof-helper';
+import { closeBoxWith, convertToBox, convertToLine, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, insertAfter, insertBefore, insertInto, moveAfter, removeFromProof, setArgument, setRule, setStatement } from '../helpers/proof-helper';
 import { create } from 'zustand';
 
 const defaultProof = {
@@ -388,9 +388,10 @@ export const ProofDispatchActionTypeEnum = {
   InsertBoxAfterLast: "InsertBoxAfterLast",
   CloseBoxWithLine: "CloseBoxWithLine",
   CloseBoxWithBox: "CloseBoxWithBox",
+  MoveAfter: "MoveAfter",
 } as const;
 
-type ProofDispatchAction =
+export type ProofDispatchAction =
   | {
       type: typeof ProofDispatchActionTypeEnum.SetProof;
       proof: FlatProof;
@@ -463,6 +464,11 @@ type ProofDispatchAction =
   | {
       type: typeof ProofDispatchActionTypeEnum.CloseBoxWithBox;
       uuid: UUID;
+    }
+  | {
+      type: typeof ProofDispatchActionTypeEnum.MoveAfter;
+      moveThis: UUID;
+      afterThis: UUID;
     }
 
 const useProofStore = create(devtools(immer(persist(
@@ -609,6 +615,10 @@ function reducer(draft: {
     }
     case ProofDispatchActionTypeEnum.CloseBoxWithBox: {
       closeBoxWith(draft.proof, action.uuid, createNewBox());
+      break;
+    }
+    case ProofDispatchActionTypeEnum.MoveAfter: {
+      moveAfter(draft.proof, action.moveThis, action.afterThis);
       break;
     }
   }

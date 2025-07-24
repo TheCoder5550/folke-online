@@ -130,6 +130,16 @@ function isValidStep(step: FlatStep): boolean {
   }
 }
 
+export function moveAfter(proof: FlatProof, moveThis: UUID, afterThis: UUID): boolean {
+  if (moveThis === afterThis) {
+    return true;
+  }
+
+  const movedStep = getStep(proof, moveThis);
+  removeFromProof(proof, moveThis);
+  return insertAfter(proof, afterThis, movedStep);
+}
+
 export function insertAfter(proof: FlatProof, uuid: UUID, step: FlatStep): boolean {
   return insertRelative(proof, uuid, 1, step);
 }

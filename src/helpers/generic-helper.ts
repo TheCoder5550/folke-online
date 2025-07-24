@@ -31,3 +31,16 @@ export function trimPrefix(str: string, prefix: string) {
 export function cls(...args: (string | boolean)[]) {
   return args.filter(a => typeof a !== "boolean").join(" ");
 }
+
+export function findParentElement(element: HTMLElement, func: (element: HTMLElement) => boolean) {
+  let currentElement: HTMLElement | null = element;
+  while (currentElement) {
+    if (func(currentElement)) {
+      return currentElement;
+    }
+
+    currentElement = currentElement.parentElement;
+  }
+
+  return null;
+}

@@ -1,4 +1,4 @@
-import { memo, useCallback, type JSX } from "react";
+import { memo, useCallback, useRef, type JSX } from "react";
 import styles from "./ProofSingleRow.module.css"
 import { canCloseBox, canConvertToLine, getLineNumber, isFlatLine } from "../helpers/proof-helper";
 import { TbBox, TbBoxOff, TbRowInsertBottom, TbRowInsertTop } from "react-icons/tb";
@@ -9,9 +9,10 @@ import { makeSpecialCharacters } from "../helpers/special-characters";
 import { RULE_META_DATA } from "../helpers/rules-data";
 import TextField, { TextFieldMemo } from "./TextField";
 import { LineNumberMemo } from "./LineNumber";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdDragIndicator } from "react-icons/md";
 import { cls, trimPrefix } from "../helpers/generic-helper";
 import { IoReturnDownBack } from "react-icons/io5";
+import { createDragHandler } from "../helpers/drag-drop";
 
 interface ProofSingleRowProps {
   uuid: string;
@@ -28,6 +29,9 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
   const closeBoxEnabled = useProofStore((state) => canCloseBox(state.proof, uuid));
   const hasError = useProofStore((state) => state.result?.location == getLineNumber(state.proof, props.uuid));
   const errorMessage = useProofStore((state) => state.result?.message);
+
+  const lineRef = useRef<HTMLDivElement>(null);
+  const startDrag = createDragHandler(lineRef, props.uuid, dispatch);
 
   if (!step || !isFlatLine(step)) {
     return <></>
@@ -172,7 +176,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
 
   return (
     <>
-      <div className={[styles["proof-row"], hasError ? styles["error"] : undefined].join(" ")}>
+      <div data-target data-uuid={props.uuid} ref={lineRef} className={[styles["proof-row"], hasError ? styles["error"] : undefined].join(" ")}>
         <span className={styles["number"]}>
           <LineNumberMemo uuid={props.uuid} />
         </span>
@@ -191,6 +195,9 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
         </div>
 
         <div className={styles["actions"]}>
+          <button type="button" title="Drag to re-arrange proof" className={cls(styles["action-button"], styles["drag"])} onMouseDown={startDrag}>
+            <MdDragIndicator />
+          </button>
           <button type="button" title="Remove line" className={cls(styles["action-button"], styles["delete"])} onClick={remove}>
             <MdDelete />
           </button>
