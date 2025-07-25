@@ -10,13 +10,13 @@ function App() {
     <>
       <ErrorBoundary>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <ProofStoreProvider localStorageName='current-proof-storage'>
+          {/* <ProofStoreProvider localStorageName='current-proof-storage'>
             <ProofRenderer />
           </ProofStoreProvider>
 
           <ProofStoreProvider initialProof={createExercise(["A", "B"], "A & B")} localStorageName='exercise-1'>
             <PracticeProofRenderer />
-          </ProofStoreProvider>
+          </ProofStoreProvider> */}
 
           <ProofStoreProvider initialProof={createExercise(["P -> !P"], "!P")} localStorageName='exercise-2'>
             <PracticeProofRenderer />

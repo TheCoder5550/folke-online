@@ -478,10 +478,29 @@ export type ProofDispatchAction =
 
 type ProofStore = ReturnType<typeof createProofStore>;
 
+type History =
+  | {
+      type: "ChangeStep";
+      uuid: UUID;
+      old: FlatStep;
+      new: FlatStep;
+    }
+  | {
+      type: "ChangeProof";
+      old: FlatProof;
+      new: FlatProof;
+    }
+
 interface ProofState {
   proof: FlatProof;
   premiseInput: string;
   result: CheckProofResult | null;
+
+  history: History[];
+  historyIndex: number;
+  undo: () => void;
+  redo: () => void;
+
   dispatch: (action: ProofDispatchAction) => void;
   setPremiseInput: (input: string) => void;
   setResult: (result: CheckProofResult | null) => void;
@@ -499,9 +518,77 @@ const createProofStore = (initialProof: FlatProof, localStorageName: string) => 
             premiseInput: initialProof.premises.join("; "),
             result: null,
 
+            history: [],
+            historyIndex: 0,
+
+            undo() {
+              set(state => {
+                if (state.historyIndex <= 0) {
+                  return;
+                }
+
+                state.historyIndex--;
+                const prev = state.history[state.historyIndex];
+
+                if (!prev) {
+                  return;
+                }
+
+                if (prev.type === "ChangeProof") {
+                  state.proof = prev.old;
+                }
+                else if (prev.type === "ChangeStep") {
+                  state.proof.stepLookup[prev.uuid] = prev.old;
+                }
+              })
+            },
+
+            redo() {
+              set(state => {
+                if (state.historyIndex >= state.history.length) {
+                  return;
+                }
+
+                const prev = state.history[state.historyIndex];
+                state.historyIndex++;
+
+                if (!prev) {
+                  return;
+                }
+
+                if (prev.type === "ChangeProof") {
+                  state.proof = prev.new;
+                }
+                else if (prev.type === "ChangeStep") {
+                  state.proof.stepLookup[prev.uuid] = prev.new;
+                }
+              })
+            },
+
             dispatch(action: ProofDispatchAction) {
               set(state => {
+                const old: FlatProof = {
+                  premises: state.proof.premises.slice(),
+                  conclusion: state.proof.conclusion,
+                  steps: state.proof.steps.slice(),
+                  stepLookup: JSON.parse(JSON.stringify(state.proof.stepLookup)) as StepLookup
+                }
+
                 reducer(state, action);
+
+                const historyItem: History = {
+                  type: "ChangeProof",
+                  old: old,
+                  new: {
+                    premises: state.proof.premises.slice(),
+                    conclusion: state.proof.conclusion,
+                    steps: state.proof.steps.slice(),
+                    stepLookup: JSON.parse(JSON.stringify(state.proof.stepLookup)) as StepLookup
+                  }
+                };
+                state.history.splice(state.historyIndex, Infinity);
+                state.history.push(historyItem);
+                state.historyIndex++;
               })
             },
             setPremiseInput(input: string) {
@@ -518,6 +605,10 @@ const createProofStore = (initialProof: FlatProof, localStorageName: string) => 
           {
             name: localStorageName,
             storage: createJSONStorage(() => sessionStorage),
+            partialize: (state) => ({
+              proof: state.proof,
+              premiseInput: state.premiseInput
+            })
           },
         )
       )
