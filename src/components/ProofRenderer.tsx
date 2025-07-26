@@ -5,15 +5,19 @@ import StepsRenderer from "./StepsRenderer";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-store";
 import { makeSpecialCharacters } from "../helpers/special-characters";
 import ValidateButton from "./ValidateButton";
-import { flattenProof, haskellProofToProof } from "../helpers/proof-helper";
+import { flattenProof, haskellProofToProof, proofToHaskellProof, unflattenProof } from "../helpers/proof-helper";
 import { PremiseFieldMemo } from "./PremiseField";
 import { ConclusionFieldMemo } from "./ConclusionField";
-import { LuListRestart } from "react-icons/lu";
 import GlobalErrorMessage from "./GlobalErrorMessage";
 import { MdDelete } from "react-icons/md";
+import { ImRedo, ImUndo } from "react-icons/im";
+import { useEffect } from "react";
+import { downloadText } from "../helpers/generic-helper";
+import generateLatex from "../helpers/generate-latex";
 
 export default function ProofRenderer() {
   const dispatch = useProofStore((state) => state.dispatch);
+  const proof = useProofStore((state) => state.proof);
 
   const insertLineAfterLast = () => {
     dispatch({
@@ -54,12 +58,44 @@ export default function ProofRenderer() {
     }).catch(console.error);
   }
 
+  const exportFolke = () => {
+    const unflat = unflattenProof(proof);
+    const haskell = proofToHaskellProof(unflat);
+    const text = JSON.stringify(haskell);
+    downloadText(text, "export.folke");
+  };
+
+  const exportLatex = () => {
+    const unflat = unflattenProof(proof);
+    const latex = generateLatex(unflat);
+    console.log(latex);
+    // downloadText(latex, "export.tex");
+  };
+
+  const undo = useProofStore((state) => state.undo);
+  const redo = useProofStore((state) => state.redo);
+
+  useEffect(() => {
+    const keydown = (e: KeyboardEvent) => {
+      if (e.code === "KeyZ" && e.ctrlKey && !e.shiftKey) {
+        undo();
+        e.preventDefault();
+      }
+      if (e.code === "KeyZ" && e.ctrlKey && e.shiftKey) {
+        redo();
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener("keydown", keydown);
+    return () => {
+      window.removeEventListener("keydown", keydown);
+    }
+  }, [ undo, redo ]);
+
   return (
     <StepsContainer>
       <div className={styles["align"]}>
-        {/* <button type="button" onClick={() => undo()}>Undo</button> 
-        <button type="button" onClick={() => redo()}>Redo</button>  */}
-
         <div className={styles["premise-conclusion-container"]}>
           <h2>Premises</h2>
           <span></span>
@@ -87,14 +123,28 @@ export default function ProofRenderer() {
             <button className={"action-button"} type="button" onClick={resetProof}>
               <MdDelete /> Clear
             </button>
+            <button title={"Undo"} className={"action-button"} type="button" onClick={undo}>
+              <ImUndo />
+            </button>
+            <button title={"Redo"} className={"action-button"} type="button" onClick={redo}>
+              <ImRedo />
+            </button>
           </div>
 
           <ValidateButton />
         </div>
 
-        {/* <div style={{ display: "flex", gap: "0.5rem" }}>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
           <input type="file" onChange={uploadProof} />
-        </div> */}
+
+          <button title={"Download as export.folke"} className={"action-button"} type="button" onClick={exportFolke}>
+            Export .folke
+          </button>
+
+          <button title={"Download as export.tex"} className={"action-button"} type="button" onClick={exportLatex}>
+            Export Latex
+          </button>
+        </div>
       </div>
     </StepsContainer>
   )

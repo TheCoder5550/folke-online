@@ -44,3 +44,14 @@ export function findParentElement(element: HTMLElement, func: (element: HTMLElem
 
   return null;
 }
+
+export function downloadText(text: string, filename = "text.txt") {
+  const blob = new Blob([text], {
+    type: "text/plain;charset=utf-8;",
+  });
+
+  const elem = window.document.createElement("a");
+  elem.href = window.URL.createObjectURL(blob);
+  elem.download = filename;
+  elem.click();
+}
