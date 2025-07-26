@@ -2,6 +2,7 @@ import PracticeProofRenderer from "./PracticeProofRenderer";
 import { ProofStoreProvider } from "../stores/proof-store";
 import { createExercise } from "../helpers/proof-helper";
 import Markdown from "markdown-to-jsx";
+import { makeSpecialCharacters } from "../helpers/special-characters";
 
 interface ExerciseProps {
   markdown: string;
@@ -50,6 +51,8 @@ export default function Exercise(props: ExerciseProps) {
   // marked.use({ extensions: [proofExt] });
   // const parsed = marked.parse(props.markdown);
 
+  let index = 0;
+
   return (
     <div style={{ width: "700px" }}>
       <Markdown
@@ -57,7 +60,10 @@ export default function Exercise(props: ExerciseProps) {
         options={{
           overrides: {
             Proof: {
-              component: ProofComp,
+              component: (props: ProofCompProps) => {
+                index++;
+                return ProofComp({...props, name: "exercise-md" + index.toString()});
+              },
             },
           },
         }}
@@ -67,6 +73,7 @@ export default function Exercise(props: ExerciseProps) {
 }
 
 interface ProofCompProps {
+  name: string;
   sequent?: string;
   solution?: string;
 }
@@ -77,11 +84,19 @@ function ProofComp(props: ProofCompProps) {
   }
 
   const split = props.sequent.split("|-");
-  const premises = split[0].split(";").map(p => p.trim());
+  if (split.length !== 2) {
+    return <span>Invalid sequent</span>
+  }
+
+  const premises = split[0]
+    .replaceAll("&gt;", ">")
+    .replaceAll("&lt;", "<")
+    .split(";")
+    .map(p => p.trim());
   const conclusion = split[1].trim();
 
   return (
-    <ProofStoreProvider initialProof={createExercise(premises, conclusion)} localStorageName='exercise-md'>
+    <ProofStoreProvider initialProof={createExercise(premises, conclusion)} localStorageName={props.name}>
       <PracticeProofRenderer />
     </ProofStoreProvider>
   )

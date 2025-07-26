@@ -58,7 +58,7 @@ export default function PracticeProofRenderer() {
   return (
     <StepsContainer>
       <div className={styles["align"]}>
-        <span>{sequent}</span>
+        <span style={{ fontWeight: "bold" }}>{sequent}</span>
       </div>
 
       <StepsRenderer />
