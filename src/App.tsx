@@ -1,24 +1,27 @@
 import './App.css'
+import ActionBar from './components/ActionBar'
 import ErrorBoundary from './components/ErrorBoundary'
-import Exercise from './components/Exercise'
-import PracticeProofRenderer from './components/PracticeProofRenderer'
+import Header from './components/Header'
 import ProofRenderer from './components/ProofRenderer'
-import { createExercise } from './helpers/proof-helper'
 import { ProofStoreProvider } from './stores/proof-store'
 
-const markdownFileContent = (await import(`./exercises/exercise-1.md?raw`)).default;
+// const markdownFileContent = (await import(`./exercises/exercise-1.md?raw`)).default;
 
 function App() {
   return (
     <>
       <ErrorBoundary>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          {/* <Exercise markdown={markdownFileContent} /> */}
+        <ProofStoreProvider localStorageName='current-proof-storage'>
+          <Header />
 
-          <ProofStoreProvider localStorageName='current-proof-storage'>
-            <ProofRenderer />
-          </ProofStoreProvider>
-        </div>
+          <ActionBar />
+
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "1rem", paddingBottom: "1rem" }}>
+            <div style={{ padding: "3rem 6rem", border: "1px solid gray", background: "white", maxWidth: "1000px" }}>
+              <ProofRenderer />
+            </div>
+          </div>
+        </ProofStoreProvider>
       </ErrorBoundary>
     </>
   )

@@ -379,6 +379,37 @@ function getUUIDOfLastRowInBox(proof: FlatProof, boxUUID: UUID): UUID | null {
   return findUUID(box.steps);
 }
 
+export function getProofDepth(proof: FlatProof): number {
+  const getDepth = (uuids: UUID[], depth: number): number => {
+    return Math.max(...uuids.map(uuid => {
+      const step = getStep(proof, uuid);
+      if (isFlatLine(step)) {
+        return depth;
+      }
+      else {
+        return getDepth(step.steps, depth + 1);
+      }
+    }));
+  }
+
+  return getDepth(proof.steps, 0);
+}
+
+export function getNestedLevel(proof: FlatProof, uuid: UUID): number {
+  let nested = 0;
+  let current: FlatStep | null = getStep(proof, uuid);
+  while (current) {
+    nested++;
+    if (current.parent == null) {
+      break;
+    }
+
+    current = getStep(proof, current.parent);
+  }
+
+  return nested;
+}
+
 export function getLineNumber(proof: FlatProof, uuid: UUID): string {
   let nextStep: UUID | null = uuid;
   let lineNumber = 1;

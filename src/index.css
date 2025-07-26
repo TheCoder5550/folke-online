@@ -16,6 +16,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  --background-rgb: 249, 251, 253;
+
   --error-color-rgb: 255, 50, 50;
   --error-background-rgb: 255, 240, 240;
 
@@ -36,10 +38,12 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
+  /* display: flex;
   place-items: center;
   min-width: 320px;
-  min-height: 100vh;
+  min-height: 100vh; */
+
+  background: rgb(var(--background-rgb));
 }
 
 h1 {
@@ -92,11 +96,13 @@ input[type=text] {
   padding: 0.25rem 0.5rem;
 
   background: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgb(0, 0, 0);
+  border: 1px solid rgb(189, 189, 189);
   border-radius: 2px;
   color: inherit;
   font-family: monospace;
   font-size: 1rem;
+
+  /* border: none; */
 }
 
 input[type=text]::placeholder {

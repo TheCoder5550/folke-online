@@ -8,9 +8,10 @@
 
   margin: 0.25rem;
   margin-right: 0;
+  margin-right: 0.25rem;
 
   border: 1px solid black;
-  border-right: none;
+  /* border-right: none; */
 }
 
 .proof-box.error {
@@ -20,7 +21,8 @@
 
 .drag {
   margin-right: -0.25rem;
-  width: 2rem;
+  width: 1.5rem;
+  flex-shrink: 0;
 
   cursor: grab;
   background: none;
@@ -36,6 +38,8 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  flex-shrink: 1;
+  /* overflow: hidden; */
 
   padding: 0.25rem;
   padding-right: 0;

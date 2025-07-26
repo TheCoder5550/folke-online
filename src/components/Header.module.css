@@ -1,0 +1,15 @@
+.header {
+  display: flex;
+  padding: 0.5rem 1rem;
+
+  color: rgb(247, 241, 217);
+  background: rgb(57, 71, 69);
+}
+
+.logo {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+
+  font-weight: bold;
+}

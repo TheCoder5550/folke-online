@@ -1,6 +1,6 @@
 import { memo, useCallback, useRef, type JSX } from "react";
 import styles from "./ProofSingleRow.module.css"
-import { canCloseBox, canConvertToLine, getLineNumber, isFlatLine } from "../helpers/proof-helper";
+import { canCloseBox, canConvertToLine, getLineNumber, getNestedLevel, isFlatLine } from "../helpers/proof-helper";
 import { TbBox, TbBoxOff, TbRowInsertBottom, TbRowInsertTop } from "react-icons/tb";
 import AutocompleteInput, { type Suggestion } from "./AutocompleteInput";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-store";
@@ -24,6 +24,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
   const dispatch = useProofStore((state) => state.dispatch);
   const uuid = props.uuid;
   const step = useProofStore(useShallow((state) => state.proof.stepLookup[uuid]));
+  const level = useProofStore((state) => getNestedLevel(state.proof, uuid));
   const toLineEnabled = useProofStore((state) => canConvertToLine(state.proof, uuid));
   const closeBoxEnabled = useProofStore((state) => canCloseBox(state.proof, uuid));
   const hasError = useProofStore((state) => state.result?.location == getLineNumber(state.proof, props.uuid));
@@ -176,7 +177,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
 
   return (
     <>
-      <div data-target data-uuid={props.uuid} ref={lineRef} className={cls(styles["proof-row"], hasError && styles["error"], isCorrect && styles["correct"])}>
+      <div data-target data-uuid={props.uuid} ref={lineRef} className={cls(styles["proof-row"], hasError && styles["error"], isCorrect && styles["correct"])} style={{ marginRight: `calc(3rem - ${level * 0.25}rem - ${level}px)` }}>
         <span className={styles["number"]}>
           <LineNumberMemo uuid={props.uuid} />
         </span>
