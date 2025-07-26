@@ -22,7 +22,7 @@ ${formatProof(proof)}
 }
 
 function formatProof(proof: Proof): string {
-  const nestingLevel = 4;
+  const nestingLevel = getProofDepth(proof);
 
   return `
 $${formatSequent(proof)}$
@@ -139,4 +139,19 @@ function formatLatex(text: string): string {
     .replaceAll("₇", "_7")
     .replaceAll("₈", "_8")
     .replaceAll("₉", "_9")
+}
+
+function getProofDepth(proof: Proof): number {
+  const getDepth = (steps: Step[], depth: number): number => {
+    return Math.max(...steps.map(step => {
+      if (isStepLine(step)) {
+        return depth;
+      }
+      else {
+        return getDepth(step.steps, depth + 1);
+      }
+    }));
+  }
+
+  return getDepth(proof.steps, 0);
 }
