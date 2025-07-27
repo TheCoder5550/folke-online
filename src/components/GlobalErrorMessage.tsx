@@ -1,4 +1,7 @@
+import { memo } from "react";
 import useProofStore from "../stores/proof-store"
+
+export const GlobalErrorMessageMemo = memo(GlobalErrorMessage);
 
 export default function GlobalErrorMessage() {
   const message = useProofStore((state) => {

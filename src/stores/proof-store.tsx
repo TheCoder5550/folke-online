@@ -1,8 +1,10 @@
 import { createJSONStorage, devtools, persist} from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
-import { closeBoxWith, convertToBox, convertToLine, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, insertAfter, insertBefore, insertInto, moveAfter, removeFromProof, setArgument, setRule, setStatement } from '../helpers/proof-helper';
+import { closeBoxWith, convertToBox, convertToLine, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, insertAfter, insertBefore, insertInto, moveAfter, proofToHaskellProof, removeFromProof, setArgument, setRule, setStatement, unflattenProof } from '../helpers/proof-helper';
 import { createStore, useStore } from 'zustand';
 import { createContext, use, useState } from 'react';
+import { downloadText } from '../helpers/generic-helper';
+import generateLatex from '../helpers/generate-latex';
 
 const defaultProof = {
   premises: ["A", "B"],
@@ -501,6 +503,9 @@ interface ProofState {
   undo: () => void;
   redo: () => void;
 
+  exportFolke: () => void;
+  exportLatex: () => void;
+
   dispatch: (action: ProofDispatchAction) => void;
   setPremiseInput: (input: string) => void;
   setResult: (result: CheckProofResult | null) => void;
@@ -513,7 +518,7 @@ const createProofStore = (initialProof: FlatProof, localStorageName: string) => 
     devtools(
       immer(
         persist(
-          (set, _get) => ({
+          (set, get) => ({
             proof: initialProof,
             premiseInput: initialProof.premises.join("; "),
             result: null,
@@ -563,6 +568,22 @@ const createProofStore = (initialProof: FlatProof, localStorageName: string) => 
                   state.proof.stepLookup[prev.uuid] = prev.new;
                 }
               })
+            },
+
+            exportFolke() {
+              const proof = get().proof;
+              const unflat = unflattenProof(proof);
+              const haskell = proofToHaskellProof(unflat);
+              const text = JSON.stringify(haskell);
+              downloadText(text, "export.folke");
+            },
+            
+            exportLatex() {
+              const proof = get().proof;
+              const unflat = unflattenProof(proof);
+              const latex = generateLatex(unflat);
+              console.log(latex);
+              // downloadText(latex, "export.tex");
             },
 
             dispatch(action: ProofDispatchAction) {

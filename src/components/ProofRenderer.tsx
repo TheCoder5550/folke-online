@@ -6,22 +6,23 @@ import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-stor
 import { makeSpecialCharacters } from "../helpers/special-characters";
 import { PremiseFieldMemo } from "./PremiseField";
 import { ConclusionFieldMemo } from "./ConclusionField";
-import GlobalErrorMessage from "./GlobalErrorMessage";
+import { GlobalErrorMessageMemo } from "./GlobalErrorMessage";
+import { useCallback } from "react";
 
 export default function ProofRenderer() {
   const dispatch = useProofStore((state) => state.dispatch);
 
-  const insertLineAfterLast = () => {
+  const insertLineAfterLast = useCallback(() => {
     dispatch({
       type: ProofDispatchActionTypeEnum.InsertLineAfterLast,
     })
-  }
+  }, [ dispatch ]);
 
-  const insertBoxAfterLast = () => {
+  const insertBoxAfterLast = useCallback(() => {
     dispatch({
       type: ProofDispatchActionTypeEnum.InsertBoxAfterLast,
     })
-  }
+  }, [ dispatch ]);
 
   return (
     <StepsContainer>
@@ -44,7 +45,7 @@ export default function ProofRenderer() {
       <StepsRenderer />
 
       <div className={styles["align"]} style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-        <GlobalErrorMessage />
+        <GlobalErrorMessageMemo />
 
         <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", justifyContent: "space-between" }}>
           <div style={{ display: "flex", gap: "0.5rem" }}>

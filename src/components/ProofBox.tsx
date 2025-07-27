@@ -16,7 +16,7 @@ export const ProofBoxMemo = memo(ProofBox);
 export default function ProofBox(props: ProofBoxProps) {
   const dispatch = useProofStore((state) => state.dispatch);
   const hasError = useProofStore((state) => state.result?.location == getLineNumber(state.proof, props.uuid));
-  const errorMessage = useProofStore((state) => state.result?.message);
+  const errorMessage = useProofStore((state) => hasError ? state.result?.message : undefined);
 
   const uuids = useProofStore(useShallow((state) => {
     const step = state.proof.stepLookup[props.uuid]

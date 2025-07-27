@@ -28,7 +28,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
   const toLineEnabled = useProofStore((state) => canConvertToLine(state.proof, uuid));
   const closeBoxEnabled = useProofStore((state) => canCloseBox(state.proof, uuid));
   const hasError = useProofStore((state) => state.result?.location == getLineNumber(state.proof, props.uuid));
-  const errorMessage = useProofStore((state) => state.result?.message);
+  const errorMessage = useProofStore((state) => hasError ? state.result?.message : undefined);
   const isCorrect = useProofStore((state) => state.result?.correct ?? false);
 
   const lineRef = useRef<HTMLDivElement>(null);
@@ -109,7 +109,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     if (e.code === "KeyB" && e.ctrlKey) {
       toBox();
     }
-    else if (e.code === "KeyB" && e.ctrlKey && e.shiftKey) {
+    else if (toLineEnabled && e.code === "KeyB" && e.altKey) {
       toLine();
     }
     else if (e.code === "Enter" && e.ctrlKey) {
@@ -124,7 +124,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     if (e.code === "KeyB" && e.ctrlKey) {
       toBox();
     }
-    else if (e.code === "KeyB" && e.ctrlKey && e.shiftKey) {
+    else if (toLineEnabled && e.code === "KeyB" && e.altKey) {
       toLine();
     }
     else if (e.code === "Enter" && e.ctrlKey) {

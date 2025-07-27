@@ -1,18 +1,18 @@
 import styles from "./ActionBar.module.css";
 import { ImRedo, ImUndo } from "react-icons/im";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-store";
-import { useEffect } from "react";
-import { flattenProof, haskellProofToProof, proofToHaskellProof, unflattenProof } from "../helpers/proof-helper";
-import { downloadText } from "../helpers/generic-helper";
-import generateLatex from "../helpers/generate-latex";
+import { useEffect, useRef } from "react";
+import { flattenProof, haskellProofToProof } from "../helpers/proof-helper";
 import { MdDelete } from "react-icons/md";
 import ValidateButton from "./ValidateButton";
+import { FaFileExport, FaUpload } from "react-icons/fa6";
 
 export default function ActionBar() {
   const dispatch = useProofStore((state) => state.dispatch);
-  const proof = useProofStore((state) => state.proof);
   const undo = useProofStore((state) => state.undo);
   const redo = useProofStore((state) => state.redo);
+  const exportFolke = useProofStore((state) => state.exportFolke);
+  const exportLatex = useProofStore((state) => state.exportLatex);
 
   useEffect(() => {
     const keydown = (e: KeyboardEvent) => {
@@ -32,19 +32,13 @@ export default function ActionBar() {
     }
   }, [ undo, redo ]);
 
-  const exportFolke = () => {
-    const unflat = unflattenProof(proof);
-    const haskell = proofToHaskellProof(unflat);
-    const text = JSON.stringify(haskell);
-    downloadText(text, "export.folke");
-  };
+  const fileRef = useRef<HTMLInputElement>(null);
 
-  const exportLatex = () => {
-    const unflat = unflattenProof(proof);
-    const latex = generateLatex(unflat);
-    console.log(latex);
-    // downloadText(latex, "export.tex");
-  };
+  const openUpload = () => {
+    if (fileRef.current) {
+      fileRef.current.click();
+    }
+  }
 
   const uploadProof: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const files = e.target.files;
@@ -76,23 +70,26 @@ export default function ActionBar() {
   return (
     <div className={styles["action-bar"]}>
       <button title={"Undo"} className={"action-button"} type="button" onClick={undo}>
-        <ImUndo />
+        <ImUndo /> Undo
       </button>
       <button title={"Redo"} className={"action-button"} type="button" onClick={redo}>
-        <ImRedo />
+        <ImRedo /> Redo
       </button>
 
       <button title={"Download as export.folke"} className={"action-button"} type="button" onClick={exportFolke}>
-        Export .folke
+        <FaFileExport /> Export .folke
       </button>
 
       <button title={"Download as export.tex"} className={"action-button"} type="button" onClick={exportLatex}>
-        Export Latex
+        <FaFileExport /> Export Latex
       </button>
 
-      <input type="file" onChange={uploadProof} />
+      <input type="file" ref={fileRef} onChange={uploadProof} style={{ display: "none" }} />
+      <button title="Upload proof" className={"action-button"} type="button" onClick={openUpload}>
+        <FaUpload /> Upload .folke
+      </button>
 
-      <button className={"action-button"} type="button" onClick={resetProof}>
+      <button title="Delete proof" className={"action-button"} type="button" onClick={resetProof}>
         <MdDelete /> Clear
       </button>
 
