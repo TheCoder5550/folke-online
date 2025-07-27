@@ -4,10 +4,10 @@ import styles from "./Header.module.css";
 export default function Header() {
   return (
     <header className={styles["header"]}>
-      <div className={styles["logo"]}>
+      <a href="/" className={styles["logo"]}>
         <GiPlagueDoctorProfile size="2rem" />
         <span>Folke Online</span>
-      </div>
+      </a>
 
       <div className={styles["links"]}>
         <a href="/">Editor</a>
