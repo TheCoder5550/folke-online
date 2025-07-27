@@ -1,5 +1,6 @@
 .header {
   display: flex;
+  gap: 4rem;
   padding: 0.5rem 1rem;
 
   color: rgb(247, 241, 217);
@@ -12,4 +13,16 @@
   align-items: center;
 
   font-weight: bold;
+}
+
+.links {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+}
+
+.links a {
+  color: inherit;
+  text-decoration: underline;
 }

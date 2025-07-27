@@ -8,6 +8,11 @@ export default function Header() {
         <GiPlagueDoctorProfile size="2rem" />
         <span>Folke Online</span>
       </div>
+
+      <div className={styles["links"]}>
+        <a href="/">Editor</a>
+        <a href="/exercises/">Exercises</a>
+      </div>
     </header>
   )
 }

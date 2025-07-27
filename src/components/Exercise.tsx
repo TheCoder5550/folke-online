@@ -2,10 +2,10 @@ import PracticeProofRenderer from "./PracticeProofRenderer";
 import { ProofStoreProvider } from "../stores/proof-store";
 import { createExercise } from "../helpers/proof-helper";
 import Markdown from "markdown-to-jsx";
-import { makeSpecialCharacters } from "../helpers/special-characters";
 
 interface ExerciseProps {
   markdown: string;
+  name: string;
 }
 
 export default function Exercise(props: ExerciseProps) {
@@ -54,15 +54,15 @@ export default function Exercise(props: ExerciseProps) {
   let index = 0;
 
   return (
-    <div style={{ width: "700px" }}>
+    <div>
       <Markdown
         children={props.markdown}
         options={{
           overrides: {
             Proof: {
-              component: (props: ProofCompProps) => {
+              component: (currentProps: ProofCompProps) => {
                 index++;
-                return ProofComp({...props, name: "exercise-md" + index.toString()});
+                return ProofComp({...currentProps, name: "exercise-md-" + props.name + "-index:" + index.toString()});
               },
             },
           },
