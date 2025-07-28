@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { COMPONENT_LIST } from "../exercise-components/AllExams"
 import { EXAM_NAMES} from "../exercise-components/exam-data.ts";
 
 interface ExamListProps {
@@ -14,7 +12,7 @@ export default function ExamList(props: ExamListProps) {
       flexDirection: "column",
       gap: "0.5rem",
       overflow: "auto",
-      height: "90vh",
+      height: "85vh",
       background: "white",
       border: "1px solid black",
       padding: "1rem",
@@ -23,6 +21,12 @@ export default function ExamList(props: ExamListProps) {
       top: "1rem",
       borderRadius: "4px"
     }}>
+      <h2>Weekly exercises</h2>
+      <span>Week 1</span>
+      <span>Week 2</span>
+      <span>Week 3</span>
+      <span>Week 4</span>
+
       <h2>All exam questions</h2>
       {EXAM_NAMES.map((exam, i) => (
         <a key={exam} href="#" onClick={() => props.setIndex(i)} style={{ color: props.index === i ? "red" : undefined }}>{exam}</a>

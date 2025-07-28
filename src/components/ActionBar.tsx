@@ -6,6 +6,7 @@ import { flattenProof, haskellProofToProof } from "../helpers/proof-helper";
 import { MdDelete } from "react-icons/md";
 import ValidateButton from "./ValidateButton";
 import { FaFileExport, FaUpload } from "react-icons/fa6";
+import SymbolDictionary from "./SymbolDictionary";
 
 export default function ActionBar() {
   const dispatch = useProofStore((state) => state.dispatch);
@@ -94,6 +95,8 @@ export default function ActionBar() {
       </button>
 
       <ValidateButton />
+
+      <SymbolDictionary />
     </div>
   )
 }
