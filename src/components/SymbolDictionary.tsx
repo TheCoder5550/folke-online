@@ -1,3 +1,6 @@
+import React from "react";
+import styles from "./SymbolDictionary.module.css";
+
 export default function SymbolDictionary() {
   const symbols = [
     { symbol: "¬", title: "Negation" },
@@ -37,10 +40,16 @@ export default function SymbolDictionary() {
   }
 
   return (
-    <div>
-      {symbols.map(data => (
-        <button title={data.title} key={data.symbol} onClick={() => insertSymbol(data.symbol)} onMouseDown={e => e.preventDefault()} type="button">{data.symbol}</button>
-      ))}
-    </div>
+    <>
+      <span>Keypad</span>
+      <div className={styles["container"]}>
+        {symbols.map(data => (
+          <React.Fragment key={data.symbol}>
+            <button className={styles["button"]} title={data.title} onClick={() => insertSymbol(data.symbol)} onMouseDown={e => e.preventDefault()} type="button">{data.symbol}</button>
+            <div className={styles["divider"]}></div>
+          </React.Fragment>
+        ))}
+      </div>
+    </>
   )
 }

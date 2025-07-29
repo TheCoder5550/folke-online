@@ -1,0 +1,39 @@
+.container {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+
+  border: 1px solid;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+.button {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 50%;
+  background: none;
+  border: none;
+}
+
+.button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.button:active {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.divider {
+  height: 1rem;
+  border-left: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.divider:last-child {
+  display: none;
+}
