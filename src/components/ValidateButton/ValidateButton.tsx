@@ -1,10 +1,10 @@
 import styles from "./ValidateButton.module.css";
 import { useEffect, useState } from "react"
-import WASM_MODULE_URL from '../../folke-wasm-wrapper/output/folke-wasm-wrapper.wasm?url'
-import ghc_wasm_jsffi from "../../folke-wasm-wrapper/output/ghc_wasm_jsffi.js";
+import WASM_MODULE_URL from '../../../folke-wasm-wrapper/output/folke-wasm-wrapper.wasm?url'
+import ghc_wasm_jsffi from "../../../folke-wasm-wrapper/output/ghc_wasm_jsffi.js";
 import { WASI, ConsoleStdout, OpenFile, File } from "@bjorn3/browser_wasi_shim";
-import { proofToHaskellProof, unflattenProof } from "../helpers/proof-helper.js";
-import useProofStore from "../stores/proof-store.js";
+import { proofToHaskellProof, unflattenProof } from "../../helpers/proof-helper.js";
+import useProofStore from "../../stores/proof-store.js";
 import { HiClipboardDocumentCheck } from "react-icons/hi2";
 import { FaCheckCircle } from "react-icons/fa";
 import { BiSolidErrorAlt } from "react-icons/bi";

@@ -1,18 +1,18 @@
 import { memo, useCallback, useRef, type JSX } from "react";
 import styles from "./ProofSingleRow.module.css"
-import { canCloseBox, canConvertToLine, getLineNumber, getNestedLevel, isFlatLine } from "../helpers/proof-helper";
+import { canCloseBox, canConvertToLine, getLineNumber, getNestedLevel, isFlatLine } from "../../helpers/proof-helper";
 import { TbBox, TbBoxOff, TbRowInsertBottom, TbRowInsertTop } from "react-icons/tb";
-import AutocompleteInput, { type Suggestion } from "./AutocompleteInput";
-import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-store";
+import AutocompleteInput, { type Suggestion } from "../AutocompleteInput/AutocompleteInput";
+import useProofStore, { ProofDispatchActionTypeEnum } from "../../stores/proof-store";
 import { useShallow } from "zustand/shallow";
-import { makeSpecialCharacters } from "../helpers/special-characters";
-import { RULE_META_DATA } from "../helpers/rules-data";
-import TextField, { TextFieldMemo } from "./TextField";
-import { LineNumberMemo } from "./LineNumber";
+import { makeSpecialCharacters } from "../../helpers/special-characters";
+import { RULE_META_DATA } from "../../helpers/rules-data";
+import TextField, { TextFieldMemo } from "../TextField";
+import { LineNumberMemo } from "../LineNumber/LineNumber";
 import { MdDelete, MdDragIndicator } from "react-icons/md";
-import { cls, trimPrefix } from "../helpers/generic-helper";
+import { cls, trimPrefix } from "../../helpers/generic-helper";
 import { IoReturnDownBack } from "react-icons/io5";
-import { createDragHandler } from "../helpers/drag-drop";
+import { createDragHandler } from "../../helpers/drag-drop";
 
 interface ProofSingleRowProps {
   uuid: string;

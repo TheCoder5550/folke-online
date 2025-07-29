@@ -1,10 +1,10 @@
-import "./ProofRenderer.css";
-import styles from "./ProofRenderer.module.css";
-import StepsContainer from "./StepsContainer";
+import "./ProofRenderer/ProofRenderer.css";
+import styles from "./ProofRenderer/ProofRenderer.module.css";
+import StepsContainer from "./StepsContainer/StepsContainer";
 import StepsRenderer from "./StepsRenderer";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-store";
 import { makeSpecialCharacters } from "../helpers/special-characters";
-import ValidateButton from "./ValidateButton";
+import ValidateButton from "./ValidateButton/ValidateButton";
 import { LuListRestart } from "react-icons/lu";
 import GlobalErrorMessage from "./GlobalErrorMessage";
 import { useEffect, useRef, useState } from "react";

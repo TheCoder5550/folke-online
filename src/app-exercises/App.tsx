@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import ErrorBoundary from './components/ErrorBoundary';
-import ExamList from './components/ExamList';
-import Exercise from './components/Exercise'
-import Header from './components/Header';
-import { COMPONENT_LIST } from './exercise-components/AllExams';
+import ErrorBoundary from '../components/ErrorBoundary';
+import ExamList from '../components/ExamList';
+// import Exercise from '../components/Exercise'
+import Header from '../components/Header/Header';
+import { COMPONENT_LIST } from '../exercise-components/AllExams';
 
-const exercise1 = (await import(`./assets/exercises-markdown/exercise-1.md?raw`)).default;
-const exercise2 = (await import(`./assets/exercises-markdown/exercise-2.md?raw`)).default;
+// const exercise1 = (await import(`../assets/exercises-markdown/exercise-1.md?raw`)).default;
+// const exercise2 = (await import(`../assets/exercises-markdown/exercise-2.md?raw`)).default;
 
 function App() {
   const [index, setIndex] = useState<number | null>(null);

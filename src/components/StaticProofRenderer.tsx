@@ -1,5 +1,5 @@
 import { getLineNumber, isFlatLine } from "../helpers/proof-helper";
-import StepsContainer from "./StepsContainer";
+import StepsContainer from "./StepsContainer/StepsContainer";
 
 interface StaticProofRendererProps {
   proof: FlatProof;

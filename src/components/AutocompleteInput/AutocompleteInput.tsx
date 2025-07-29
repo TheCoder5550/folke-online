@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./AutocompleteInput.module.css";
-import { clamp } from "../helpers/generic-helper";
+import { clamp } from "../../helpers/generic-helper";
 
 export interface Suggestion {
   label: string;

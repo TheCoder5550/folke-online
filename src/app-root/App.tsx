@@ -1,18 +1,15 @@
-import './App.css'
-import ActionBar from './components/ActionBar'
-import ErrorBoundary from './components/ErrorBoundary'
-import Header from './components/Header'
-import ProofRenderer from './components/ProofRenderer'
-import { ProofStoreProvider } from './stores/proof-store'
-
-// const markdownFileContent = (await import(`./exercises/exercise-1.md?raw`)).default;
+import ActionBar from '../components/ActionBar/ActionBar'
+import ErrorBoundary from '../components/ErrorBoundary'
+import Header from '../components/Header/Header'
+import ProofRenderer from '../components/ProofRenderer/ProofRenderer'
+import { ProofStoreProvider } from '../stores/proof-store'
 
 function App() {
   return (
     <>
       <ErrorBoundary>
+        <Header />
         <ProofStoreProvider localStorageName='current-proof-storage'>
-          <Header />
 
           <ActionBar />
 

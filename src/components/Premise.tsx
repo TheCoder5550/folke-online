@@ -1,5 +1,5 @@
 import { memo } from "react";
-import rowStyles from "./ProofSingleRow.module.css"
+import rowStyles from "./ProofSingleRow/ProofSingleRow.module.css"
 
 interface PremiseProps {
   premise: string;

@@ -1,11 +1,11 @@
 import { memo, useRef } from "react";
-import { getLineNumber, isFlatLine } from "../helpers/proof-helper";
-import useProofStore from "../stores/proof-store";
+import { getLineNumber, isFlatLine } from "../../helpers/proof-helper";
+import useProofStore from "../../stores/proof-store";
 import styles from "./ProofBox.module.css"
-import { RenderStepMemo } from "./RenderStep";
+import { RenderStepMemo } from "../RenderStep";
 import { useShallow } from "zustand/shallow";
 import { MdDragIndicator } from "react-icons/md";
-import { createDragHandler } from "../helpers/drag-drop";
+import { createDragHandler } from "../../helpers/drag-drop";
 
 interface ProofBoxProps {
   uuid: UUID;

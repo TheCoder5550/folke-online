@@ -1,13 +1,13 @@
 import styles from "./ActionBar.module.css";
 import { ImRedo, ImUndo } from "react-icons/im";
-import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-store";
+import useProofStore, { ProofDispatchActionTypeEnum } from "../../stores/proof-store";
 import { useEffect, useRef, useState } from "react";
-import { flattenProof, haskellProofToProof } from "../helpers/proof-helper";
+import { flattenProof, haskellProofToProof } from "../../helpers/proof-helper";
 import { MdDelete } from "react-icons/md";
-import ValidateButton from "./ValidateButton";
+import ValidateButton from "../ValidateButton/ValidateButton";
 import { FaFileExport, FaUpload } from "react-icons/fa6";
-import SymbolDictionary from "./SymbolDictionary";
-import { cls } from "../helpers/generic-helper";
+import SymbolDictionary from "../SymbolDictionary/SymbolDictionary";
+import { cls } from "../../helpers/generic-helper";
 
 export default function ActionBar() {
   const [category, setCategory] = useState<"File" | "Edit">("Edit");

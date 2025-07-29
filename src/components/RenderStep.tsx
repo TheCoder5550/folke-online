@@ -1,8 +1,8 @@
 import { memo } from "react";
 import useProofStore from "../stores/proof-store";
 import { isFlatLine } from "../helpers/proof-helper";
-import { ProofSingleRowMemo } from "./ProofSingleRow";
-import { ProofBoxMemo } from "./ProofBox";
+import { ProofSingleRowMemo } from "./ProofSingleRow/ProofSingleRow";
+import { ProofBoxMemo } from "./ProofBox/ProofBox";
 
 export const RenderStepMemo = memo(RenderStep);
 

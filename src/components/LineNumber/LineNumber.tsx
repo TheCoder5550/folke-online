@@ -1,6 +1,6 @@
 import { memo } from "react";
-import { getLineNumber } from "../helpers/proof-helper";
-import useProofStore from "../stores/proof-store";
+import { getLineNumber } from "../../helpers/proof-helper";
+import useProofStore from "../../stores/proof-store";
 import { BiSolidErrorAlt } from "react-icons/bi";
 import styles from "./LineNumber.module.css";
 
