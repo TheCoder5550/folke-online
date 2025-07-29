@@ -1,0 +1,15 @@
+.list-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+
+  cursor: pointer;
+}
+
+.list-item:hover {
+  text-decoration: underline;
+}
+
+.list-item.selected {
+  font-weight: bold;
+}

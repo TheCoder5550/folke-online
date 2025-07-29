@@ -14,6 +14,7 @@ import { FaLightbulb } from "react-icons/fa6";
 
 interface PracticeProofRendererProps {
   solution?: FlatProof;
+  onValid?: () => void;
 }
 
 export default function PracticeProofRenderer(props: PracticeProofRendererProps) {
@@ -92,7 +93,7 @@ export default function PracticeProofRenderer(props: PracticeProofRendererProps)
             </button>
           </div>
 
-          <ValidateButton />
+          <ValidateButton onValid={props.onValid} />
         </div>
       </div>
 

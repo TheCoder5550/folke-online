@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import ErrorBoundary from '../components/ErrorBoundary';
-import ExamList from '../components/ExamList';
+import ExerciseList from '../components/ExerciseList/ExerciseList';
 // import Exercise from '../components/Exercise'
 import Header from '../components/Header/Header';
 import { COMPONENT_LIST } from '../exercise-components/AllExams';
@@ -10,6 +10,7 @@ import { COMPONENT_LIST } from '../exercise-components/AllExams';
 
 function App() {
   const [index, setIndex] = useState<number | null>(null);
+  const CurrentComp = index != null ?  COMPONENT_LIST[index] : null;
 
   return (
     <>
@@ -17,16 +18,17 @@ function App() {
         <Header />
 
         <div style={{ display: "flex", flexDirection: "row" }}>
-          <ExamList index={index} setIndex={setIndex} />
+          <ExerciseList index={index} setIndex={setIndex} />
           
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "1rem", paddingBottom: "1rem", flexGrow: "1" }}>
             <div style={{ padding: "3rem 6rem", border: "1px solid gray", background: "white", width: "100%", maxWidth: "1000px", flexGrow: "1" }}>
-              <h1>Exam Question</h1>
-
-              {index != null ? (
-                COMPONENT_LIST[index]()
+              {CurrentComp ? (
+                <CurrentComp />
               ) : (
-                <span>Select a question</span>
+                <>
+                  <h1>Exercises</h1>
+                  <span>Select a question</span>
+                </>
               )}
 
               {/* <Exercise markdown={exercise1} name="1" key="1" />

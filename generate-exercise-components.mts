@@ -16,6 +16,8 @@ await generateList(files);
 async function generateComponent(fileName: string, folkeContent: string) {
   const compName = getComponentName(fileName);
   const outFileName = compName + ".tsx";
+  const examName = compName.split("_").slice(0, 2).join(" ");
+  const questionName = getExamQuestion(compName);
 
   const content = `
 // AUTO-GENERATED
@@ -23,17 +25,23 @@ async function generateComponent(fileName: string, folkeContent: string) {
 import PracticeProofRenderer from "../components/PracticeProofRenderer";
 import { createExercise, flattenProof, haskellProofToProof } from "../helpers/proof-helper";
 import { ProofStoreProvider } from "../stores/proof-store";
+import useProgressStore from "../stores/progress-store";
 
+const id = "${fileName}";
 const proof: HaskellProof = ${folkeContent};
 const flatProof = flattenProof(haskellProofToProof(proof));
 const premises = proof._sequent._premises;
 const conclusion = proof._sequent._conclusion;
 
 export default function ${compName}() {
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const completeExercise = useProgressStore((state) => state.completeExercise);
+
   return (
     <ProofStoreProvider key="${compName}" localStorageName="${compName}" initialProof={createExercise(premises, conclusion)}>
-      <span>${compName}</span>
-      <PracticeProofRenderer solution={flatProof} />
+      <h1>${examName}</h1>
+      <h3>Question ${questionName}</h3>
+      <PracticeProofRenderer solution={flatProof} onValid={() => completeExercise(id)} />
     </ProofStoreProvider>
   )
 }
@@ -91,6 +99,15 @@ ${examNames}
 
 function getComponentName(fileName: string) {
   return toTitleCase(path.basename(fileName, ".folke"));
+}
+
+function getExamQuestion(compName: string) {
+  const parts = compName.split("_").slice(2);
+  if (parts.length === 1) {
+    return parts[0];
+  }
+
+  return `${parts[0]} (${parts.slice(1).join(" ")})`
 }
 
 function toTitleCase(str: string) {

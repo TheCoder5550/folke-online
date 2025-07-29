@@ -29,7 +29,11 @@ interface HaskellExports {
 const encoder = new TextEncoder()
 const decoder = new TextDecoder()
 
-export default function ValidateButton() {
+interface ValidateButtonProps {
+  onValid?: () => void;
+}
+
+export default function ValidateButton(props: ValidateButtonProps) {
   const proof = useProofStore((state) => state.proof);
   const [hs, setHS] = useState<HaskellExports>();
   const isCorrect = useProofStore((state) => state.result?.correct);
@@ -104,6 +108,10 @@ export default function ValidateButton() {
       console.log(output);
       const json = JSON.parse(output) as CheckProofResult;
       setResult(json);
+
+      if (json.correct) {
+        props.onValid?.();
+      }
     }).catch(console.error);
   }
 
