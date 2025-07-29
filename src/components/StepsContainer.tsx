@@ -1,8 +1,10 @@
 import styles from "./StepsContainer.module.css";
 
-export default function StepsContainer({ children }: React.PropsWithChildren) {
+type StepsContainerProps = React.InputHTMLAttributes<HTMLDivElement> & React.PropsWithChildren;
+
+export default function StepsContainer({ children, ...props }: StepsContainerProps) {
   return (
-    <div className={styles["steps-container"]}>
+    <div className={styles["steps-container"]} {...props}>
       {children}
     </div>
   )

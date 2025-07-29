@@ -21,10 +21,11 @@ async function generateComponent(fileName: string, folkeContent: string) {
 // AUTO-GENERATED
 
 import PracticeProofRenderer from "../components/PracticeProofRenderer";
-import { createExercise } from "../helpers/proof-helper";
+import { createExercise, flattenProof, haskellProofToProof } from "../helpers/proof-helper";
 import { ProofStoreProvider } from "../stores/proof-store";
 
 const proof: HaskellProof = ${folkeContent};
+const flatProof = flattenProof(haskellProofToProof(proof));
 const premises = proof._sequent._premises;
 const conclusion = proof._sequent._conclusion;
 
@@ -32,7 +33,7 @@ export default function ${compName}() {
   return (
     <ProofStoreProvider key="${compName}" localStorageName="${compName}" initialProof={createExercise(premises, conclusion)}>
       <span>${compName}</span>
-      <PracticeProofRenderer />
+      <PracticeProofRenderer solution={flatProof} />
     </ProofStoreProvider>
   )
 }
