@@ -114,12 +114,17 @@ input[type=text]::placeholder {
 
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(145, 145, 145);
+  background: rgb(163, 163, 163);
   border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(126, 126, 126);;
 }
 
 ::-webkit-scrollbar-track {
