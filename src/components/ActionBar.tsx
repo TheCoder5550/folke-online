@@ -1,14 +1,17 @@
 import styles from "./ActionBar.module.css";
 import { ImRedo, ImUndo } from "react-icons/im";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-store";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { flattenProof, haskellProofToProof } from "../helpers/proof-helper";
 import { MdDelete } from "react-icons/md";
 import ValidateButton from "./ValidateButton";
 import { FaFileExport, FaUpload } from "react-icons/fa6";
 import SymbolDictionary from "./SymbolDictionary";
+import { cls } from "../helpers/generic-helper";
 
 export default function ActionBar() {
+  const [category, setCategory] = useState<"File" | "Edit">("Edit");
+
   const dispatch = useProofStore((state) => state.dispatch);
   const undo = useProofStore((state) => state.undo);
   const redo = useProofStore((state) => state.redo);
@@ -70,33 +73,67 @@ export default function ActionBar() {
 
   return (
     <div className={styles["action-bar"]}>
-      <button title={"Undo"} className={"action-button"} type="button" onClick={undo}>
-        <ImUndo /> Undo
-      </button>
-      <button title={"Redo"} className={"action-button"} type="button" onClick={redo}>
-        <ImRedo /> Redo
-      </button>
+      <div className={styles["categories"]}>
+        <button className={cls(styles["category-button"], category === "File" && styles["selected"])} type="button" onClick={() => setCategory("File")}>File</button>
+        <button className={cls(styles["category-button"], category === "Edit" && styles["selected"])} type="button" onClick={() => setCategory("Edit")}>Edit</button>
+      </div>
 
-      <button title={"Download as export.folke"} className={"action-button"} type="button" onClick={exportFolke}>
-        <FaFileExport /> Export .folke
-      </button>
+      <div className={styles["tab-content"]}>
+        <div className={styles["current-actions"]}>
+          {category === "File" && (
+            <>
+              <button title={"Download as export.folke"} className={"action-button"} type="button" onClick={exportFolke}>
+                <FaFileExport /> Export .folke
+              </button>
 
-      <button title={"Download as export.tex"} className={"action-button"} type="button" onClick={exportLatex}>
-        <FaFileExport /> Export Latex
-      </button>
+              <button title={"Download as export.tex"} className={"action-button"} type="button" onClick={exportLatex}>
+                <FaFileExport /> Export Latex
+              </button>
 
-      <input type="file" ref={fileRef} onChange={uploadProof} style={{ display: "none" }} />
-      <button title="Upload proof" className={"action-button"} type="button" onClick={openUpload}>
-        <FaUpload /> Upload .folke
-      </button>
+              <Divider />
 
-      <button title="Delete proof" className={"action-button"} type="button" onClick={resetProof}>
-        <MdDelete /> Clear
-      </button>
+              <input type="file" ref={fileRef} onChange={uploadProof} style={{ display: "none" }} />
+              <button title="Upload proof" className={"action-button"} type="button" onClick={openUpload}>
+                <FaUpload /> Upload .folke
+              </button>
+              
+              <Divider />
 
-      <ValidateButton />
+              <button title="Delete proof" className={"action-button"} type="button" onClick={resetProof}>
+                <MdDelete /> Clear
+              </button>
+            </>
+          )}
 
-      <SymbolDictionary />
+          {category === "Edit" && (
+            <>
+              <button title={"Undo"} className={"action-button"} type="button" onClick={undo}>
+                <ImUndo /> Undo
+              </button>
+              <button title={"Redo"} className={"action-button"} type="button" onClick={redo}>
+                <ImRedo /> Redo
+              </button>
+
+              <Divider />
+
+              <SymbolDictionary />
+            </>
+          )}
+        </div>
+        
+        <ValidateButton />
+      </div>
     </div>
+  )
+}
+
+function Divider() {
+  return (
+    <div style={{
+      display: "flex",
+      height: "75%",
+      margin: "0 0.5rem",
+      borderLeft: "1px solid rgb(0, 0, 0, 0.2)"
+    }}></div>
   )
 }

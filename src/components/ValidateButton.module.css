@@ -1,3 +1,10 @@
+.container {
+  display: inline-flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 .correct,
 .error {
   display: flex;

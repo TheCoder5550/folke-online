@@ -41,7 +41,6 @@ export default function SymbolDictionary() {
 
   return (
     <>
-      <span>Keypad</span>
       <div className={styles["container"]}>
         {symbols.map(data => (
           <React.Fragment key={data.symbol}>

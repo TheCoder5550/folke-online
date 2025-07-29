@@ -112,7 +112,7 @@ export default function ValidateButton() {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", alignItems: "center" }}>
+    <div className={styles["container"]}>
       {isCorrect === true && (
         <span className={styles["correct"]}>
           <FaCheckCircle /> Correct

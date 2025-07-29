@@ -1,14 +1,40 @@
 .action-bar {
   position: sticky;
   top: 0;
+  
+  background: white;
+  border-bottom: 1px solid rgb(0, 0, 0, 0.2);
+  box-shadow: 0 -10px 30px rgba(0, 0, 50, 0.3);
+  z-index: 100000;
+}
 
+.categories {
+  display: flex;
+  padding: 0.5rem;
+  padding-bottom: 0;
+}
+
+.category-button {
+  padding: 0.25rem 0.5rem;
+
+  background: none;
+  border: none;
+  border-radius: 2px;
+}
+
+.category-button.selected {
+  background: rgb(0, 0, 0, 0.1);
+}
+
+.tab-content {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.current-actions {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem;
-  
-  background: white;
-  border-bottom: 1px solid black;
-  box-shadow: 0 -10px 30px rgba(0, 0, 50, 0.3);
-  z-index: 100000;
 }
