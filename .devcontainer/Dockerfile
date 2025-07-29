@@ -82,3 +82,15 @@ RUN /home/node/.ghc-wasm/cabal/bin/cabal update \
     && /home/node/.ghc-wasm/cabal/bin/cabal install alex \
     && /home/node/.ghc-wasm/cabal/bin/cabal install happy \
     && /home/node/.ghc-wasm/cabal/bin/cabal install BNFC
+
+# Update path
+ENV PATH="/home/node/.local/bin/:
+    /usr/local/bin:
+    /home/node/.ghc-wasm/wasm32-wasi-ghc/bin:
+    /home/node/.ghc-wasm/wasi-sdk/bin:
+    /home/node/.ghc-wasm/nodejs/bin:
+    /home/node/.ghc-wasm/binaryen/bin:
+    /home/node/.ghc-wasm/wasmtime/bin:
+    /home/node/.ghc-wasm/wasm32-wasi-cabal/bin:
+    /home/node/.ghc-wasm/wasm-run/bin:
+    $PATH"

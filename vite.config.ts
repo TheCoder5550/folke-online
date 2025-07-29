@@ -13,7 +13,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        nested: resolve(__dirname, 'exercises/index.html'),
+        exercises: resolve(__dirname, 'exercises/index.html'),
       },
     },
   },

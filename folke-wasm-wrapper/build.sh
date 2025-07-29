@@ -8,13 +8,13 @@ listbin() {
     esac
 }
 
-# Create empty output directory
-rm -rf output
-mkdir output
-
 # Build cabal project
 # wasm32-wasi-cabal v2-build exe:folke-wasm-wrapper
 wasm32-wasi-cabal build exe:folke-wasm-wrapper
+
+# Create empty output directory
+rm -rf output
+mkdir output
 
 # Find and copy bult .wasm file to output dir
 cp "$(listbin folke-wasm-wrapper)" output/folke-wasm-wrapper.wasm
