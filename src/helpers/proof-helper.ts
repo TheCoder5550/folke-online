@@ -100,7 +100,7 @@ function getStep(proof: FlatProof, uuid: UUID): FlatStep {
   return step;
 }
 
-export function removeFromProof(proof: FlatProof, uuid: UUID) {
+export function removeFromProof(proof: FlatProof, uuid: UUID, shouldRemoveInvalid = true) {
   if (proof.stepLookup[uuid] == undefined) {
     throw new Error("Step does not exist in proof lookup table");
   }
@@ -116,7 +116,9 @@ export function removeFromProof(proof: FlatProof, uuid: UUID) {
     return false;
   });
 
-  removeInvalid(proof);
+  if (shouldRemoveInvalid) {
+    removeInvalid(proof);
+  }
 }
 
 function removeInvalid(proof: FlatProof) {
@@ -140,7 +142,7 @@ function isValidStep(step: FlatStep): boolean {
   }
 }
 
-export function moveAfter(proof: FlatProof, moveThis: UUID, afterThis: UUID): boolean {
+export function moveAfter(proof: FlatProof, moveThis: UUID, afterThis: UUID) {
   if (moveThis === afterThis) {
     return true;
   }
@@ -148,8 +150,9 @@ export function moveAfter(proof: FlatProof, moveThis: UUID, afterThis: UUID): bo
   const movedStep = getStep(proof, moveThis);
   getStep(proof, afterThis);
 
-  removeFromProof(proof, moveThis);
-  return insertAfter(proof, afterThis, movedStep);
+  removeFromProof(proof, moveThis, false);
+  insertAfter(proof, afterThis, movedStep);
+  removeInvalid(proof);
 }
 
 export function insertAfter(proof: FlatProof, uuid: UUID, step: FlatStep): boolean {
