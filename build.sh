@@ -1,4 +1,8 @@
 # Build haskell
+cd folke
+make
+cd ..
+
 cd folke-wasm-wrapper
 source build.sh
 cd ..
