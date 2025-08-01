@@ -167,15 +167,6 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     )
   }
 
-  const suggestions: Suggestion[] = [];
-  for (const [key] of Object.entries(RULE_META_DATA)) {
-    const aliases = getPermutations(key);
-    suggestions.push({
-      label: key,
-      values: aliases
-    });
-  }
-
   return (
     <>
       <div data-target data-uuid={props.uuid} ref={lineRef} className={cls(styles["proof-row"], hasError && styles["error"], isCorrect && styles["correct"])} style={{ marginRight: `calc(3rem - ${level * 0.25}rem - ${level}px)` }}>
@@ -185,7 +176,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
         <TextFieldMemo focusOnAdd placeholder="Empty statement" className={styles["statement-input"]} value={step.statement} onChange={setStatement} onKeyDown={keydown} />
         <div className={styles["rule-args-container"]}>
           <AutocompleteInput
-            suggestions={suggestions}
+            suggestions={RULE_SUGGESTIONS}
             placeholder="Empty rule"
             containerClassName={styles["rule-name"]}
             value={step.rule}
@@ -231,6 +222,15 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     </>
   )
 }
+
+const RULE_SUGGESTIONS: Suggestion[] = [];
+  for (const [key] of Object.entries(RULE_META_DATA)) {
+    const aliases = getPermutations(key);
+    RULE_SUGGESTIONS.push({
+      label: key,
+      values: aliases
+    });
+  }
 
 function getPermutations(rule: string): string[] {
   if (rule.length === 0) {
