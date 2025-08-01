@@ -13,6 +13,7 @@ import { MdDelete, MdDragIndicator } from "react-icons/md";
 import { cls, trimPrefix } from "../../helpers/generic-helper";
 import { IoReturnDownBack } from "react-icons/io5";
 import { createDragHandler } from "../../helpers/drag-drop";
+import useContextMenuStore from "../../stores/context-menu-store";
 
 interface ProofSingleRowProps {
   uuid: string;
@@ -33,6 +34,9 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
 
   const lineRef = useRef<HTMLDivElement>(null);
   const startDrag = createDragHandler(lineRef, props.uuid, dispatch);
+
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const openContextMenu = useContextMenuStore((state) => state.open);
 
   if (!step || !isFlatLine(step)) {
     return <></>
@@ -112,7 +116,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     else if (toLineEnabled && e.code === "KeyB" && e.altKey) {
       toLine();
     }
-    else if (e.code === "Enter" && e.ctrlKey) {
+    else if (closeBoxEnabled && e.code === "Enter" && e.ctrlKey) {
       closeBox();
     }
     else if (e.code === "Delete") {
@@ -127,7 +131,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     else if (toLineEnabled && e.code === "KeyB" && e.altKey) {
       toLine();
     }
-    else if (e.code === "Enter" && e.ctrlKey) {
+    else if (closeBoxEnabled && e.code === "Enter" && e.ctrlKey) {
       closeBox();
     }
     else if (e.code === "Enter" && !e.ctrlKey) {
@@ -136,6 +140,54 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     else if (e.code === "Delete") {
       remove();
     }
+  }
+
+  const handleMouse: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    if (e.button !== 2) {
+      return;
+    } 
+
+    openContextMenu(e, [
+      {
+        label: "Remove Line",
+        icon: <MdDelete />,
+        shortcut: "Delete",
+        action: remove,
+        type: "danger",
+      },
+      {
+        label: "Insert Line Above",
+        icon: <TbRowInsertTop />,
+        action: insertBefore,
+      },
+      {
+        label: "Insert Line Below",
+        icon: <TbRowInsertBottom />,
+        action: insertAfter,
+      },
+      {
+        label: "Close Box (Insert Line Below Box)",
+        icon: <IoReturnDownBack />,
+        shortcut: "Ctrl+Enter",
+        action: closeBox,
+        enabled: closeBoxEnabled,
+      },
+      {
+        label: "Convert Line to Box",
+        icon: <TbBox />,
+        shortcut: "Ctrl+B",
+        action: toBox,
+      },
+      {
+        label: "Remove Box Around Line",
+        icon: <TbBoxOff />,
+        shortcut: "Alt+B",
+        action: toLine,
+        enabled: toLineEnabled
+      },
+    ]);
+
+    e.preventDefault();
   }
 
   const argumentInputs: JSX.Element[] = [];
@@ -169,7 +221,14 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
 
   return (
     <>
-      <div data-target data-uuid={props.uuid} ref={lineRef} className={cls(styles["proof-row"], hasError && styles["error"], isCorrect && styles["correct"])} style={{ marginRight: `calc(3rem - ${level * 0.25}rem - ${level}px)` }}>
+      <div
+        onMouseDown={handleMouse}
+        onContextMenu={e => e.preventDefault()}
+        data-target data-uuid={props.uuid}
+        ref={lineRef}
+        className={cls(styles["proof-row"], hasError && styles["error"], isCorrect && styles["correct"])}
+        style={{ marginRight: `calc(3rem - ${level * 0.25}rem - ${level}px)` }}
+      >
         <span className={styles["number"]}>
           <LineNumberMemo uuid={props.uuid} />
         </span>
@@ -204,7 +263,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
             <TbBox />
           </button>
           {toLineEnabled && (
-            <button type="button" title="Undo box" className={styles["action-button"]} onClick={toLine}>
+            <button type="button" title="Remove box around line" className={styles["action-button"]} onClick={toLine}>
               <TbBoxOff />
             </button>
           )}

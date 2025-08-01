@@ -1,4 +1,5 @@
 import ActionBar from '../components/ActionBar/ActionBar'
+import ContextMenu from '../components/ContextMenu/ContextMenu'
 import ErrorBoundary from '../components/ErrorBoundary'
 import Header from '../components/Header/Header'
 import ProofRenderer from '../components/ProofRenderer/ProofRenderer'
@@ -19,6 +20,8 @@ function App() {
             </div>
           </div>
         </ProofStoreProvider>
+
+        <ContextMenu />
       </ErrorBoundary>
     </>
   )
