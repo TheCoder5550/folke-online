@@ -5,7 +5,7 @@ import { TbBox, TbBoxOff, TbRowInsertBottom, TbRowInsertTop } from "react-icons/
 import AutocompleteInput, { type Suggestion } from "../AutocompleteInput/AutocompleteInput";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../../stores/proof-store";
 import { useShallow } from "zustand/shallow";
-import { makeSpecialCharacters } from "../../helpers/special-characters";
+import { getSpecialCharacterAliases, makeSpecialCharacters } from "../../helpers/special-characters";
 import { RULE_META_DATA } from "../../helpers/rules-data";
 import TextField, { TextFieldMemo } from "../TextField";
 import { LineNumberMemo } from "../LineNumber/LineNumber";
@@ -49,7 +49,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     setRuleFromString(e.currentTarget.value);
   }
   const selectRule = (item: Suggestion) => {
-    setRuleFromString(item.value);
+    setRuleFromString(item.label);
   }
   const setRuleFromString = (rule: string) => {
     dispatch({
@@ -169,9 +169,10 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
 
   const suggestions: Suggestion[] = [];
   for (const [key] of Object.entries(RULE_META_DATA)) {
+    const aliases = getPermutations(key);
     suggestions.push({
       label: key,
-      value: key
+      values: aliases
     });
   }
 
@@ -229,4 +230,29 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
       )}
     </>
   )
+}
+
+function getPermutations(rule: string): string[] {
+  if (rule.length === 0) {
+    return [""];
+  }
+
+  const char = rule.charAt(0);
+  
+  const aliases = getSpecialCharacterAliases(char);
+  if (aliases.length === 0) {
+    aliases.push(char);
+  }
+  
+  const rest = rule.slice(1);
+  const restPerms = getPermutations(rest);
+
+  const allPerms = [];
+  for (const alias of aliases) {
+    for (const perm of restPerms) {
+      allPerms.push(alias + perm);
+    }
+  }
+
+  return allPerms;
 }

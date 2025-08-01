@@ -5,6 +5,12 @@ export function makeSpecialCharacters(text: string) {
   return text;
 }
 
+export function getSpecialCharacterAliases(char: string): string[] {
+  return characterLookupTable
+    .filter(([_alias, spec]) => spec === char)
+    .map(([alias, _spec]) => alias);
+}
+
 const characterLookupTable = [
   // Negate
   ["!", "¬"],

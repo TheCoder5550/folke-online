@@ -13,7 +13,7 @@ function App() {
 
           <ActionBar />
 
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "1rem", paddingBottom: "1rem" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "1rem", paddingBottom: "70vh" }}>
             <div style={{ padding: "3rem 6rem", border: "1px solid rgb(0, 0, 0, 0.2)", background: "white", width: "100%", maxWidth: "1000px" }}>
               <ProofRenderer />
             </div>

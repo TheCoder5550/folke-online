@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./AutocompleteInput.module.css";
-import { clamp } from "../../helpers/generic-helper";
+import { clamp, cls } from "../../helpers/generic-helper";
 
 export interface Suggestion {
   label: string;
-  value: string;
+  values: string[];
 }
 
 export type AutocompleteInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
@@ -27,11 +27,12 @@ export default function AutocompleteInput(props: AutocompleteInputProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const matchingSuggestions = suggestions.filter(s => s.label.includes(props.value));
+  const matchingSuggestions = suggestions.filter(s => s.label.includes(props.value) || s.values.some(v => v.includes(props.value)));
+  const anyMatch = matchingSuggestions.length !== 0;
   if (matchingSuggestions.length === 0) {
     matchingSuggestions.push({
-      label: "Unknown rule: " + props.value,
-      value: props.value
+      label: props.value,
+      values: [ props.value ]
     });
   }
 
@@ -155,10 +156,18 @@ export default function AutocompleteInput(props: AutocompleteInputProps) {
       {listVisible && (
         <div ref={listRef} className={styles["list"]} tabIndex={-1}>
           {matchingSuggestions.map((suggestion, index) => (
-            <div className={[styles["list-item"], index === selectedIndex ? styles["selected"] : ""].join(" ")} key={suggestion.label} onClick={() => {
-              onSelectItem(suggestion);
-              setListVisible(false);
-            }}>
+            <div
+              className={cls(
+                styles["list-item"],
+                index === selectedIndex && styles["selected"],
+                !anyMatch && styles["unknown"]
+              )}
+              key={suggestion.label + suggestion.values.join(",")}
+              onClick={() => {
+                onSelectItem(suggestion);
+                setListVisible(false);
+              }}
+            >
               {suggestion.label}
             </div>
           ))}
