@@ -19,28 +19,21 @@ function App() {
       <ErrorBoundary>
         <Header />
 
-        <div style={{ display: "flex", flexDirection: "row" }}>
-          <ExerciseList index={index} setIndex={setIndex} />
-          
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "1rem", paddingBottom: "1rem", flexGrow: "1" }}>
-            <div style={{ position: "relative", padding: "3rem 6rem", border: "1px solid gray", background: "white", width: "100%", maxWidth: "1000px", flexGrow: "1" }}>
-              {CurrentComp ? (
-                <CurrentComp />
-              ) : (
-                <>
-                  <h1>Exercises</h1>
-                  <span>Select a question</span>
-                </>
-              )}
+        <div className="paper-container">
+          <div className="paper">
+            {CurrentComp ? (
+              <CurrentComp />
+            ) : (
+              <ExerciseList index={index} setIndex={setIndex} />
+            )}
 
-              {index != null && (
-                <button type="button" onClick={() => setIndex(null)} style={{
-                  position: "absolute",
-                  top: "1rem",
-                  right: "1rem",
-                }}>Close</button>
-              )}
-            </div>
+            {index != null && (
+              <button type="button" onClick={() => setIndex(null)} style={{
+                position: "absolute",
+                top: "1rem",
+                right: "1rem",
+              }}>Close</button>
+            )}
           </div>
         </div>
       </ErrorBoundary>

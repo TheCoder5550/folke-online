@@ -14,36 +14,35 @@ export default function ExerciseList(props: ExerciseListProps) {
   const completed = useProgressStore((state) => state.getCompleted());
   const totalExercises = EXAM_NAMES.length + EXERCISE_NAMES.length;
   const examIndexOffset = EXERCISE_NAMES.length;
+  let percent = Math.round(completed / totalExercises * 100);
+  if (percent == 100 && completed !== totalExercises) {
+    percent = 99;
+  }
 
   return (
-    <div style={{
-      display: "flex",
-      flexDirection: "column",
-      gap: "0.5rem",
-      overflow: "auto",
-      height: "85vh",
-      background: "white",
-      border: "1px solid black",
-      padding: "1rem",
-      margin: "1rem",
-      position: "sticky",
-      top: "1rem",
-      borderRadius: "4px"
-    }}>
-      <h2>Progress</h2>
-      <progress value={completed} max={totalExercises} style={{ minHeight: "1rem", width: "100%" }}></progress>
-      <span>{completed}/{totalExercises} completed</span>
+    <>
+      <h1>Exercises</h1>
+      <div className={styles["grid"]}>
+        <div className={styles["progress-card"]}>
+          <h2>Progress</h2>
+          <div className={styles["meter-container"]}>
+            <progress value={completed} max={totalExercises} style={{ minHeight: "1rem" }}></progress>
+            <span>{percent}%</span>
+          </div>
+          <span>{completed}/{totalExercises} completed</span>
+        </div>
 
-      <h2>Exercise sheets</h2>
-      {EXERCISE_NAMES.map((exercise, i) => (
-        <ListItem key={exercise} id={exercise} select={() => props.setIndex(i)} isSelected={props.index === i} />
-      ))}
+        <h2>Exercise sheets</h2>
+        {EXERCISE_NAMES.map((exercise, i) => (
+          <ListItem key={exercise} id={exercise} select={() => props.setIndex(i)} isSelected={props.index === i} />
+        ))}
 
-      <h2>All exam questions</h2>
-      {EXAM_NAMES.map((exam, i) => (
-        <ListItem key={exam} id={exam} select={() => props.setIndex(i + examIndexOffset)} isSelected={props.index === i + examIndexOffset} />
-      ))}
-    </div>
+        <h2>All exam questions</h2>
+        {EXAM_NAMES.map((exam, i) => (
+          <ListItem key={exam} id={exam} select={() => props.setIndex(i + examIndexOffset)} isSelected={props.index === i + examIndexOffset} />
+        ))}
+      </div>
+    </>
   )
 }
 
