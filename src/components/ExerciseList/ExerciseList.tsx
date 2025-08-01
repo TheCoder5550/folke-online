@@ -1,6 +1,7 @@
 import styles from "./ExerciseList.module.css";
 import { FaCheckCircle, FaRegCircle } from "react-icons/fa";
-import { EXAM_NAMES} from "../../exercise-components/exam-data.ts";
+import { EXAM_NAMES } from "../../exercise-components/exam-data.ts";
+import { EXERCISE_NAMES } from "../../exercise-components/exercise-data.ts";
 import useProgressStore from "../../stores/progress-store.tsx";
 import { cls } from "../../helpers/generic-helper.ts";
 
@@ -11,6 +12,8 @@ interface ExerciseListProps {
 
 export default function ExerciseList(props: ExerciseListProps) {
   const completed = useProgressStore((state) => state.getCompleted());
+  const totalExercises = EXAM_NAMES.length + EXERCISE_NAMES.length;
+  const examIndexOffset = EXERCISE_NAMES.length;
 
   return (
     <div style={{
@@ -28,18 +31,17 @@ export default function ExerciseList(props: ExerciseListProps) {
       borderRadius: "4px"
     }}>
       <h2>Progress</h2>
-      <progress value={completed} max={EXAM_NAMES.length} style={{ minHeight: "1rem", width: "100%" }}></progress>
-      <span>{completed}/{EXAM_NAMES.length} completed</span>
+      <progress value={completed} max={totalExercises} style={{ minHeight: "1rem", width: "100%" }}></progress>
+      <span>{completed}/{totalExercises} completed</span>
 
-      <h2>Weekly exercises</h2>
-      <span style={{ textDecoration: "line-through" }}>Week 1</span>
-      <span style={{ textDecoration: "line-through" }}>Week 2</span>
-      <span style={{ textDecoration: "line-through" }}>Week 3</span>
-      <span style={{ textDecoration: "line-through" }}>Week 4</span>
+      <h2>Exercise sheets</h2>
+      {EXERCISE_NAMES.map((exercise, i) => (
+        <ListItem key={exercise} id={exercise} select={() => props.setIndex(i)} isSelected={props.index === i} />
+      ))}
 
       <h2>All exam questions</h2>
       {EXAM_NAMES.map((exam, i) => (
-        <ListItem key={exam} id={exam} select={() => props.setIndex(i)} isSelected={props.index === i} />
+        <ListItem key={exam} id={exam} select={() => props.setIndex(i + examIndexOffset)} isSelected={props.index === i + examIndexOffset} />
       ))}
     </div>
   )

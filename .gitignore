@@ -30,3 +30,4 @@ dist-newstyle
 # Exercises
 build
 src/exercise-components
+generate-exercise-components.mjs

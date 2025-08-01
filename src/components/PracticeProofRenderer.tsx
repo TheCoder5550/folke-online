@@ -155,7 +155,8 @@ function Modal({ children, ...props }: ModalProps) {
       justifyContent: "center",
       alignItems: "center",
       padding: "0.25rem",
-      background: "rgb(0, 0, 20, 0.4)"
+      background: "rgb(0, 0, 20, 0.4)",
+      zIndex: "10000",
     }} onClick={handleClick} ref={backgroundRef}>
       <div style={{
         position: "relative",

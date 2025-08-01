@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import ErrorBoundary from '../components/ErrorBoundary';
 import ExerciseList from '../components/ExerciseList/ExerciseList';
-// import Exercise from '../components/Exercise'
 import Header from '../components/Header/Header';
-import { COMPONENT_LIST } from '../exercise-components/AllExams';
+import { COMPONENT_LIST as EXAM_COMPONENT_LIST } from '../exercise-components/AllExams';
+import { COMPONENT_LIST as EXERCISE_COMPONENT_LIST } from '../exercise-components/exercise-data';
 
-// const exercise1 = (await import(`../assets/exercises-markdown/exercise-1.md?raw`)).default;
-// const exercise2 = (await import(`../assets/exercises-markdown/exercise-2.md?raw`)).default;
+const ALL_COMPONENTS = [
+  ...EXERCISE_COMPONENT_LIST,
+  ...EXAM_COMPONENT_LIST,
+]
 
 function App() {
   const [index, setIndex] = useState<number | null>(null);
-  const CurrentComp = index != null ?  COMPONENT_LIST[index] : null;
+  const CurrentComp = index != null ?  ALL_COMPONENTS[index] : null;
 
   return (
     <>
@@ -21,7 +23,7 @@ function App() {
           <ExerciseList index={index} setIndex={setIndex} />
           
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "1rem", paddingBottom: "1rem", flexGrow: "1" }}>
-            <div style={{ padding: "3rem 6rem", border: "1px solid gray", background: "white", width: "100%", maxWidth: "1000px", flexGrow: "1" }}>
+            <div style={{ position: "relative", padding: "3rem 6rem", border: "1px solid gray", background: "white", width: "100%", maxWidth: "1000px", flexGrow: "1" }}>
               {CurrentComp ? (
                 <CurrentComp />
               ) : (
@@ -31,8 +33,13 @@ function App() {
                 </>
               )}
 
-              {/* <Exercise markdown={exercise1} name="1" key="1" />
-              <Exercise markdown={exercise2} name="2" key="2" /> */}
+              {index != null && (
+                <button type="button" onClick={() => setIndex(null)} style={{
+                  position: "absolute",
+                  top: "1rem",
+                  right: "1rem",
+                }}>Close</button>
+              )}
             </div>
           </div>
         </div>
