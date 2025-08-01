@@ -28,3 +28,13 @@ Install:
     ```bash
     npm run dev
     ```
+
+Build:
+1. Build everything
+    ```bash
+    npm run build
+    ```
+1. Run build
+    ```bash
+    npm run preview
+    ```

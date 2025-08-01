@@ -73,7 +73,7 @@ interface HaskellProof {
     _premises: string[];
     _steps: HaskellStep[];
   }
-  _fedUserDefinedRules?: HaskellUserDefinedRule[]
+  _fedUserDefinedRules?: HaskellUserDefinedRule[] | null
 }
 
 interface HaskellUserDefinedRule {
