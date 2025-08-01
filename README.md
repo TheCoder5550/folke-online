@@ -7,15 +7,16 @@ Tech-stack:
 * **Typescript**: add types to javascript
 * **Vite**: Compile typescript and allows for hot reloading
 * **Haskell**: Folke is built with haskell
+* **Docker**: Automatically install needed programs and utilities
 
 Requirements (windows):
 * Docker with WSL enabled
 * VSCode with dev container extensions installed
 
-Install:
+Install (windows):
 1. Clone the repo inside WSL (hot reloading doesn't work otherwise)
 1. Open the cloned repo in VSCode
-1. Re-open in dev container (to use the correct node version)
+1. Re-open in dev container (to automatically install node, ghc, ghc-wasm and cabal packages)
 1. Install dependencies:
     ```bash
     npm install
