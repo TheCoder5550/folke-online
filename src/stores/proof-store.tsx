@@ -1,4 +1,4 @@
-import { createJSONStorage, devtools, persist} from 'zustand/middleware';
+import { devtools, persist} from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { closeBoxWith, convertToBox, convertToLine, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, insertAfter, insertBefore, insertInto, moveAfter, proofToHaskellProof, removeFromProof, setArgument, setRule, setStatement, unflattenProof } from '../helpers/proof-helper';
 import { createStore, useStore } from 'zustand';
@@ -625,7 +625,6 @@ const createProofStore = (initialProof: FlatProof, localStorageName: string) => 
           }),
           {
             name: localStorageName,
-            storage: createJSONStorage(() => sessionStorage),
             partialize: (state) => ({
               proof: state.proof,
               premiseInput: state.premiseInput
