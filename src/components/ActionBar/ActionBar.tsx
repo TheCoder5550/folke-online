@@ -11,6 +11,7 @@ import { cls } from "../../helpers/generic-helper";
 
 export default function ActionBar() {
   const [category, setCategory] = useState<"File" | "Edit">("Edit");
+  const [autoValidate, setAutoValidate] = useState(true);
 
   const dispatch = useProofStore((state) => state.dispatch);
   const undo = useProofStore((state) => state.undo);
@@ -121,7 +122,10 @@ export default function ActionBar() {
           )}
         </div>
         
-        <ValidateButton />
+        <div className={styles["current-actions"]}>
+          <ValidateButton autoValidate={autoValidate} />
+          <button title="Automatically validate proof whilst writing" type="button" className={"action-button"} onClick={() => setAutoValidate(!autoValidate)}>Auto validate: {autoValidate ? "On" : "Off"}</button>
+        </div>
       </div>
     </div>
   )

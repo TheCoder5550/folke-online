@@ -8,6 +8,7 @@ import useProofStore from "../../stores/proof-store.js";
 import { HiClipboardDocumentCheck } from "react-icons/hi2";
 import { FaCheckCircle } from "react-icons/fa";
 import { BiSolidErrorAlt } from "react-icons/bi";
+import { MdHdrAuto } from "react-icons/md";
 
 type HaskellInstance = WebAssembly.Instance & {
   exports: HaskellExports
@@ -31,6 +32,8 @@ const decoder = new TextDecoder()
 
 interface ValidateButtonProps {
   onValid?: () => void;
+  autoValidate?: boolean;
+  autoValidateMs?: number;
 }
 
 export default function ValidateButton(props: ValidateButtonProps) {
@@ -38,6 +41,7 @@ export default function ValidateButton(props: ValidateButtonProps) {
   const [hs, setHS] = useState<HaskellExports>();
   const isCorrect = useProofStore((state) => state.result?.correct);
   const setResult = useProofStore((state) => state.setResult);
+  const autoValidate = props.autoValidate !== false;
 
   useEffect(() => {
     async function loadWasm() {
@@ -85,9 +89,16 @@ export default function ValidateButton(props: ValidateButtonProps) {
 
   useEffect(() => {
     setResult(null);
+
+    if (autoValidate) {
+      const timeout = setTimeout(validate, props.autoValidateMs ?? 500);
+      return () => {
+        clearTimeout(timeout);
+      }
+    }
   }, [proof]);
 
-  const handleClick = () => {
+  const validate = () => {
     if (!hs) {
       console.error("WebAssembly not loaded yet");
       return;
@@ -132,8 +143,11 @@ export default function ValidateButton(props: ValidateButtonProps) {
         </span>
       )}
 
-      <button title="Validate proof" className="action-button" type="button" onClick={handleClick}>
+      <button title="Validate proof" className="action-button" type="button" onClick={() => validate()}>
         <HiClipboardDocumentCheck /> Validate
+        {autoValidate && (
+          <MdHdrAuto />
+        )}
       </button>
     </div>
   )
