@@ -2,17 +2,29 @@ import { useState } from 'react';
 import ErrorBoundary from '../components/ErrorBoundary';
 import ExerciseList from '../components/ExerciseList/ExerciseList';
 import Header from '../components/Header/Header';
-import { COMPONENT_LIST as EXAM_COMPONENT_LIST } from '../exercise-components/AllExams';
-import { COMPONENT_LIST as EXERCISE_COMPONENT_LIST } from '../exercise-components/exercise-data';
+import { COMPONENT_MAP as EXAM_COMPONENT_MAP } from '../exercise-components/exam-data';
+import { COMPONENT_MAP as EXERCISE_COMPONENT_MAP } from '../exercise-components/exercise-data';
 
-const ALL_COMPONENTS = [
-  ...EXERCISE_COMPONENT_LIST,
-  ...EXAM_COMPONENT_LIST,
-]
+const ALL_COMPONENTS = {
+  ...EXAM_COMPONENT_MAP,
+  ...EXERCISE_COMPONENT_MAP
+}
+
+function getComponentById(id: string | null) {
+  if (id == null) {
+    return null;
+  }
+
+  if (ALL_COMPONENTS.hasOwnProperty(id)) {
+    return ALL_COMPONENTS[id as keyof typeof ALL_COMPONENTS];
+  }
+
+  return null;
+}
 
 function App() {
-  const [index, setIndex] = useState<number | null>(null);
-  const CurrentComp = index != null ?  ALL_COMPONENTS[index] : null;
+  const [id, setId] = useState<string | null>(null);
+  const CurrentComp = getComponentById(id);
 
   return (
     <>
@@ -24,11 +36,11 @@ function App() {
             {CurrentComp ? (
               <CurrentComp />
             ) : (
-              <ExerciseList index={index} setIndex={setIndex} />
+              <ExerciseList id={id} setId={setId} />
             )}
 
-            {index != null && (
-              <button type="button" onClick={() => setIndex(null)} style={{
+            {id != null && (
+              <button type="button" onClick={() => setId(null)} style={{
                 position: "absolute",
                 top: "1rem",
                 right: "1rem",

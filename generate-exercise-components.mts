@@ -6,8 +6,28 @@ const proofCollection = "./folke/assets/examples/exams";
 const markdownCollection = "./src/assets/exercises-markdown";
 const outputDir = "./src/exercise-components";
 
+const allFileNames: string[] = [];
+
 await generateMarkdowns();
 await generateExams();
+
+await generateIdList(allFileNames);
+
+async function generateIdList(fileNames: string[]) {
+  const ids = fileNames.map(f => `"${f}"`).join(",\n");
+
+  const content = `
+// AUTO-GENERATED
+
+export const IDS = [
+${ids}
+]
+  `.trim();
+
+  const outFileName = "id-data.ts";
+  const data = new Uint8Array(Buffer.from(content));
+  await fs.writeFile(path.join(outputDir, outFileName), data);
+}
 
 // #region Generate markdown
 
@@ -69,6 +89,8 @@ async function generateMarkdowns() {
 
   let files = await fs.readdir(markdownCollection);
   files = files.filter(file => path.extname(file) === ".md");
+  allFileNames.push(...files);
+  
   for (const file of files) {
     const content = await fs.readFile(path.join(markdownCollection, file),  { encoding: 'utf8' });
     await generateExerciseFromMarkdown(file, content);
@@ -132,23 +154,21 @@ ${parsedMarkdown}
 }
 
 async function generateMarkdownList(fileNames: string[]) {
-  const exerciseNames = fileNames.map(f => `"${f}"`).join(",\n");
   const componentNames = fileNames.map(f => getMarkdownComponentName(f));
   const imports = componentNames.map(c => `import ${c} from "./${c}"`).join("\n");
-  const compList = componentNames.join(",\n");
+
+  const componentMap = fileNames
+    .map(fileName => `"${fileName}": ${getMarkdownComponentName(fileName)}`)
+    .join(",\n");
 
   const content = `
 // AUTO-GENERATED
 
 ${imports}
 
-export const COMPONENT_LIST = [
-${compList}
-]
-
-export const EXERCISE_NAMES = [
-${exerciseNames}
-]
+export const COMPONENT_MAP = {
+${componentMap}
+}
   `.trim();
 
   const outFileName = "exercise-data.ts";
@@ -167,12 +187,13 @@ function getMarkdownComponentName(fileName: string) {
 async function generateExams() {
   let files = await fs.readdir(proofCollection);
   files = files.filter(file => path.extname(file) === ".folke");
+  allFileNames.push(...files);
+
   for (const file of files) {
     const content = await fs.readFile(path.join(proofCollection, file),  { encoding: 'utf8' });
     await generateComponent(file, content);
   }
 
-  await generateMainComponent(files);
   await generateList(files);
 }
 
@@ -214,45 +235,46 @@ export default function ${compName}() {
   await fs.writeFile(path.join(outputDir, outFileName), data);
 }
 
-async function generateMainComponent(fileNames: string[]) {
-  const thisCompName = "AllExams";
+async function generateList(fileNames: string[]) {
   const componentNames = fileNames.map(f => getComponentName(f));
   const imports = componentNames.map(c => `import ${c} from "./${c}"`).join("\n");
-  const components = componentNames.map(c => `      <${c} />`).join("\n");
-  const compList = componentNames.join(",\n");
+
+  const examMap = new Map<string, string[]>();
+  for (const fileName of fileNames) {
+    const examId = fileName.split("_")[1];
+    if (!examMap.has(examId)) {
+      examMap.set(examId, []);
+    }
+
+    const list = examMap.get(examId);
+    if (!list) {
+      console.error("Error :(")
+      continue;
+    }
+
+    list.push(fileName);
+  }
+
+  const objectEntries = [...examMap.entries()]
+    .map(([key, value]) => `"${key}": [${value.map(v => `"${v}"`).join(", ")}]`)
+    .join(",\n");
+
+  const componentMap = fileNames
+    .map(fileName => `"${fileName}": ${getComponentName(fileName)}`)
+    .join(",\n");
 
   const content = `
 // AUTO-GENERATED
 
 ${imports}
 
-export const COMPONENT_LIST = [
-${compList}
-]
-
-export default function ${thisCompName}() {
-  return (
-    <>
-${components}
-    </>
-  )
-}
-  `.trim();
-
-  const outFileName = thisCompName + ".tsx";
-  const data = new Uint8Array(Buffer.from(content));
-  await fs.writeFile(path.join(outputDir, outFileName), data);
+export const COMPONENT_MAP = {
+${componentMap}
 }
 
-async function generateList(fileNames: string[]) {
-  const examNames = fileNames.map(f => `"${f}"`).join(",\n")
-
-  const content = `
-// AUTO-GENERATED
-
-export const EXAM_NAMES = [
-${examNames}
-]
+export const EXAM_CATEGORIES = {
+${objectEntries}
+}
   `.trim();
 
   const outFileName = "exam-data.ts";

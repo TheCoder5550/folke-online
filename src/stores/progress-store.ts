@@ -1,7 +1,7 @@
 import { create } from "zustand"
 import { combine, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer"
-import { EXAM_NAMES } from "../exercise-components/exam-data";
+import { IDS } from '../exercise-components/id-data';
 
 type ProgressLookup = {
   [id: string]: boolean | undefined
@@ -17,7 +17,7 @@ const useProgressStore = create(
         (set, get) => ({
           completeExercise(id: string) {
             set(state => {
-              if (!EXAM_NAMES.includes(id)) {
+              if (!IDS.includes(id)) {
                 return;
               }
 
@@ -25,7 +25,7 @@ const useProgressStore = create(
             })
           },
           isCompleted(id: string) {
-            if (!EXAM_NAMES.includes(id)) {
+            if (!IDS.includes(id)) {
               return false;
             }
 
@@ -35,7 +35,7 @@ const useProgressStore = create(
             const progress = get().progress;
             let completed = 0;
             for (const [key, value] of Object.entries(progress)) {
-              if (value && EXAM_NAMES.includes(key)) {
+              if (value && IDS.includes(key)) {
                 completed++;
               }
             }

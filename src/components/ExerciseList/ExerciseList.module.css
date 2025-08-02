@@ -1,13 +1,22 @@
 .grid {
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 }
 
 .grid h2 {
   grid-column-start: 1;
   grid-column-end: 4;
+}
+
+.card {
+  padding: 1rem;
+
+  box-shadow: var(--card-shadow);
+  background: white;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .progress-card {
@@ -43,4 +52,9 @@
 
 .list-item.selected {
   font-weight: bold;
+}
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
