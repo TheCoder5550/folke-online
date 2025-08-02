@@ -21,8 +21,8 @@ export default function ExerciseList(props: ExerciseListProps) {
     <>
       <h1>Exercises</h1>
       <div className={styles["grid"]}>
-        <div className={styles["progress-card"]}>
-          <h2>Progress</h2>
+        <div className={styles["card"]}>
+          <h3>Progress</h3>
           <div className={styles["meter-container"]}>
             <progress value={completed} max={totalExercises} style={{ minHeight: "1rem" }}></progress>
             <span>{percent}%</span>

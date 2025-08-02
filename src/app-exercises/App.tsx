@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ErrorBoundary from '../components/ErrorBoundary';
 import ExerciseList from '../components/ExerciseList/ExerciseList';
 import Header from '../components/Header/Header';
@@ -25,6 +25,10 @@ function getComponentById(id: string | null) {
 function App() {
   const [id, setId] = useState<string | null>(null);
   const CurrentComp = getComponentById(id);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
 
   return (
     <>

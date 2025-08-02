@@ -149,9 +149,14 @@ input[type=text]::placeholder {
 
 .paper {
   position: relative;
-  padding: 3rem 6rem;
+  padding: 6rem;
+  padding-top: 4.5rem;
   border: 1px solid rgba(0, 0, 0, 0.2);
   background: white;
   width: 100%;
   max-width: 1000px;
+}
+
+.paper > h1 {
+  margin-top: 0;
 }
