@@ -78,7 +78,7 @@ async function generateMarkdowns() {
       
       return `
 <ProofStoreProvider initialProof={createExercise(${premises}, ${conclusion})} localStorageName='$STORAGE_NAME$'>
-  <PracticeProofRenderer solution={${solution}} />
+  <PracticeProofRenderer onValid={() => completeSubExercise(id, $SUB_QUESTION_INDEX$, $TOTAL_SUB_QUESTIONS$)} solution={${solution}} />
 </ProofStoreProvider>
 
       `.trim();
@@ -110,8 +110,14 @@ async function generateExerciseFromMarkdown(fileName: string, fileContent: strin
 import PracticeProofRenderer from "../components/PracticeProofRenderer";
 import { ProofStoreProvider } from "../stores/proof-store";
 import { createExercise, flattenProof, haskellProofToProof } from "../helpers/proof-helper";
+import useProgressStore from "../stores/progress-store";
+
+const id = "${fileName}";
 
 export default function ${compName}() {
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const completeSubExercise = useProgressStore((state) => state.completeSubExercise);
+
   return (
     <>
 ${parsedMarkdown}
@@ -125,6 +131,14 @@ ${parsedMarkdown}
     content = content.replace("$STORAGE_NAME$", compName + "@" + i)
     i++;
   }
+
+  i = 0;
+  while (content.includes("$SUB_QUESTION_INDEX$")) {
+    content = content.replace("$SUB_QUESTION_INDEX$", i.toString())
+    i++;
+  }
+
+  content = content.replaceAll("$TOTAL_SUB_QUESTIONS$", i.toString())
 
   const regex = /solution={(.*)}/g;
   let matches = content.matchAll(regex);

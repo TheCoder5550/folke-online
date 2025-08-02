@@ -4,7 +4,7 @@ import { immer } from "zustand/middleware/immer"
 import { IDS } from '../exercise-components/id-data';
 
 type ProgressLookup = {
-  [id: string]: boolean | undefined
+  [id: string]: boolean | boolean[] | undefined
 };
 
 const useProgressStore = create(
@@ -24,18 +24,63 @@ const useProgressStore = create(
               state.progress[id] = true;
             })
           },
-          isCompleted(id: string) {
-            if (!IDS.includes(id)) {
-              return false;
+          completeSubExercise(id: string, index: number, totalSubQuestions: number) {
+            set(state => {
+              if (!IDS.includes(id)) {
+                return;
+              }
+
+              const currentProgress = state.progress[id];
+              if (typeof currentProgress === "boolean") {
+                return;
+              }
+              else if (currentProgress == undefined) {
+                state.progress[id] = new Array<boolean>(totalSubQuestions).fill(false);
+              }
+              else if (currentProgress.length < totalSubQuestions) {
+                const falses = new Array<boolean>(totalSubQuestions - currentProgress.length).fill(false);
+                state.progress[id] = [...currentProgress, ...falses];
+              }
+
+              if (Array.isArray(state.progress[id])) {
+                state.progress[id][index] = true;
+              }
+            })
+          },
+          getStatus(id: string) {
+            const progress = get().progress[id];
+
+            if (!IDS.includes(id) || progress == undefined) {
+              return "error";
             }
 
-            return get().progress[id] ?? false;
+            if (Array.isArray(progress)) {
+              if (progress.every(v => v === true)) {
+                return "complete";
+              }
+              else if (progress.every(v => v !== true)) {
+                return "incomplete";
+              }
+              else {
+                return "partial";
+              }
+            }
+            else {
+              return progress === true ? "complete" : "incomplete";
+            }
           },
           getCompleted() {
             const progress = get().progress;
             let completed = 0;
             for (const [key, value] of Object.entries(progress)) {
-              if (value && IDS.includes(key)) {
+              if (!IDS.includes(key) || value == undefined) {
+                continue;
+              }
+
+              if (Array.isArray(value) && value.every(v => v === true)) {
+                completed++;
+              }
+              else if (value === true) {
                 completed++;
               }
             }

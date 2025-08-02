@@ -4,6 +4,7 @@ import { EXAM_CATEGORIES, COMPONENT_MAP as EXAM_COMPONENT_MAP } from "../../exer
 import { COMPONENT_MAP as EXERCISE_COMPONENT_MAP } from "../../exercise-components/exercise-data.ts";
 import useProgressStore from "../../stores/progress-store.ts";
 import { cls } from "../../helpers/generic-helper.ts";
+import { FaCircleHalfStroke } from "react-icons/fa6";
 
 const totalExercises = Object.keys(EXAM_COMPONENT_MAP).length + Object.keys(EXERCISE_COMPONENT_MAP).length;
 
@@ -55,12 +56,14 @@ interface ListItemProps {
 }
 
 function ListItem(props: ListItemProps) {
-  const isCompleted = useProgressStore((state) => state.isCompleted(props.id));
+  const status = useProgressStore((state) => state.getStatus(props.id));
 
   return (
-    <div onClick={props.select} className={cls(styles["list-item"], isCompleted && styles["completed"], props.isSelected && styles["selected"])}>
-      {isCompleted ? (
+    <div onClick={props.select} className={cls(styles["list-item"], status && styles["completed"], props.isSelected && styles["selected"])}>
+      {status === "complete" ? (
         <FaCheckCircle title="Completed!" color="rgb(var(--correct-color-rgb))" />
+      ) : status === "partial" ? (
+        <FaCircleHalfStroke title="Partially completed" color="rgb(var(--correct-color-rgb))" />
       ) : (
         <FaRegCircle title="Not completed yet" opacity={0.2} />
       )}
