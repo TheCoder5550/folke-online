@@ -31,6 +31,7 @@ export interface RuleMetaData {
   nrArguments: number;
   argumentLabels?: string[];
   argumentInputLengths?: number[];
+  argumentPlaceholders?: string[];
   usageComponent?: () => JSX.Element;
 }
 
@@ -56,96 +57,112 @@ export const RULE_META_DATA: { [id: string]: RuleMetaData | undefined } = {
     name: "Copy",
     description: "",
     nrArguments: 1,
+    argumentPlaceholders: ["Row"],
     usageComponent: Copy,
   },
   "∧I": {
     name: "Conjunction introduction",
     description: "",
     nrArguments: 2,
+    argumentPlaceholders: ["Row", "Row"],
     usageComponent: ConjunctionIntro,
   },
   "∧EL": {
     name: "Left conjunction elimination",
     description: "",
     nrArguments: 1,
+    argumentPlaceholders: ["Row"],
     usageComponent: ConjunctionElimLeft,
   },
   "∧ER": {
     name: "Right conjunction elimination",
     description: "",
     nrArguments: 1,
+    argumentPlaceholders: ["Row"],
     usageComponent: ConjunctionElimRight,
   },
   "∨IL": {
     name: "Left disjunction introduction",
     description: "",
     nrArguments: 1,
+    argumentPlaceholders: ["Row"],
     usageComponent: DisjunctionIntroLeft,
   },
   "∨IR": {
     name: "Right disjunction introduction",
     description: "",
     nrArguments: 1,
+    argumentPlaceholders: ["Row"],
     usageComponent: DisjunctionIntroRight,
   },
   "∨E": {
     name: "Disjunction elimination",
     description: "",
     nrArguments: 3,
+    argumentPlaceholders: ["Row", "Box", "Box"],
     usageComponent: DisjunctionElim,
   },
   "→I": {
     name: "Implication introduction",
     description: "",
     nrArguments: 1,
+    argumentPlaceholders: ["Box"],
     usageComponent: ImplicationIntro,
   },
   "→E": {
     name: "Implication elimination",
     description: "",
     nrArguments: 2,
+    argumentPlaceholders: ["Row", "Row"],
     usageComponent: ImplicationElim,
   },
   "¬I": {
     name: "Negation introduction",
     description: "",
     nrArguments: 1,
+    argumentPlaceholders: ["Box"],
     usageComponent: NegationIntro,
   },
   "¬E": {
     name: "Negation elimination",
     description: "",
     nrArguments: 2,
+    argumentPlaceholders: ["Row", "Row"],
     usageComponent: NegationElim,
   },
   "⊥E": {
     name: "Contradiction elimination",
     description: "",
     nrArguments: 1,
+    argumentPlaceholders: ["Row"],
     usageComponent: ContradictionElim,
   },
   "¬¬I": {
     name: "Double negation introduction",
     description: "",
     nrArguments: 1,
+    argumentPlaceholders: ["Row"],
     usageComponent: DoubleNegationIntro,
   },
   "¬¬E": {
     name: "Double negation elimination",
     description: "",
     nrArguments: 1,
+    argumentPlaceholders: ["Row"],
     usageComponent: DoubleNegationElim,
   },
   "MT": {
     name: "Modus tollens",
     description: "",
     nrArguments: 2,
+    argumentPlaceholders: ["Row", "Row"],
     usageComponent: MT,
   },
   "PBC": {
     name: "Proof by contradiction",
     description: "",
     nrArguments: 1,
+    argumentPlaceholders: ["Box"],
     usageComponent: PBC,
   },
   "LEM": {
@@ -166,30 +183,35 @@ export const RULE_META_DATA: { [id: string]: RuleMetaData | undefined } = {
     nrArguments: 3,
     argumentLabels: ["", "", "𝝓(u)≡"],
     argumentInputLengths: [35, 35, 150],
+    argumentPlaceholders: ["Row", "Row", "Sub. func."],
     usageComponent: EqualityElim,
   },
   "∀E": {
     name: "Universal elimination",
     description: "",
     nrArguments: 2,
+    argumentPlaceholders: ["Row", "Var."],
     usageComponent: UniversalElim,
   },
   "∀I": {
     name: "Universal introduction",
     description: "",
     nrArguments: 1,
+    argumentPlaceholders: ["Box"],
     usageComponent: UniversalIntro,
   },
   "∃E": {
     name: "Existential elimination",
     description: "",
     nrArguments: 2,
+    argumentPlaceholders: ["Row", "Box"],
     usageComponent: ExistentialElim,
   },
   "∃I": {
     name: "Existential introduction",
     description: "",
     nrArguments: 1,
+    argumentPlaceholders: ["Row"],
     usageComponent: ExistentialIntro,
   }
 };

@@ -197,6 +197,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     const isLast = (i === step.usedArguments - 1);
     const ruleData = RULE_META_DATA[step.rule];
     const inputWidth = ruleData?.argumentInputLengths?.[i];
+    const placeholder = ruleData?.argumentPlaceholders?.[i] ?? ("Arg " + (i + 1));
 
     if (step.rule === "=E" && i === 2) {
       arg = trimPrefix(arg, "u:=");
@@ -210,7 +211,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
         )}
 
         <TextField
-          placeholder={"Arg. " + (i + 1)}
+          placeholder={placeholder}
           value={arg}
           onChange={e => setArgument(i, prefix + e.currentTarget.value)}
           onKeyDown={isLast ? keydownLastInput : keydown}
@@ -232,11 +233,11 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
         <span className={styles["number"]}>
           <LineNumberMemo uuid={props.uuid} />
         </span>
-        <TextFieldMemo focusOnAdd placeholder="Empty statement" className={styles["statement-input"]} value={step.statement} onChange={setStatement} onKeyDown={keydown} />
+        <TextFieldMemo focusOnAdd placeholder="Enter statement" className={styles["statement-input"]} value={step.statement} onChange={setStatement} onKeyDown={keydown} />
         <div className={styles["rule-args-container"]}>
           <AutocompleteInput
             suggestions={RULE_SUGGESTIONS}
-            placeholder="Empty rule"
+            placeholder="Enter rule"
             containerClassName={styles["rule-name"]}
             value={step.rule}
             onChange={setRule}
