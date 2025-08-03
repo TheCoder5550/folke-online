@@ -29,6 +29,24 @@
   --hover-line-rgb: 243, 231, 210;
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(163, 163, 163);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(126, 126, 126);;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
 html {
   scrollbar-gutter: stable;
 }
@@ -67,40 +85,33 @@ a:hover {
   color: #535bf2;
 }
 
-/* button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-} */
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  /* button {
-    background-color: #f9f9f9;
-  } */
-}
-
 button {
   cursor: pointer;
+}
+
+.action-button {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+
+  padding: 0.5em 1em;
+  height: 2.5em;
+
+  font-size: 0.85rem;
+  border: 1px solid;
+  border-color: rgba(0, 0, 0, 0.2);
+  background: none;
+  border-radius: 2px;
+}
+
+.action-button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.action-button:active {
+  background: rgba(0, 0, 0, 0.1);
 }
 
 input[type=text] {
@@ -120,28 +131,6 @@ input[type=text] {
 input[type=text]::placeholder {
   color: #bbb;
 }
-
-
-
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgb(163, 163, 163);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgb(126, 126, 126);;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
-}
-
-
 
 .paper-container {
   display: flex;
@@ -163,4 +152,14 @@ input[type=text]::placeholder {
 
 .paper > h1 {
   margin-top: 0;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
 }

@@ -4,41 +4,43 @@ import { useState } from "react";
 import Modal from "../Modal";
 import { cls } from "../../helpers/generic-helper";
 
-export default function RuleDictionary() {
-  const [hidden, setHidden] = useState(false);
+interface RuleDictionaryProps {
+  visible: boolean;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function RuleDictionary(props: RuleDictionaryProps) {
   const [rule, setRule] = useState<RuleMetaData | undefined>();
   const CurrentComp = rule == undefined ? undefined : rule.usageComponent;
 
+  if (!props.visible) {
+    return;
+  }
+
   return (
-    <div className={styles["sticky-anchor"]}>
-      {hidden ? (
-        <button className={cls("action-button", styles["show"])} type="button" onClick={() => setHidden(false)}>Show rules</button>
-      ) : (
-        <div className={styles["container"]}>
-          <h2>Rules</h2>
-          <div className={styles["list"]}>
-            {Object.entries(RULE_META_DATA).map(([rule, data]) => {
-              return (
-                <button type="button" key={rule} className={cls("action-button", styles["list-item"])} onClick={() => setRule(data)}>
-                  {rule}
-                </button>
-              )
-            })}
-          </div>
+    <div className={styles["container"]}>
+      <h2>Rules</h2>
+      <div className={styles["list"]}>
+        {Object.entries(RULE_META_DATA).map(([rule, data]) => {
+          return (
+            <button title={data?.name} type="button" key={rule} className={cls("action-button", styles["list-item"])} onClick={() => setRule(data)}>
+              {rule}
+            </button>
+          )
+        })}
+      </div>
 
-          <button className={styles["hide"]} type="button" onClick={() => setHidden(true)}>✕</button>
+      <button title="Hide rules" className={styles["hide"]} type="button" onClick={() => props.setVisible(false)}>✕</button>
 
-          <Modal open={rule != undefined} closeModal={() => setRule(undefined)}>
-            {rule && (
-              <>
-                <h3>{rule.name}</h3>
-                <p>{rule.description}</p>
-              </>
-            )}
-            {CurrentComp && <CurrentComp />}
-          </Modal>
-        </div>
-      )}
+      <Modal open={rule != undefined} closeModal={() => setRule(undefined)}>
+        {rule && (
+          <>
+            <h3>{rule.name}</h3>
+            <p>{rule.description}</p>
+          </>
+        )}
+        {CurrentComp && <CurrentComp />}
+      </Modal>
     </div>
   )
 }

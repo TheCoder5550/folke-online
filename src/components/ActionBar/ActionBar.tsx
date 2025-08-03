@@ -3,15 +3,18 @@ import { ImRedo, ImUndo } from "react-icons/im";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../../stores/proof-store";
 import { useEffect, useRef, useState } from "react";
 import { flattenProof, haskellProofToProof } from "../../helpers/proof-helper";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdOutlineMotionPhotosAuto } from "react-icons/md";
 import ValidateButton from "../ValidateButton/ValidateButton";
-import { FaFileExport, FaUpload } from "react-icons/fa6";
+import { FaBookOpen, FaFileExport, FaUpload } from "react-icons/fa6";
 import SymbolDictionary from "../SymbolDictionary/SymbolDictionary";
 import { cls } from "../../helpers/generic-helper";
+import ToggleButton from "../ToggleButton/ToggleButton";
+import RuleDictionary from "../RuleDictionary/RuleDictionary";
 
 export default function ActionBar() {
   const [category, setCategory] = useState<"File" | "Edit">("Edit");
   const [autoValidate, setAutoValidate] = useState(true);
+  const [viewRules, setViewRules] = useState(true);
 
   const dispatch = useProofStore((state) => state.dispatch);
   const undo = useProofStore((state) => state.undo);
@@ -124,9 +127,18 @@ export default function ActionBar() {
         
         <div className={styles["current-actions"]}>
           <ValidateButton autoValidate={autoValidate} />
-          <button title="Automatically validate proof whilst writing" type="button" className={"action-button"} onClick={() => setAutoValidate(!autoValidate)}>Auto validate: {autoValidate ? "On" : "Off"}</button>
+
+          <ToggleButton toggle={() => setAutoValidate(!autoValidate)} toggled={autoValidate} title="Automatically validate proof whilst writing">
+            <MdOutlineMotionPhotosAuto />
+          </ToggleButton>
+
+          <ToggleButton toggle={() => setViewRules(!viewRules)} toggled={viewRules} title="Show rule dictionary">
+            <FaBookOpen />
+          </ToggleButton>
         </div>
       </div>
+
+      <RuleDictionary visible={viewRules} setVisible={setViewRules} />
     </div>
   )
 }

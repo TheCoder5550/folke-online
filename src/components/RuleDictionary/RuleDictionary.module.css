@@ -1,8 +1,3 @@
-.sticky-anchor {
-  position: sticky;
-  top: 0rem;
-}
-
 .container {
   position: absolute;
   top: 6rem;
