@@ -186,6 +186,13 @@ export const RULE_META_DATA: { [id: string]: RuleMetaData | undefined } = {
     argumentPlaceholders: ["Row", "Row", "Sub. func."],
     usageComponent: EqualityElim,
   },
+  "∀I": {
+    name: "Universal introduction",
+    description: "",
+    nrArguments: 1,
+    argumentPlaceholders: ["Box"],
+    usageComponent: UniversalIntro,
+  },
   "∀E": {
     name: "Universal elimination",
     description: "",
@@ -193,12 +200,12 @@ export const RULE_META_DATA: { [id: string]: RuleMetaData | undefined } = {
     argumentPlaceholders: ["Row", "Var."],
     usageComponent: UniversalElim,
   },
-  "∀I": {
-    name: "Universal introduction",
+  "∃I": {
+    name: "Existential introduction",
     description: "",
     nrArguments: 1,
-    argumentPlaceholders: ["Box"],
-    usageComponent: UniversalIntro,
+    argumentPlaceholders: ["Row"],
+    usageComponent: ExistentialIntro,
   },
   "∃E": {
     name: "Existential elimination",
@@ -207,11 +214,4 @@ export const RULE_META_DATA: { [id: string]: RuleMetaData | undefined } = {
     argumentPlaceholders: ["Row", "Box"],
     usageComponent: ExistentialElim,
   },
-  "∃I": {
-    name: "Existential introduction",
-    description: "",
-    nrArguments: 1,
-    argumentPlaceholders: ["Row"],
-    usageComponent: ExistentialIntro,
-  }
 };

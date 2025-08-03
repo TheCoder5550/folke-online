@@ -36,11 +36,20 @@
 
 .list {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 0.25rem;
 }
 
 .list-item {
   height: unset;
   padding: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.list-item:nth-child(5),
+.list-item:nth-child(13),
+.list-item:nth-child(18),
+.list-item:nth-child(23),
+.list-item:nth-child(25) {
+  grid-column: 1;
 }
