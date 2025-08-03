@@ -70,6 +70,7 @@ export default function SymbolDictionary() {
       <div
         className={cls(styles["container"], !enabled && styles["disabled"])}
         title={enabled ? undefined : "Select a text field to enable"}
+        onMouseDown={e => e.preventDefault()}
       >
         {symbols.map(data => (
           <React.Fragment key={data.symbol}>
