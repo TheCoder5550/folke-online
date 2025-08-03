@@ -1,0 +1,46 @@
+.sticky-anchor {
+  position: sticky;
+  top: 0rem;
+}
+
+.container {
+  position: absolute;
+  top: 6rem;
+  right: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 200px;
+  padding: 1rem;
+
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.show {
+  position: absolute;
+  top: 6rem;
+  right: 1rem;
+}
+
+.hide {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0;
+
+  border: none;
+  background: none;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem;
+}
+
+.list-item {
+  height: unset;
+  padding: 0.25rem;
+}

@@ -3,6 +3,7 @@ import ContextMenu from '../components/ContextMenu/ContextMenu'
 import ErrorBoundary from '../components/ErrorBoundary'
 import Header from '../components/Header/Header'
 import ProofRenderer from '../components/ProofRenderer/ProofRenderer'
+import RuleDictionary from '../components/RuleDictionary/RuleDictionary'
 import { ProofStoreProvider } from '../stores/proof-store'
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
       <ErrorBoundary>
         <Header />
         <ProofStoreProvider localStorageName='current-proof-storage'>
+          <RuleDictionary />
 
           <ActionBar />
 

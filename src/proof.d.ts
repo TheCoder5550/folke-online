@@ -19,14 +19,6 @@ interface StepLine {
 
 type StepPath = number[]
 
-interface RuleMetaData {
-  name: string;
-  description: string;
-  nrArguments: number;
-  argumentLabels?: string[];
-  argumentInputLengths?: number[];
-}
-
 /*
   Flat proof
 */
