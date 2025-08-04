@@ -12,6 +12,4 @@ export PATH=/home/node/.local/bin/:\
 /home/node/.ghc-wasm/wasm-run/bin:\
 $PATH
 
-echo $PATH
-
 npm run build

@@ -99,21 +99,9 @@ FROM development AS production
 
 USER root
 
-# RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
-
-# WORKDIR /home/node/app
-
-# COPY --chown=node:node package*.json ./
-
-# USER node
-
 COPY . .
 
 RUN npm install
-
-# RUN npm run build
-
-# RUN cp -R ./dist /github/workspace/dist
 
 RUN chmod +x entrypoint.sh
 
