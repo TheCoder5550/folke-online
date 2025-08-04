@@ -111,6 +111,8 @@ COPY . .
 
 RUN npm install
 
-RUN npm run build
+# RUN npm run build
 
 # RUN cp -R ./dist /github/workspace/dist
+
+ENTRYPOINT ["/entrypoint.sh"]
