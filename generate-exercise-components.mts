@@ -109,7 +109,8 @@ async function generateExerciseFromMarkdown(fileName: string, fileContent: strin
 
 import PracticeProofRenderer from "../components/PracticeProofRenderer";
 import { ProofStoreProvider } from "../stores/proof-store";
-import { createExercise, flattenProof, haskellProofToProof } from "../helpers/proof-helper";
+import { createExercise } from "../helpers/proof-helper";
+//$FLATTEN_PROOF_IMPORTS$
 import useProgressStore from "../stores/progress-store";
 
 const id = "${fileName}";
@@ -155,6 +156,7 @@ ${parsedMarkdown}
       let solutionContent = await fs.readFile(p,  { encoding: 'utf8' });
       solutionContent = JSON.stringify(JSON.parse(solutionContent));
       content = content.replace(full, `solution={flattenProof(haskellProofToProof(${solutionContent}))}`);
+      content = content.replace("//$FLATTEN_PROOF_IMPORTS$", "import { flattenProof, haskellProofToProof } from \"../helpers/proof-helper\";");
     }
     catch (e) {
       content = content.replace(full, "");
@@ -162,6 +164,8 @@ ${parsedMarkdown}
       console.error(e);
     }
   }
+
+  content = content.replace("//$FLATTEN_PROOF_IMPORTS$", "");
 
   const data = new Uint8Array(Buffer.from(content));
   await fs.writeFile(path.join(outputDir, outFileName), data);
