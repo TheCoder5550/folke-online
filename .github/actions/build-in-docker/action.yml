@@ -3,4 +3,4 @@ name: 'Build in docker'
 description: 'Build the whole project'
 runs:
   using: 'docker'
-  image: '../../../.devcontainer/Dockerfile'
+  image: '../../../Dockerfile'

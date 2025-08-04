@@ -111,4 +111,4 @@ COPY --chown=node:node . .
 
 RUN npm run build
 
-RUN cp -R ./dist /github/workspace/
+RUN cp -R ./dist /github/workspace/dist
