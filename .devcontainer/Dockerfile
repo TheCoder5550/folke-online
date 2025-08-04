@@ -1,4 +1,4 @@
-FROM node:24-alpine3.21
+FROM node:24-alpine3.21 AS development
 
 RUN apk add git
 
@@ -94,3 +94,6 @@ ENV PATH="/home/node/.local/bin/:\
 /home/node/.ghc-wasm/wasm32-wasi-cabal/bin:\
 /home/node/.ghc-wasm/wasm-run/bin:\
 $PATH"
+
+FROM development AS production
+RUN npm install && npm run build
