@@ -115,4 +115,6 @@ RUN npm install
 
 # RUN cp -R ./dist /github/workspace/dist
 
+RUN chmod +x entrypoint.sh
+
 ENTRYPOINT ["/entrypoint.sh"]
