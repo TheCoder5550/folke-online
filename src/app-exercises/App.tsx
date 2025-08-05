@@ -4,6 +4,7 @@ import ExerciseList from '../components/ExerciseList/ExerciseList';
 import Header from '../components/Header/Header';
 import { COMPONENT_MAP as EXAM_COMPONENT_MAP } from '../exercise-components/exam-data';
 import { COMPONENT_MAP as EXERCISE_COMPONENT_MAP } from '../exercise-components/exercise-data';
+import ContextMenu from '../components/ContextMenu/ContextMenu';
 
 const ALL_COMPONENTS = {
   ...EXAM_COMPONENT_MAP,
@@ -52,6 +53,8 @@ function App() {
             )}
           </div>
         </div>
+        
+        <ContextMenu />
       </ErrorBoundary>
     </>
   )

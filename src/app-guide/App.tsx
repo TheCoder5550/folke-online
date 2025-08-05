@@ -1,3 +1,4 @@
+import ContextMenu from '../components/ContextMenu/ContextMenu';
 import ErrorBoundary from '../components/ErrorBoundary';
 import Header from '../components/Header/Header';
 import RulesTable from '../components/RulesTable/RulesTable';
@@ -24,6 +25,8 @@ function App() {
             <RulesTable />
           </div>
         </div>
+
+        <ContextMenu />
       </ErrorBoundary>
     </>
   )
