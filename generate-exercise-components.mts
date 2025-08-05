@@ -15,6 +15,7 @@ await generateIdList(allFileNames);
 
 async function generateIdList(fileNames: string[]) {
   const ids = fileNames.map(f => `"${f}"`).join(",\n");
+  const names = fileNames.map(f => `"${getName(f)}"`).join(",\n");
 
   const content = `
 // AUTO-GENERATED
@@ -22,11 +23,29 @@ async function generateIdList(fileNames: string[]) {
 export const IDS = [
 ${ids}
 ]
+
+export const NAMES = [
+${names}
+]
   `.trim();
 
   const outFileName = "id-data.ts";
   const data = new Uint8Array(Buffer.from(content));
   await fs.writeFile(path.join(outputDir, outFileName), data);
+}
+
+function getName(fileName: string): string {
+  if (path.extname(fileName) === ".md") {
+    const n = path.basename(fileName, ".md")
+      .replaceAll("-", " ")
+      .replaceAll("_", " ");
+    return toTitleCase(n);
+  }
+  else if (path.extname(fileName) === ".folke") {
+    return "Question " + getExamQuestion(fileName);
+  }
+
+  return fileName;
 }
 
 // #region Generate markdown
