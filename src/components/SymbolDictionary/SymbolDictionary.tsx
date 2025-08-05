@@ -1,19 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styles from "./SymbolDictionary.module.css";
 import { cls } from "../../helpers/generic-helper";
+import { SYMBOLS } from "../../helpers/special-characters";
 
 export default function SymbolDictionary() {
   const [enabled, setEnabled] = useState(true);
-
-  const symbols = [
-    { symbol: "¬", title: "Negation" },
-    { symbol: "→", title: "Implication" },
-    { symbol: "∧", title: "Conjunction" },
-    { symbol: "∨", title: "Disjunction" },
-    { symbol: "⊥", title: "Contradiction" },
-    { symbol: "∀", title: "Universal quantifier" },
-    { symbol: "∃", title: "Existential quantifier" },
-  ];
 
   const insertSymbol = (symbol: string) => {
     if (!enabled) {
@@ -72,7 +63,7 @@ export default function SymbolDictionary() {
         title={enabled ? undefined : "Select a text field to enable"}
         onMouseDown={e => e.preventDefault()}
       >
-        {symbols.map(data => (
+        {SYMBOLS.map(data => (
           <React.Fragment key={data.symbol}>
             <button
               className={styles["button"]}

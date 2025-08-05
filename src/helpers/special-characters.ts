@@ -11,6 +11,16 @@ export function getSpecialCharacterAliases(char: string): string[] {
     .map(([alias, _spec]) => alias);
 }
 
+export const SYMBOLS = [
+  { symbol: "¬", title: "Negation" },
+  { symbol: "→", title: "Implication" },
+  { symbol: "∧", title: "Conjunction" },
+  { symbol: "∨", title: "Disjunction" },
+  { symbol: "⊥", title: "Contradiction" },
+  { symbol: "∀", title: "Universal quantifier" },
+  { symbol: "∃", title: "Existential quantifier" },
+];
+
 const characterLookupTable = [
   // Negate
   ["!", "¬"],

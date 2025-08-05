@@ -15,6 +15,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         exercises: resolve(__dirname, 'exercises/index.html'),
+        guide: resolve(__dirname, 'guide/index.html'),
       },
     },
   },

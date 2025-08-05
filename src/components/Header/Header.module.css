@@ -1,6 +1,6 @@
 .header {
   display: flex;
-  gap: 4rem;
+  gap: 2rem;
   padding: 0.5rem 1rem;
 
   color: rgb(247, 241, 217);
@@ -23,7 +23,11 @@
   gap: 2rem;
 }
 
-.links a {
+.header a {
   color: inherit;
+  text-decoration: none;
+}
+
+.header a:hover {
   text-decoration: underline;
 }

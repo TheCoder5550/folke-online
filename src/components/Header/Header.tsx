@@ -12,6 +12,7 @@ export default function Header() {
       <div className={styles["links"]}>
         <a href="/">Editor</a>
         <a href="/exercises/">Exercises</a>
+        <a href="/guide/">Guide</a>
       </div>
     </header>
   )
