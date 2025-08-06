@@ -10,7 +10,7 @@ export const PremiseMemo = memo(Premise);
 
 export default function Premise(props: PremiseProps) {
   return (
-    <div className={rowStyles["proof-row"]} style={{ padding: "0.25rem", paddingLeft: "calc(0.25rem + 0.5rem + 1px)", fontFamily: "monospace", fontSize: "1rem" }}>
+    <div className={rowStyles["proof-row"]} style={{ padding: "0.25rem", paddingLeft: "calc(0.25rem + 0.5rem + 1px)", marginRight: "2.75rem", fontFamily: "monospace", fontSize: "1rem" }}>
       <span className={rowStyles["number"]}>
         <span>{props.lineNumber}.</span>
       </span>
