@@ -4,7 +4,7 @@ import { cls } from "../../helpers/generic-helper";
 import { SYMBOLS } from "../../helpers/special-characters";
 
 export default function SymbolDictionary() {
-  const [enabled, setEnabled] = useState(true);
+  const [enabled, setEnabled] = useState(document.activeElement instanceof HTMLInputElement);
 
   const insertSymbol = (symbol: string) => {
     if (!enabled) {
