@@ -96,7 +96,7 @@ export default function ValidateButton(props: ValidateButtonProps) {
         clearTimeout(timeout);
       }
     }
-  }, [proof]);
+  }, [proof, hs]);
 
   const validate = () => {
     if (!hs) {
