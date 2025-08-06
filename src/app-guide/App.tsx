@@ -11,7 +11,7 @@ function App() {
         <Header />
 
         <div className="paper-container">
-          <div className="paper">
+          <div className="paper invisible">
             <h1>Guide</h1>
 
             <h2>Symbol shortcuts</h2>
