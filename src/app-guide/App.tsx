@@ -15,7 +15,7 @@ function App() {
             <h1>Guide</h1>
 
             <h2>Symbol shortcuts</h2>
-            <p>Various shortcuts exists to type special characters.</p>
+            <p>Various keyboard shortcuts exists to type special characters.</p>
             <SymbolTable />
 
             <br /><br />

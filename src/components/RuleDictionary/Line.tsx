@@ -14,6 +14,8 @@ export default function Line(props: LineProps) {
   return (
     <div style={{
       display: "flex",
+      fontFamily: "monospace",
+      fontSize: "1rem",
     }}>
       <span style={{
         position: "absolute",

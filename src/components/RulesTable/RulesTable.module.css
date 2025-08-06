@@ -1,6 +1,6 @@
 .table {
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: auto auto auto 60px;
   gap: 0.5rem 0;
 }
 
@@ -10,7 +10,8 @@
 
 .table > *:nth-child(1),
 .table > *:nth-child(2),
-.table > *:nth-child(3) {
+.table > *:nth-child(3),
+.table > *:nth-child(4) {
   padding: 0.5rem 0;
   border-bottom: 2px solid black;
 }
@@ -27,4 +28,14 @@
   background: rgba(0, 0, 0, 0.1);
   padding: 0 0.5em;
   border-radius: 2px;
+}
+
+.usage-container {
+  text-align: right;
+}
+
+.usage {
+  border: none;
+  background: none;
+  text-decoration: underline;
 }

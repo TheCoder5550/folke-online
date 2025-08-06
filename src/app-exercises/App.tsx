@@ -45,11 +45,7 @@ function App() {
             )}
 
             {id != null && (
-              <button type="button" onClick={() => setId(null)} style={{
-                position: "absolute",
-                top: "1rem",
-                right: "1rem",
-              }}>Close</button>
+              <button title="Close question" type="button" onClick={() => setId(null)} className="close-button">✕</button>
             )}
           </div>
         </div>

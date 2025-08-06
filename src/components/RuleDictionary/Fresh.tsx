@@ -6,7 +6,7 @@ export default function Fresh() {
   return (
     <Container>
       <Box>
-        <Line statement="x_0" rule="fresh" />
+        <Line lineNumber="i" statement="x_0" rule="fresh" />
       </Box>
     </Container>
   )

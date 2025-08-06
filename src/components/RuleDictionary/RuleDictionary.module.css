@@ -19,16 +19,6 @@
   right: 1rem;
 }
 
-.hide {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  padding: 0;
-
-  border: none;
-  background: none;
-}
-
 .list {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;

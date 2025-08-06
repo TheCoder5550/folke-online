@@ -30,7 +30,9 @@ export default function RuleDictionary(props: RuleDictionaryProps) {
         })}
       </div>
 
-      <button title="Hide rules" className={styles["hide"]} type="button" onClick={() => props.setVisible(false)}>✕</button>
+      <button title="Hide rules" className={"close-button"} type="button" onClick={() => props.setVisible(false)}>
+        ✕
+      </button>
 
       <Modal open={rule != undefined} closeModal={() => setRule(undefined)}>
         {rule && (
