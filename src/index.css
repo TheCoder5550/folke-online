@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  font-family: inherit;
 }
 
 :root {
@@ -114,6 +115,28 @@ button {
   background: rgba(0, 0, 0, 0.1);
 }
 
+.close-button {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: none;
+  border: none;
+  font-weight: bold;
+  transition: background 100ms;
+}
+
+.close-button:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.close-button:active {
+  background: rgba(0, 0, 0, 0.2);
+}
+
 input[type=text] {
   min-width: 0;
   padding: 0.25rem 0.5rem;
@@ -125,7 +148,8 @@ input[type=text] {
   font-family: monospace;
   font-size: 1rem;
 
-  /* border: none; */
+  /* border: none;
+  border-bottom: 2px dotted rgba(150, 100, 0, 0.4); */
 }
 
 input[type=text]::placeholder {

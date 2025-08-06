@@ -1,7 +1,7 @@
 import styles from "./RuleDictionary.module.css";
 import { RULE_META_DATA, type RuleMetaData } from "../../helpers/rules-data";
 import { useState } from "react";
-import Modal from "../Modal";
+import Modal from "../Modal/Modal";
 import { cls } from "../../helpers/generic-helper";
 
 interface RuleDictionaryProps {

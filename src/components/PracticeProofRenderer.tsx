@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { ImRedo, ImUndo } from "react-icons/im";
 import StaticProofRenderer from "./StaticProofRenderer";
 import { FaLightbulb } from "react-icons/fa6";
-import Modal from "./Modal";
+import Modal from "./Modal/Modal";
 
 interface PracticeProofRendererProps {
   solution?: FlatProof;
