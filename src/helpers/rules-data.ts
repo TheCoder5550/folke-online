@@ -24,6 +24,7 @@ import UniversalElim from "../components/RuleDictionary/UniversalElim";
 import UniversalIntro from "../components/RuleDictionary/UniversalIntro";
 import ExistentialElim from "../components/RuleDictionary/ExistentialElim";
 import ExistentialIntro from "../components/RuleDictionary/ExistentialIntro";
+import Premise from "../components/RuleDictionary/Premise";
 
 export interface RuleMetaData {
   name: string;
@@ -38,8 +39,9 @@ export interface RuleMetaData {
 export const RULE_META_DATA: { [id: string]: RuleMetaData | undefined } = {
   "premise": {
     name: "Premise",
-    description: "",
+    description: "Premises are automatically added to the beginning of proofs.",
     nrArguments: 0,
+    usageComponent: Premise,
   },
   "assume": {
     name: "Assumption",
