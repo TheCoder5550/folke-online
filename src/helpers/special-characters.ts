@@ -33,6 +33,7 @@ const characterLookupTable = [
   ["¬>", "→"], // Fix for when "-" becomes negation
 
   // And
+  ["/\\", "∧"],
   ["&", "∧"],
   ["^", "∧"],
   ["*", "∧"],
@@ -40,6 +41,7 @@ const characterLookupTable = [
   ["con", "∧"],
 
   // Or
+  ["\\/", "∨"],
   ["|", "∨"],
   //["v", "∨"],
   ["+", "∨"],
