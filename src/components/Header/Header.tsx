@@ -1,18 +1,25 @@
 import { GiPlagueDoctorProfile } from "react-icons/gi";
 import styles from "./Header.module.css";
 
+const isProd = import.meta.env.PROD;
+const isPages = window.location.hostname === "thecoder5550.github.io";
+
+const BASE_PATH = isProd && isPages ?
+  `${window.location.origin}/folke-online` :
+  "";
+
 export default function Header() {
   return (
     <header className={styles["header"]}>
-      <a href="/" className={styles["logo"]}>
+      <a href={`${BASE_PATH}/`} className={styles["logo"]}>
         <GiPlagueDoctorProfile size="2rem" />
         <span>Folke Online</span>
       </a>
 
       <div className={styles["links"]}>
-        <a href="/">Editor</a>
-        <a href="/exercises/">Exercises</a>
-        <a href="/guide/">Guide</a>
+        <a href={`${BASE_PATH}/`}>Editor</a>
+        <a href={`${BASE_PATH}/exercises/`}>Exercises</a>
+        <a href={`${BASE_PATH}/guide/`}>Guide</a>
       </div>
     </header>
   )
