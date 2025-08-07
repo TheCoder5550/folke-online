@@ -28,8 +28,8 @@ export function trimPrefix(str: string, prefix: string) {
   ), "");
 }
 
-export function cls(...args: (string | boolean)[]) {
-  return args.filter(a => typeof a !== "boolean").join(" ");
+export function cls(...args: (string | boolean | undefined)[]) {
+  return args.filter(a => typeof a === "string").join(" ");
 }
 
 export function findParentElement(element: HTMLElement, func: (element: HTMLElement) => boolean) {

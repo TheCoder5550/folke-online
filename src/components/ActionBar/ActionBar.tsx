@@ -1,7 +1,7 @@
 import styles from "./ActionBar.module.css";
 import { ImRedo, ImUndo } from "react-icons/im";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../../stores/proof-store";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, type JSX } from "react";
 import { flattenProof, haskellProofToProof } from "../../helpers/proof-helper";
 import { MdDelete, MdOutlineMotionPhotosAuto } from "react-icons/md";
 import ValidateButton from "../ValidateButton/ValidateButton";
@@ -10,8 +10,11 @@ import SymbolDictionary from "../SymbolDictionary/SymbolDictionary";
 import { cls } from "../../helpers/generic-helper";
 import ToggleButton from "../ToggleButton/ToggleButton";
 import RuleDictionary from "../RuleDictionary/RuleDictionary";
+import { useScreenSize } from "../../helpers/use-screen-size";
 
 export default function ActionBar() {
+  const isMobile = useScreenSize() === "mobile";
+  
   const [category, setCategory] = useState<"File" | "Edit">("Edit");
   const [autoValidate, setAutoValidate] = useState(true);
   const [viewRules, setViewRules] = useState(true);
@@ -80,62 +83,59 @@ export default function ActionBar() {
       <div className={styles["categories"]}>
         <button className={cls(styles["category-button"], category === "File" && styles["selected"])} type="button" onClick={() => setCategory("File")}>File</button>
         <button className={cls(styles["category-button"], category === "Edit" && styles["selected"])} type="button" onClick={() => setCategory("Edit")}>Edit</button>
+      
+        {isMobile && (
+          <div style={{ display: "flex", gap: "0.5rem", marginLeft: "auto" }}>
+            <ValidateButton small autoValidate={autoValidate} />
+
+            <ToggleButton toggle={() => setAutoValidate(!autoValidate)} toggled={autoValidate} title="Automatically validate proof whilst writing">
+              <MdOutlineMotionPhotosAuto />
+            </ToggleButton>
+          </div>
+        )}
       </div>
 
       <div className={styles["tab-content"]}>
         <div className={styles["current-actions"]}>
           {category === "File" && (
             <>
-              <button title={"Download as export.folke"} className={"action-button"} type="button" onClick={exportFolke}>
-                <FaFileExport /> Export .folke
-              </button>
-
-              <button title={"Download as export.tex"} className={"action-button"} type="button" onClick={exportLatex}>
-                <FaFileExport /> Export Latex
-              </button>
+              <Button icon={<FaFileExport /> } label="Export .folke" title="Download as export.folke" onClick={exportFolke} small={isMobile} />
+              <Button icon={<FaFileExport /> } label="Export Latex" title="Download as export.tex" onClick={exportLatex} small={isMobile} />
 
               <Divider />
 
               <input type="file" ref={fileRef} onChange={uploadProof} style={{ display: "none" }} />
-              <button title="Upload proof" className={"action-button"} type="button" onClick={openUpload}>
-                <FaUpload /> Upload .folke
-              </button>
+              <Button icon={<FaUpload />} label="Upload .folke" title="Upload proof" onClick={openUpload} small={isMobile} />
               
               <Divider />
 
-              <button title="Delete proof" className={"action-button"} type="button" onClick={resetProof}>
-                <MdDelete /> Clear
-              </button>
+              <Button danger icon={<MdDelete />} label="Clear" title="Delete proof" onClick={resetProof} small={isMobile} />
             </>
           )}
 
           {category === "Edit" && (
             <>
-              <button title={"Undo"} className={"action-button"} type="button" onClick={undo}>
-                <ImUndo /> Undo
-              </button>
-              <button title={"Redo"} className={"action-button"} type="button" onClick={redo}>
-                <ImRedo /> Redo
-              </button>
-
+              <Button icon={<ImUndo />} label="Undo" title={"Undo"} onClick={undo} small={isMobile} />
+              <Button icon={<ImRedo />} label="Redo" title={"Redo"} onClick={redo} small={isMobile} />
               <Divider />
-
               <SymbolDictionary />
             </>
           )}
         </div>
         
-        <div className={styles["current-actions"]}>
-          <ValidateButton autoValidate={autoValidate} />
+        {!isMobile && (
+          <div className={styles["current-actions"]}>
+            <ValidateButton autoValidate={autoValidate} />
 
-          <ToggleButton toggle={() => setAutoValidate(!autoValidate)} toggled={autoValidate} title="Automatically validate proof whilst writing">
-            <MdOutlineMotionPhotosAuto />
-          </ToggleButton>
+            <ToggleButton toggle={() => setAutoValidate(!autoValidate)} toggled={autoValidate} title="Automatically validate proof whilst writing">
+              <MdOutlineMotionPhotosAuto />
+            </ToggleButton>
 
-          <ToggleButton toggle={() => setViewRules(!viewRules)} toggled={viewRules} title="Show rule dictionary">
-            <FaBookOpen />
-          </ToggleButton>
-        </div>
+            <ToggleButton toggle={() => setViewRules(!viewRules)} toggled={viewRules} title="Show rule dictionary">
+              <FaBookOpen />
+            </ToggleButton>
+          </div>
+        )}
       </div>
 
       <RuleDictionary visible={viewRules} setVisible={setViewRules} />
@@ -151,5 +151,25 @@ function Divider() {
       margin: "0 0.5rem",
       borderLeft: "1px solid rgb(0, 0, 0, 0.2)"
     }}></div>
+  )
+}
+
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  label: string;
+  icon?: JSX.Element;
+  small?: boolean;
+  danger?: boolean;
+}
+
+function Button({ label, icon, small, danger, ...props }: ButtonProps) {
+  return (
+    <button
+      className={cls("action-button", danger && "danger")}
+      type="button"
+      {...props}
+    >
+      {icon}
+      {!small && label}
+    </button>
   )
 }

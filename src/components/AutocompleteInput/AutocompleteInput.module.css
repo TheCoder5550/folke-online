@@ -45,3 +45,9 @@
   font-weight: normal;
   font-style: italic;
 }
+
+@media screen and (max-width: 640px) {
+  .list {
+    font-size: 0.8rem;
+  }
+}

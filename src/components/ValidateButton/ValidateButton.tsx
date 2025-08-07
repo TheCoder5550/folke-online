@@ -34,6 +34,7 @@ interface ValidateButtonProps {
   onValid?: () => void;
   autoValidate?: boolean;
   autoValidateMs?: number;
+  small?: boolean;
 }
 
 export default function ValidateButton(props: ValidateButtonProps) {
@@ -41,7 +42,9 @@ export default function ValidateButton(props: ValidateButtonProps) {
   const [hs, setHS] = useState<HaskellExports>();
   const isCorrect = useProofStore((state) => state.result?.correct);
   const setResult = useProofStore((state) => state.setResult);
+
   const autoValidate = props.autoValidate !== false;
+  const small = props.small === true;
 
   useEffect(() => {
     async function loadWasm() {
@@ -144,9 +147,14 @@ export default function ValidateButton(props: ValidateButtonProps) {
       )}
 
       <button title="Validate proof" className="action-button" type="button" onClick={() => validate()}>
-        <HiClipboardDocumentCheck /> Validate
-        {autoValidate && (
-          <MdHdrAuto />
+        <HiClipboardDocumentCheck />
+        {!small && (
+          <>
+            Validate
+            {autoValidate && (
+              <MdHdrAuto />
+            )}
+          </>
         )}
       </button>
     </div>

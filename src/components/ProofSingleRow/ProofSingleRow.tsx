@@ -14,6 +14,7 @@ import { cls, trimPrefix } from "../../helpers/generic-helper";
 import { IoReturnDownBack } from "react-icons/io5";
 import { createDragHandler } from "../../helpers/drag-drop";
 import useContextMenuStore from "../../stores/context-menu-store";
+import { useScreenSize } from "../../helpers/use-screen-size";
 
 interface ProofSingleRowProps {
   uuid: string;
@@ -22,6 +23,7 @@ interface ProofSingleRowProps {
 export const ProofSingleRowMemo = memo(ProofSingleRow);
 
 export default function ProofSingleRow(props: ProofSingleRowProps) {
+  const isMobile = useScreenSize() === "mobile";
   const dispatch = useProofStore((state) => state.dispatch);
   const uuid = props.uuid;
   const step = useProofStore(useShallow((state) => state.proof.stepLookup[uuid]));
@@ -206,16 +208,24 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
 
     argumentInputs.push(
       <div key={i.toString()} className={styles["argument-container"]} style={inputWidth == undefined ? {} : { width: inputWidth + "px" }}>
-        {ruleData && ruleData.argumentLabels && ruleData.argumentLabels[i] !== "" && (
-          <span>{ruleData.argumentLabels[i]}</span>
+        {ruleData && ruleData.argumentLabels && ruleData.argumentLabels[i] !== "" ? (
+          <fieldset>
+            <legend>{ruleData.argumentLabels[i]}</legend>
+            <TextField
+              placeholder={placeholder}
+              value={arg}
+              onChange={e => setArgument(i, prefix + e.currentTarget.value)}
+              onKeyDown={isLast ? keydownLastInput : keydown}
+            />
+          </fieldset>
+        ) : (
+          <TextField
+            placeholder={placeholder}
+            value={arg}
+            onChange={e => setArgument(i, prefix + e.currentTarget.value)}
+            onKeyDown={isLast ? keydownLastInput : keydown}
+          />
         )}
-
-        <TextField
-          placeholder={placeholder}
-          value={arg}
-          onChange={e => setArgument(i, prefix + e.currentTarget.value)}
-          onKeyDown={isLast ? keydownLastInput : keydown}
-        />
       </div>
     )
   }
@@ -228,7 +238,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
         data-target data-uuid={props.uuid}
         ref={lineRef}
         className={cls(styles["proof-row"], hasError && styles["error"], isCorrect && styles["correct"])}
-        style={{ marginRight: `calc(3rem - ${level * 0.25}rem - ${level}px)` }}
+        style={{ marginRight: isMobile ? undefined : `calc(3rem - ${level * 0.25}rem - ${level}px)` }}
       >
         <span className={styles["number"]}>
           <LineNumberMemo uuid={props.uuid} />

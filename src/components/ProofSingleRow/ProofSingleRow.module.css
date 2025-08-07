@@ -138,3 +138,56 @@
 .proof-row:hover .actions {
   background: white;
 }
+
+fieldset {
+  padding: 0;
+  border-radius: 2px;
+  position: relative;
+  display: flex;
+  min-width: 0;
+  margin-top: -12px;
+  border: 1px solid rgb(189, 189, 189);
+}
+
+fieldset legend {
+  font-size: 0.7rem;
+  z-index: 1;
+  padding-bottom: 10px;
+  pointer-events: none;
+}
+
+fieldset input[type=text] {
+  border: none;
+  width: 100%;
+  margin-top: -14px;
+  outline: none;
+}
+
+@media screen and (max-width: 640px) {
+  .actions {
+    display: none;
+  }
+
+  .statement-input {
+    flex-grow: 0;
+    width: 0%;
+    flex: 1;
+  }
+
+  .rule-args-container {
+    width: 175px;
+    gap: 0.25rem;
+  }
+
+  .argument-container {
+    width: 40px;
+    padding: 0;
+  }
+
+  input[type=text] {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    font-size: 0.8rem;
+    letter-spacing: -0.5px;
+  }
+}

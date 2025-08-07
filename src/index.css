@@ -115,6 +115,20 @@ button {
   background: rgba(0, 0, 0, 0.1);
 }
 
+.action-button.danger {
+  background: rgb(var(--error-background-rgb));
+  color: rgb(var(--error-color-rgb));
+  border-color: rgba(var(--error-color-rgb), 0.5);
+}
+
+.action-button.danger:hover {
+  background: rgba(var(--error-color-rgb), 0.1);
+}
+
+.action-button.danger:active {
+  background: rgba(var(--error-color-rgb), 0.2);
+}
+
 .close-button {
   position: absolute;
   right: 1rem;
@@ -182,6 +196,19 @@ input[type=text]::placeholder {
 
 .paper > h1 {
   margin-top: 0;
+}
+
+@media screen and (max-width: 640px) {
+  .paper {
+    padding: 0 2rem;
+    border: none;
+    margin-top: -3rem;
+    background: none;
+  }
+
+  h1 {
+    font-size: 2.5em;
+  }
 }
 
 @media (prefers-color-scheme: light) {
