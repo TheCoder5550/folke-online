@@ -139,6 +139,26 @@
   background: white;
 }
 
+.error-message {
+  display: none;
+
+  position: absolute;
+  max-width: 100%;
+  transform: translateY(calc(50% + 1rem));
+  padding: 0.25rem 0.5rem;
+
+  border-radius: 2px;
+  border: 1px solid black;
+  background: white;
+  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.proof-row:hover .error-message,
+.error-message:hover {
+  display: block;
+}
+
 fieldset {
   padding: 0;
   border-radius: 2px;

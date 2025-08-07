@@ -284,11 +284,11 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
             </button>
           )}
         </div>
-      </div>
 
-      {hasError && errorMessage && (
-        <span className={"error-message"}>{errorMessage}</span>
-      )}
+        {hasError && errorMessage && (
+          <span className={cls("error-message", styles["error-message"])}>{errorMessage}</span>
+        )}
+      </div>
     </>
   )
 }

@@ -17,5 +17,5 @@ export default function GlobalErrorMessage() {
     return "";
   });
 
-  return <span style={{ color: "rgb(var(--error-color-rgb))" }}>{message}</span>
+  return <span style={{ color: "rgb(var(--error-color-rgb))" }}>{message}&nbsp;</span>
 }
