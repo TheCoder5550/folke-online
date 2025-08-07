@@ -1,11 +1,11 @@
 import styles from "./ValidateButton.module.css";
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useState } from "react"
 import useProofStore from "../../stores/proof-store.js";
 import { HiClipboardDocumentCheck } from "react-icons/hi2";
 import { FaCheckCircle } from "react-icons/fa";
 import { BiSolidErrorAlt } from "react-icons/bi";
-import { MdHdrAuto } from "react-icons/md";
 import useWasm from "../../helpers/wasm-provider.js";
+import { ImSpinner4 } from "react-icons/im";
 
 interface ValidateButtonProps {
   onValid?: () => void;
@@ -19,35 +19,40 @@ export default function ValidateButton(props: ValidateButtonProps) {
   const wasm = useWasm();
   const isCorrect = useProofStore((state) => state.result?.correct);
   const setResult = useProofStore((state) => state.setResult);
+  const [isBuffering, setBuffering] = useState(false);
 
   const autoValidate = props.autoValidate !== false;
   const small = props.small === true;
 
   const validate = useCallback(() => {
-    if (!wasm) {
-      console.error("WebAssembly not loaded yet");
-      return;
-    }
-
     wasm(proof).then(result => {
+      setBuffering(false);
       setResult(result);
   
       if (result && result.correct) {
         props.onValid?.();
       }
     }).catch(console.error);
-  }, [ wasm ]);
+  }, [ wasm, proof ]);
 
+  // De-bounce proof changes and check when no
+  // key has been pressed for some time
   useEffect(() => {
-    setResult(null);
-
     if (autoValidate) {
+      setBuffering(true);
       const timeout = setTimeout(validate, props.autoValidateMs ?? 500);
       return () => {
         clearTimeout(timeout);
       }
     }
-  }, [proof, validate]);
+  }, [ proof, validate ]);
+
+  // Instantly check proof on first render
+  useEffect(() => {
+    if (autoValidate) {
+      validate();
+    }
+  }, [wasm]);
 
   return (
     <div className={styles["container"]}>
@@ -63,14 +68,16 @@ export default function ValidateButton(props: ValidateButtonProps) {
       )}
 
       <button title="Validate proof" className="action-button" type="button" onClick={() => validate()} disabled={!wasm}>
-        <HiClipboardDocumentCheck />
+        {!isBuffering ? (
+          <HiClipboardDocumentCheck />
+        ) : (
+          <ImSpinner4 className={styles["spin"]} />
+        )}
+
         {!small && (
-          <>
+          <span>
             Validate
-            {autoValidate && (
-              <MdHdrAuto />
-            )}
-          </>
+          </span>
         )}
       </button>
     </div>

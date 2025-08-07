@@ -30,3 +30,16 @@
   background: rgb(var(--error-background-rgb));
   border-color: rgb(var(--error-color-rgb));
 }
+
+.spin {
+  animation: spin 1000ms infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
