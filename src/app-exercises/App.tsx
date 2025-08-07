@@ -7,6 +7,11 @@ import { COMPONENT_MAP as EXERCISE_COMPONENT_MAP } from '../exercise-components/
 import ContextMenu from '../components/ContextMenu/ContextMenu';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { WasmProvider } from '../helpers/wasm-provider';
+import PracticeRuleDictionary from '../components/RuleDictionary/PracticeRuleDictionary';
+import ToggleButton from '../components/ToggleButton/ToggleButton';
+import { FaBook } from 'react-icons/fa';
+import { RiCharacterRecognitionFill } from 'react-icons/ri';
+import SymbolDictionary from '../components/SymbolDictionary/SymbolDictionary';
 
 const ALL_COMPONENTS = {
   ...EXAM_COMPONENT_MAP,
@@ -28,6 +33,9 @@ function getComponentById(id: string | null) {
 function App() {
   const [id, setId] = useState<string | null>(null);
   const CurrentComp = getComponentById(id);
+
+  const [viewRules, setViewRules] = useState(false);
+  const [viewSymbols, setViewSymbols] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -57,7 +65,41 @@ function App() {
               )}
 
               {CurrentComp ? (
-                <CurrentComp />
+                <>
+                  <CurrentComp />
+
+                  <div style={{ display: "flex", gap: "0.5rem", position: "fixed", bottom: "0", padding: "0.5rem 0", background: "rgb(var(--background-rgb))", zIndex: "10" }}>
+                    <span>Tools: </span>
+
+                    <ToggleButton title="Show all rules" toggle={() => setViewRules(!viewRules)} toggled={viewRules} style={{ fontSize: "0.75rem" }}>
+                      <FaBook /> View rules
+                    </ToggleButton>
+
+                    <ToggleButton title="Show symbol keypad" toggle={() => setViewSymbols(!viewSymbols)} toggled={viewSymbols} style={{ fontSize: "0.75rem" }}>
+                      <RiCharacterRecognitionFill /> View symbols
+                    </ToggleButton>
+                  </div>
+
+                  <div style={{
+                    display: "flex",
+                    gap: "2rem",
+                    marginTop: "2rem"
+                  }}>
+                    {viewRules && (
+                      <div style={{width: "50%"}}>
+                        <h2>Rules</h2>
+                        <PracticeRuleDictionary />
+                      </div>
+                    )}
+
+                    {viewSymbols && (
+                      <div>
+                        <h2>Symbols</h2>
+                        <SymbolDictionary />
+                      </div>
+                    )}
+                  </div>
+                </>
               ) : (
                 <ExerciseList id={id} setId={setId} />
               )}

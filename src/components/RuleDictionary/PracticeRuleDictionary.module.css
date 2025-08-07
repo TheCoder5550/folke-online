@@ -1,0 +1,30 @@
+.show {
+  position: absolute;
+  top: 6rem;
+  right: 1rem;
+}
+
+.list {
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  grid-auto-flow: column;
+  gap: 0.25rem;
+}
+
+.list-item {
+  height: unset;
+  padding: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.list-item:nth-child(5),
+.list-item:nth-child(8),
+.list-item:nth-child(11),
+.list-item:nth-child(13),
+.list-item:nth-child(16),
+.list-item:nth-child(18),
+.list-item:nth-child(21),
+.list-item:nth-child(23),
+.list-item:nth-child(25) {
+  grid-row: 1;
+}

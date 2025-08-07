@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import styles from "./RulesTable.module.css";
 import { RULE_META_DATA, type RuleMetaData } from "../../helpers/rules-data";
-import Modal from "../Modal/Modal";
 import { FaInfoCircle } from "react-icons/fa";
+import RuleModal from "../RuleModal";
 
 export default function RulesTable() {
   const [rule, setRule] = useState<[string, RuleMetaData] | undefined>();
-  const CurrentComp = rule == undefined ? undefined : rule[1].usageComponent;
 
   return (
     <div className={styles["table"]}>
@@ -31,18 +30,7 @@ export default function RulesTable() {
         )
       })}
 
-      <Modal open={rule != undefined} closeModal={() => setRule(undefined)}>
-        {rule && (
-          <>
-            <h2>{rule[1].name}</h2>
-            <p>Symbol: <span style={{ fontFamily: "monospace" }}>{rule[0]}</span></p>
-            <p>Arguments: {rule[1].nrArguments === 0 ? "-" : "(" + rule[1].argumentPlaceholders?.join(", ") + ")"}</p>
-            <p>{rule[1].description}</p>
-            <p>Usage:</p>
-          </>
-        )}
-        {CurrentComp && <CurrentComp />}
-      </Modal>
+      <RuleModal rule={rule} closeModal={() => setRule(undefined)} />
     </div>
   )
 }
