@@ -6,6 +6,7 @@ import { COMPONENT_MAP as EXAM_COMPONENT_MAP } from '../exercise-components/exam
 import { COMPONENT_MAP as EXERCISE_COMPONENT_MAP } from '../exercise-components/exercise-data';
 import ContextMenu from '../components/ContextMenu/ContextMenu';
 import { IoMdArrowRoundBack } from 'react-icons/io';
+import { WasmProvider } from '../helpers/wasm-provider';
 
 const ALL_COMPONENTS = {
   ...EXAM_COMPONENT_MAP,
@@ -35,38 +36,40 @@ function App() {
   return (
     <>
       <ErrorBoundary>
-        <Header />
+        <WasmProvider>
+          <Header />
 
-        <div className="paper-container">
-          <div className="paper invisible">
-            {id != null && (
-              <button title="Go back to exercise list" type="button" onClick={() => setId(null)} style={{
-                display: "flex",
-                gap: "0.5rem",
-                alignItems: "center",
-                background: "none",
-                border: "none",
-                padding: "1rem 0",
-                fontSize: "1rem",
-              }}>
-                <IoMdArrowRoundBack />
-                Back to list
-              </button>
-            )}
+          <div className="paper-container">
+            <div className="paper invisible">
+              {id != null && (
+                <button title="Go back to exercise list" type="button" onClick={() => setId(null)} style={{
+                  display: "flex",
+                  gap: "0.5rem",
+                  alignItems: "center",
+                  background: "none",
+                  border: "none",
+                  padding: "1rem 0",
+                  fontSize: "1rem",
+                }}>
+                  <IoMdArrowRoundBack />
+                  Back to list
+                </button>
+              )}
 
-            {CurrentComp ? (
-              <CurrentComp />
-            ) : (
-              <ExerciseList id={id} setId={setId} />
-            )}
+              {CurrentComp ? (
+                <CurrentComp />
+              ) : (
+                <ExerciseList id={id} setId={setId} />
+              )}
 
-            {id != null && (
-              <button title="Close question" type="button" onClick={() => setId(null)} className="close-button">✕</button>
-            )}
+              {id != null && (
+                <button title="Close question" type="button" onClick={() => setId(null)} className="close-button">✕</button>
+              )}
+            </div>
           </div>
-        </div>
-        
-        <ContextMenu />
+          
+          <ContextMenu />
+        </WasmProvider>
       </ErrorBoundary>
     </>
   )

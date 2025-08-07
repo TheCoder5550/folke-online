@@ -3,6 +3,7 @@ import ContextMenu from '../components/ContextMenu/ContextMenu'
 import ErrorBoundary from '../components/ErrorBoundary'
 import Header from '../components/Header/Header'
 import ProofRenderer from '../components/ProofRenderer/ProofRenderer'
+import { WasmProvider } from '../helpers/wasm-provider'
 import { ProofStoreProvider } from '../stores/proof-store'
 
 function App() {
@@ -10,17 +11,19 @@ function App() {
     <>
       <ErrorBoundary>
         <Header />
-        <ProofStoreProvider localStorageName='current-proof-storage'>
-          <ActionBar />
+        <WasmProvider>
+          <ProofStoreProvider localStorageName='current-proof-storage'>
+            <ActionBar />
 
-          <div className="paper-container">
-            <div className="paper">
-              <ProofRenderer />
+            <div className="paper-container">
+              <div className="paper">
+                <ProofRenderer />
+              </div>
             </div>
-          </div>
-        </ProofStoreProvider>
+          </ProofStoreProvider>
 
-        <ContextMenu />
+          <ContextMenu />
+        </WasmProvider>
       </ErrorBoundary>
     </>
   )
