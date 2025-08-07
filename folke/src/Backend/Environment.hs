@@ -932,7 +932,7 @@ ruleSomeI env forms _ =
 
 
 forVarsruleSomeI :: Env -> Integer -> Formula -> Formula -> Term -> [Term] -> Result Formula
-forVarsruleSomeI env i _ _ _ [] = Err [] env ( createRuleArgError env i " found no possable matches")
+forVarsruleSomeI env i _ _ _ [] = Err [] env ( createRuleArgError env i " found no possible matches")
 forVarsruleSomeI env i a phi x (t: vars) = case replaceInFormula env x t phi of
     Ok warns b | cmp env a b -> Ok warns (Some x phi)
     _ -> forVarsruleSomeI env i a phi x vars
