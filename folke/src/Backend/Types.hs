@@ -30,8 +30,10 @@ module Backend.Types (
     ArgTup
 ) where
 
+import Data.Text (pack, unpack)
 import qualified Data.Map as Map
 import qualified Data.List as List
+import Shared.SpecialCharacters (replaceSpecialSymbols)
 
 ----------------------------------------------------------------------
 -- Type aliases
@@ -179,8 +181,8 @@ data Env = Env {
 ----------------------------------------------------------------------
 
 instance Show Term where
-    show (Term name []) = name
-    show (Term name terms) = name ++ "(" ++ (List.intercalate ", " [show term| term <- terms]) ++ ")"
+    show (Term name []) = (unpack . replaceSpecialSymbols . pack) name
+    show (Term name terms) = (unpack . replaceSpecialSymbols . pack) name ++ "(" ++ (List.intercalate ", " [show term| term <- terms]) ++ ")"
 
 instance Eq Term where
     Term a as == Term b bs = a == b && as == bs
