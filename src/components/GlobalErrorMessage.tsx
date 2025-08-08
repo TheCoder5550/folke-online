@@ -14,7 +14,7 @@ export default function GlobalErrorMessage() {
       return res.message ?? "";
     }
 
-    return "";
+    return res.location + ": " + res.message;
   });
 
   return <span style={{ color: "rgb(var(--error-color-rgb))" }}>{message}&nbsp;</span>

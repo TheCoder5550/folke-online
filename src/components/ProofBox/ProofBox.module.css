@@ -1,4 +1,6 @@
 .proof-box {
+  position: relative;
+
   display: flex;
   flex-direction: row;
 
@@ -17,6 +19,11 @@
 .proof-box.error {
   border-color: rgb(var(--error-color-rgb));
   background-color: rgb(var(--error-background-rgb));
+}
+
+.proof-box:hover > .error-message,
+.error-message:hover {
+  display: block;
 }
 
 .drag {

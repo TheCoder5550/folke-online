@@ -6,6 +6,7 @@ import { RenderStepMemo } from "../RenderStep";
 import { useShallow } from "zustand/shallow";
 import { MdDragIndicator } from "react-icons/md";
 import { createDragHandler } from "../../helpers/drag-drop";
+import { cls } from "../../helpers/generic-helper";
 
 interface ProofBoxProps {
   uuid: UUID;
@@ -42,11 +43,11 @@ export default function ProofBox(props: ProofBoxProps) {
             <RenderStepMemo key={uuid} uuid={uuid} />
           ))}
         </div>
-      </div>
 
-      {hasError && errorMessage && (
-        <span className={"error-message"}>{errorMessage}</span>
-      )}
+        {hasError && errorMessage && (
+          <span className={cls(styles["error-message"], "error-message")}>{errorMessage}</span>
+        )}
+      </div>
     </>
   )
 }
