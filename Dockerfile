@@ -28,6 +28,8 @@ RUN apk add --no-cache coreutils
 # Install normal ghc
 # From https://github.com/ExtremaIS/lsupg-haskell/blob/4a33818d5906d39c905b95f30a7845ace833e21c/docker/Dockerfile
 ARG GHC_VERSION=9.12.2
+ARG HLS_VERSION=2.11.0.0
+ARG CABAL_VERSION=3.14.1.0
 
 RUN apk upgrade --no-cache \
     && apk add --no-cache \
@@ -47,11 +49,23 @@ RUN apk upgrade --no-cache \
         shadow \
         tar \
         xz \
+    # Install ghcup
     && curl --fail --output '/usr/local/bin/ghcup' \
         'https://downloads.haskell.org/ghcup/x86_64-linux-ghcup' \
     && chmod 0755 '/usr/local/bin/ghcup' \
-    # && ghcup install cabal --isolate '/usr/local/bin' \
+    
+    # Cabal
+    && ghcup install cabal "${CABAL_VERSION}" \
+        --isolate '/usr/local/bin' \
+
+    # HLS
     && mkdir '/usr/local/opt' \
+    && ghcup install hls "${HLS_VERSION}" \
+        --isolate "/usr/local/opt/hls-${HLS_VERSION}" \
+    && find "/usr/local/opt/hls-${HLS_VERSION}/bin" \
+        \( -type f -o -type l \) -exec ln -s {} '/usr/local/bin' \; \
+
+    # GHC
     && ghcup install ghc "${GHC_VERSION}" \
         --isolate "/usr/local/opt/ghc-${GHC_VERSION}" \
     && find "/usr/local/opt/ghc-${GHC_VERSION}/bin" \
@@ -59,6 +73,8 @@ RUN apk upgrade --no-cache \
     && find "/usr/local/opt/ghc-${GHC_VERSION}/lib" \
         -type f \( -name '*_p.a' -o -name '*.p_hi' \) -delete \
     && rm -rf "/usr/local/opt/ghc-${GHC_VERSION}/share" \
+
+    # Remove ghcup
     && ghcup gc -p -s -c -t \
     && rm '/usr/local/bin/ghcup'
 
