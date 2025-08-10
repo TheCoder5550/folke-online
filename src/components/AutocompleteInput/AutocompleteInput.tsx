@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./AutocompleteInput.module.css";
 import { clamp, cls } from "../../helpers/generic-helper";
+import { TextFieldMemo } from "../TextField";
 
 export interface Suggestion {
   label: string;
@@ -144,12 +145,7 @@ export default function AutocompleteInput(props: AutocompleteInputProps) {
 
   return (
     <div ref={containerRef} className={[containerClassName, styles["container"]].join(" ")}>
-      <input
-        autoComplete="off"
-        autoCorrect="off"
-        autoCapitalize="off"
-        spellCheck="false"
-        type="text"
+      <TextFieldMemo
         {...inputProps}
         onFocus={focus}
         onBlur={blur}
