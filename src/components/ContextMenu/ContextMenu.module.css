@@ -11,8 +11,8 @@
   flex-direction: column;
   width: 300px;
 
-  background: white;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: rgb(var(--card-background-rgb));
+  border: 1px solid rgb(var(--text-rgb), 0.2);
   border-radius: 2px;
   box-shadow: var(--card-shadow);
 
@@ -46,11 +46,11 @@
 }
 
 .menu-item:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgb(var(--text-rgb), 0.05);
 }
 
 .menu-item:active {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgb(var(--text-rgb), 0.1);
 }
 
 .item-text {

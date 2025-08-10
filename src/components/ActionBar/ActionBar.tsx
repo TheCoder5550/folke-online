@@ -155,7 +155,7 @@ function Divider() {
       display: "flex",
       height: "75%",
       margin: "0 0.5rem",
-      borderLeft: "1px solid rgb(0, 0, 0, 0.2)"
+      borderLeft: "1px solid rgb(var(--text-rgb), 0.2)"
     }}></div>
   )
 }

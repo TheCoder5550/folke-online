@@ -15,9 +15,9 @@
   padding: 1rem;
 
   box-shadow: 0 1rem 2.5rem -1.75rem rgba(13, 0, 129, 0.2);
-  background: white;
+  background: rgb(var(--card-background-rgb));
   border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid rgb(var(--text-rgb), 0.2);
 }
 
 .card h3 {

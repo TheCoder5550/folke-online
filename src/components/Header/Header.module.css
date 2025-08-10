@@ -3,8 +3,8 @@
   gap: 2rem;
   padding: 0.5rem 1rem;
 
-  color: rgb(247, 241, 217);
-  background: rgb(57, 71, 69);
+  color: rgb(var(--header-color-rgb));
+  background: rgb(var(--header-background-rgb));
 }
 
 .logo {

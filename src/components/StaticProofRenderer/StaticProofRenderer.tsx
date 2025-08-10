@@ -98,7 +98,7 @@ interface BoxProps {
 
 function Box(props: BoxProps) {
   return (
-    <div style={{ border: "1px solid black", display: "flex", flexDirection: "column", gap: "0.5em", padding: "0.5em", paddingLeft: "1em" }}>
+    <div style={{ border: "1px solid rgb(var(--text-rgb), 0.75)", display: "flex", flexDirection: "column", gap: "0.5em", padding: "0.5em", paddingLeft: "1em" }}>
       {props.uuids.map(uuid => (
         <RenderStep depth={props.depth + 1} proof={props.proof} uuid={uuid} key={uuid} />
       ))}

@@ -17,8 +17,8 @@
   scrollbar-gutter: stable;
 
   z-index: 1;
-  background: white;
-  border: 1px solid black;
+  background: rgb(var(--card-background-rgb));
+  border: 1px solid rgb(var(--text-rgb), 0.2);
   font-family: monospace;
   font-size: 1rem;
 }
@@ -30,15 +30,15 @@
 }
 
 .list-item:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgb(var(--text-rgb), 0.05);
 }
 
 .list-item:active {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgb(var(--text-rgb), 0.1);
 }
 
 .list-item.selected {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgb(var(--text-rgb), 0.2);
 }
 
 .list-item.unknown {

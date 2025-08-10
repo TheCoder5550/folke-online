@@ -5,13 +5,13 @@
 }
 
 .table > * {
-  border-bottom: 2px dotted rgba(0, 0, 0, 0.2);
+  border-bottom: 2px dotted rgb(var(--text-rgb), 0.2);
 }
 
 .table > *:nth-child(1),
 .table > *:nth-child(2) {
   padding: 0.5rem 0;
-  border-bottom: 2px solid black;
+  border-bottom: 2px solid rgb(var(--text-rgb));
 }
 
 .usage {

@@ -2,27 +2,32 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
+  
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  color-scheme: light dark;
+
+  --background-rgb: 36, 36, 36;
+  --text-rgb: 220, 220, 220;
+
+  --card-background-rgb: 25, 25, 25;
   --card-shadow: 0 0.5rem 2rem -1rem rgba(0, 0, 0, 0.3);
 
-  --background-rgb: 249, 251, 253;
-
-  --error-color-rgb: 255, 50, 50;
-  --error-background-rgb: 255, 240, 240;
+  --error-color-rgb: 230, 75, 75;
+  --error-background-rgb: 40, 0, 0;
 
   --correct-color-rgb: 50, 150, 50;
   --correct-background-rgb: 240, 255, 240;
 
-  --hover-line-rgb: 243, 231, 210;
+  --hover-line-rgb: 49, 45, 38;
+
+  --header-background-rgb: 57, 71, 69;
+  --header-color-rgb: 247, 241, 217;
+
+  color: rgb(var(--text-rgb));
 }
 
 ::-webkit-scrollbar {
@@ -98,17 +103,17 @@ button {
 
   font-size: 0.85rem;
   border: 1px solid;
-  border-color: rgba(0, 0, 0, 0.2);
+  border-color: rgb(var(--text-rgb), 0.2);
   background: none;
   border-radius: 2px;
 }
 
 .action-button:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgb(var(--text-rgb), 0.05);
 }
 
 .action-button:active {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgb(var(--text-rgb), 0.1);
 }
 
 .action-button:disabled {
@@ -150,19 +155,19 @@ button {
 }
 
 .close-button:hover {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgb(var(--text-rgb), 0.1);
 }
 
 .close-button:active {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgb(var(--text-rgb), 0.2);
 }
 
 input[type=text] {
   min-width: 0;
   padding: 0.25rem 0.5rem;
 
-  background: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgb(189, 189, 189);
+  background: rgb(var(--card-rgb), 0.75);
+  border: 1px solid rgb(var(--text-rgb), 0.2);
   border-radius: 2px;
   color: inherit;
   font-family: monospace;
@@ -173,7 +178,7 @@ input[type=text] {
 }
 
 input[type=text]::placeholder {
-  color: #bbb;
+  color: rgb(var(--text-rgb), 0.5);
 }
 
 .paper-container {
@@ -188,8 +193,8 @@ input[type=text]::placeholder {
   position: relative;
   padding: 6rem;
   padding-top: 4.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  background: white;
+  border: 1px solid rgba(var(--text-rgb), 0.2);
+  background: rgb(var(--card-background-rgb));
   width: 100%;
   max-width: 1000px;
 }
@@ -223,10 +228,18 @@ input[type=text]::placeholder {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
+    --background-rgb: 249, 251, 253;
+    --text-rgb: 33, 53, 71;
+
+    --card-background-rgb: 255, 255, 255;
+    --card-shadow: 0 0.5rem 2rem -1rem rgba(0, 0, 0, 0.3);
+    
+    --error-color-rgb: 255, 50, 50;
+    --error-background-rgb: 255, 240, 240;
+
+    --correct-color-rgb: 50, 150, 50;
+    --correct-background-rgb: 240, 255, 240;
+
+    --hover-line-rgb: 243, 231, 210;
   }
 }

@@ -9,12 +9,12 @@
 }
 
 .proof-row input:placeholder-shown {
-  background: #ececec;
-  border-color: #888;
+  background: rgb(var(--text-rgb), 0.1);
+  border-color: rgb(var(--text-rgb), 0.4);
   opacity: 0.5;
 }
 .proof-row input:placeholder-shown::placeholder {
-  color: #535353;
+  color: rgb(var(--text-rgb), 0.7);
   font-size: 0.85rem;
 }
 
@@ -93,7 +93,7 @@
   align-items: center;
 
   border: 1px solid;
-  border-color: rgba(0, 0, 0, 0.2);
+  border-color: rgb(var(--text-rgb), 0.2);
   background: none;
   width: 1.75rem;
   height: 1.75rem;
@@ -116,7 +116,7 @@
 }
 
 .action-button:hover {
-  background: #e4e4e4;
+  background: rgb(var(--text-rgb), 0.1);
 }
 
 .action-button.delete:hover {
@@ -138,7 +138,7 @@
 }
 
 .proof-row:hover .actions {
-  background: white;
+  background: rgb(var(--card-background-rgb));
 }
 
 .proof-row:hover .error-message,

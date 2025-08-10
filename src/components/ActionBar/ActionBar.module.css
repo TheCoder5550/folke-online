@@ -2,8 +2,8 @@
   position: sticky;
   top: 0;
   
-  background: white;
-  border-bottom: 1px solid rgb(0, 0, 0, 0.2);
+  background: rgb(var(--card-background-rgb));
+  border-bottom: 1px solid rgb(var(--text-rgb), 0.2);
   box-shadow: 0 -10px 30px rgba(0, 0, 50, 0.3);
   z-index: 100000;
 }
@@ -23,7 +23,7 @@
 }
 
 .category-button.selected {
-  background: rgb(0, 0, 0, 0.1);
+  background: rgb(var(--text-rgb), 0.1);
 }
 
 .tab-content {
