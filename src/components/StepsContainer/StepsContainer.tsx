@@ -1,10 +1,11 @@
+import { cls } from "../../helpers/generic-helper";
 import styles from "./StepsContainer.module.css";
 
 type StepsContainerProps = React.InputHTMLAttributes<HTMLDivElement> & React.PropsWithChildren;
 
-export default function StepsContainer({ children, ...props }: StepsContainerProps) {
+export default function StepsContainer({ children, className, ...props }: StepsContainerProps) {
   return (
-    <div className={styles["steps-container"]} {...props}>
+    <div className={cls(styles["steps-container"], className)} {...props}>
       {children}
     </div>
   )

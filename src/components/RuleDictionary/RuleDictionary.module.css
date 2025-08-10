@@ -1,6 +1,7 @@
 .container {
   position: absolute;
-  top: 6rem;
+  bottom: -1rem;
+  transform: translateY(100%);
   right: 1rem;
 
   display: flex;

@@ -37,6 +37,10 @@ export default function AutocompleteInput(props: AutocompleteInputProps) {
   }
 
   const focus: React.FocusEventHandler<HTMLInputElement> = (e) => {
+    if (props.value !== "") {
+      return;
+    }
+
     setListVisible(true);
     setSelectedIndex(0);
     return props.onFocus?.(e);

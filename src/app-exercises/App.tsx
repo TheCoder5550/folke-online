@@ -1,3 +1,4 @@
+import styles from "./App.module.css";
 import { useEffect, useState } from 'react';
 import ErrorBoundary from '../components/ErrorBoundary';
 import ExerciseList from '../components/ExerciseList/ExerciseList';
@@ -80,13 +81,9 @@ function App() {
                     </ToggleButton>
                   </div>
 
-                  <div style={{
-                    display: "flex",
-                    gap: "2rem",
-                    marginTop: "2rem"
-                  }}>
+                  <div className={styles["tool-grid"]}>
                     {viewRules && (
-                      <div style={{width: "50%"}}>
+                      <div>
                         <h2>Rules</h2>
                         <PracticeRuleDictionary />
                       </div>

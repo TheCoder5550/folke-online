@@ -1,6 +1,7 @@
 import React from "react";
 import { getSpecialCharacterAliases, SYMBOLS } from "../../helpers/special-characters";
 import styles from "./SymbolTable.module.css";
+import { cls } from "../../helpers/generic-helper";
 
 export default function SymbolTable() {
   return (
@@ -8,6 +9,7 @@ export default function SymbolTable() {
       <h3>Name</h3>
       <h3>Symbol</h3>
       <h3>Shortcuts</h3>
+      <div className={cls(styles["row-divider"], styles["header"])}></div>
 
       {SYMBOLS.map(symbol => (
         <React.Fragment key={symbol.title}>
@@ -20,6 +22,8 @@ export default function SymbolTable() {
               </Shortcut>
             ))}
           </div>
+
+          <div className={styles["row-divider"]}></div>
         </React.Fragment>
       ))}
     </div>

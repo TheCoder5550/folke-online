@@ -8,7 +8,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0.25rem;
+  padding: 0.5rem;
 
   z-index: 100000000;
 
@@ -50,5 +50,11 @@
   to {
     scale: 1;
     opacity: 1;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .modal {
+    padding: 2rem;
   }
 }

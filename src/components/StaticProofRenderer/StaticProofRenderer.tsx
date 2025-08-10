@@ -1,5 +1,6 @@
-import { getLineNumber, isFlatLine } from "../helpers/proof-helper";
-import StepsContainer from "./StepsContainer/StepsContainer";
+import styles from "./StaticProofRenderer.module.css";
+import { getLineNumber, isFlatLine } from "../../helpers/proof-helper";
+import StepsContainer from "../StepsContainer/StepsContainer";
 
 interface StaticProofRendererProps {
   proof: FlatProof;
@@ -11,7 +12,7 @@ export default function StaticProofRenderer(props: StaticProofRendererProps) {
   const premises = proof.premises;
 
   return (
-    <StepsContainer style={{ gap: "0.5rem", fontFamily: "monospace", fontSize: "1rem" }}>
+    <StepsContainer className={styles["container"]}>
       {premises.map((premise, index) => (
         <Premise key={index} premise={premise} lineNumber={(index + 1).toString()} />
       ))}
@@ -29,11 +30,14 @@ interface PremiseProps {
 
 function Premise(props: PremiseProps) {
   return (
-    <div style={{ display: "flex" }}>
-      <span style={{ position: "absolute", left: "-3.5rem", textAlign: "right", width: "3rem" }}>{props.lineNumber}.</span>
-      <span style={{ flex: "1" }}>{props.premise}</span>
-      <span style={{ width: "200px", marginRight: "4rem" }}>premise</span>
-    </div>
+    <div className={styles["line"]}>
+    <span className={styles["number"]}>{props.lineNumber}.</span>
+    <span className={styles["statement"]}>{props.premise}</span>
+    <span
+      className={styles["rule"]}
+      style={{ marginRight: "4em" }}
+    >premise</span>
+  </div>
   )
 }
 
@@ -75,10 +79,13 @@ function Line(props: LineProps) {
   }
 
   return (
-    <div style={{ display: "flex" }}>
-      <span style={{ position: "absolute", left: "-3.5rem", textAlign: "right", width: "3rem" }}>{lineNumber}.</span>
-      <span style={{ flex: "1" }}>{props.step.statement}</span>
-      <span style={{ width: "200px", marginRight: `calc(${4 - props.depth * 0.5}rem - ${props.depth}px)` }}>{props.step.rule} {args}</span>
+    <div className={styles["line"]}>
+      <span className={styles["number"]}>{lineNumber}.</span>
+      <span className={styles["statement"]}>{props.step.statement}</span>
+      <span
+        className={styles["rule"]}
+        style={{ marginRight: `calc(${4 - props.depth * 0.5}em - ${props.depth}px)` }}
+      >{props.step.rule} {args}</span>
     </div>
   )
 }
@@ -91,7 +98,7 @@ interface BoxProps {
 
 function Box(props: BoxProps) {
   return (
-    <div style={{ border: "1px solid black", display: "flex", flexDirection: "column", gap: "0.5rem", padding: "0.5rem", paddingLeft: "1rem" }}>
+    <div style={{ border: "1px solid black", display: "flex", flexDirection: "column", gap: "0.5em", padding: "0.5em", paddingLeft: "1em" }}>
       {props.uuids.map(uuid => (
         <RenderStep depth={props.depth + 1} proof={props.proof} uuid={uuid} key={uuid} />
       ))}

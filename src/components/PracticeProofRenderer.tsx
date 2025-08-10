@@ -9,7 +9,7 @@ import { LuListRestart } from "react-icons/lu";
 import GlobalErrorMessage from "./GlobalErrorMessage";
 import { useEffect, useState } from "react";
 import { ImRedo, ImUndo } from "react-icons/im";
-import StaticProofRenderer from "./StaticProofRenderer";
+import StaticProofRenderer from "./StaticProofRenderer/StaticProofRenderer";
 import { FaLightbulb } from "react-icons/fa6";
 import Modal from "./Modal/Modal";
 import { useScreenSize } from "../helpers/use-screen-size";
@@ -75,8 +75,6 @@ export default function PracticeProofRenderer(props: PracticeProofRendererProps)
       <StepsRenderer />
 
       <div className={styles["align"]} style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-        <GlobalErrorMessage />
-
         {isMobile ? (
           <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
             <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", justifyContent: "space-between" }}>
@@ -85,6 +83,8 @@ export default function PracticeProofRenderer(props: PracticeProofRendererProps)
                 <button title={"Insert a box below the last line"} className={"action-button"} type="button" onClick={insertBoxAfterLast}>+ New box</button>
               </div>
             </div>
+
+            <GlobalErrorMessage />
 
             <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem" }}>
               <button title={"Undo"} className={"action-button"} type="button" onClick={undo}>
@@ -104,26 +104,30 @@ export default function PracticeProofRenderer(props: PracticeProofRendererProps)
             <ValidateButton onValid={props.onValid} />
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", justifyContent: "space-between" }}>
-            <div style={{ display: "flex", gap: "0.5rem" }}>
-              <button title={"Insert a line below the last line"} className={"action-button"} type="button" onClick={insertLineAfterLast}>+ New line</button>
-              <button title={"Insert a box below the last line"} className={"action-button"} type="button" onClick={insertBoxAfterLast}>+ New box</button>
-              <button title={"Undo"} className={"action-button"} type="button" onClick={undo}>
-                <ImUndo />
-              </button>
-              <button title={"Redo"} className={"action-button"} type="button" onClick={redo}>
-                <ImRedo />
-              </button>
-              <button title={"Remove every"} className={"action-button"} type="button" onClick={startOver}>
-                <LuListRestart /> Restart
-              </button>
-              <button title="Show solution" className={"action-button"} type="button" onClick={() => setShowSolution(true)}>
-                <FaLightbulb /> Show solution
-              </button>
-            </div>
+          <>
+            <GlobalErrorMessage />
 
-            <ValidateButton onValid={props.onValid} />
-          </div>
+            <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                <button title={"Insert a line below the last line"} className={"action-button"} type="button" onClick={insertLineAfterLast}>+ New line</button>
+                <button title={"Insert a box below the last line"} className={"action-button"} type="button" onClick={insertBoxAfterLast}>+ New box</button>
+                <button title={"Undo"} className={"action-button"} type="button" onClick={undo}>
+                  <ImUndo />
+                </button>
+                <button title={"Redo"} className={"action-button"} type="button" onClick={redo}>
+                  <ImRedo />
+                </button>
+                <button title={"Remove every"} className={"action-button"} type="button" onClick={startOver}>
+                  <LuListRestart /> Restart
+                </button>
+                <button title="Show solution" className={"action-button"} type="button" onClick={() => setShowSolution(true)}>
+                  <FaLightbulb /> Show solution
+                </button>
+              </div>
+
+              <ValidateButton onValid={props.onValid} />
+            </div>
+          </>
         )}
       </div>
 
