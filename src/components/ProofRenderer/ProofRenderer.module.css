@@ -6,6 +6,8 @@
   display: grid;
   gap: 0.5rem;
   grid-template-columns: 1fr auto 1fr;
+
+  margin-bottom: 2rem;
 }
 
 .note {

@@ -18,6 +18,10 @@ export default function PremiseField() {
   }, [premiseInput])
 
   return (
-    <TextFieldMemo value={premiseInput} onChange={e => setPremiseInput(makeSpecialCharacters(e.currentTarget.value))} />
+    <TextFieldMemo
+      placeholder={"Premises separated by \";\": A; B"}
+      value={premiseInput}
+      onChange={e => setPremiseInput(makeSpecialCharacters(e.currentTarget.value))}
+    />
   )
 }

@@ -15,11 +15,13 @@
 }
 .proof-row input:placeholder-shown::placeholder {
   color: rgb(var(--text-rgb), 0.7);
-  font-size: 0.85rem;
+}
+
+.proof-row.error {
+  color: rgb(var(--error-color-rgb));
 }
 
 .proof-row.error input {
-  color: rgb(var(--error-color-rgb));
   border-color: rgb(var(--error-color-rgb));
   background-color: rgb(var(--error-background-rgb));
 }

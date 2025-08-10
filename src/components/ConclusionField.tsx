@@ -17,6 +17,10 @@ export default function ConclusionField() {
   }, [ dispatch ]);
 
   return (
-    <TextFieldMemo value={conclusion} onChange={conclusionChange} />
+    <TextFieldMemo
+      placeholder="Conclusion: A ∧ B"
+      value={conclusion}
+      onChange={conclusionChange}
+    />
   )
 }

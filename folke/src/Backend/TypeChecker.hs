@@ -123,10 +123,11 @@ checkPremsFE env forms = checkPremsFEWithIndex env forms 0
     where
         checkPremsFEWithIndex _ [] _ = Ok [] []
         checkPremsFEWithIndex env (form:forms) idx = do
-            f <- parseForm env form
+            let env_with_ref = pushPos env [RefLine (idx + 1)]
+            f <- parseForm env_with_ref form
             form_t <- case f of
-                Abs.FormNil -> Err [] env (createEmptyPremiseError env idx)
-                _ -> checkForm env f
+                Abs.FormNil -> Err [] env_with_ref (createEmptyPremiseError env_with_ref idx)
+                _ -> checkForm env_with_ref f
 
             forms_t <- checkPremsFEWithIndex env forms (idx + 1)
             Ok [] (form_t : forms_t)

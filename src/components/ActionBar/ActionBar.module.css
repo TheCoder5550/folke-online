@@ -15,8 +15,9 @@
 }
 
 .category-button {
-  padding: 0.25rem 0.5rem;
+  padding: 0.125rem 0.75rem;
 
+  font-size: 0.85rem;
   background: none;
   border: none;
   border-radius: 2px;
