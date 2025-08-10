@@ -57,8 +57,6 @@ export const WasmProvider = ({ children }: WasmProviderProps) => {
       Object.assign(jsffiExports, inst.exports);
       wasi.initialize(inst);
 
-      throw new Error("test");
-
       const hs = inst.exports;
       hs.hs_init(0, 0);
 
