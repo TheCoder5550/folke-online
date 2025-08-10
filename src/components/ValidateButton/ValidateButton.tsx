@@ -25,7 +25,16 @@ export default function ValidateButton(props: ValidateButtonProps) {
   const small = props.small === true;
 
   const validate = useCallback(() => {
-    wasm(proof).then(result => {
+    if (wasm.error) {
+      setResult({
+        correct: false,
+        message: wasm.error,
+        location: "Not supported"
+      })
+      return;
+    }
+
+    wasm.validate(proof).then(result => {
       setBuffering(false);
       setResult(result);
   
@@ -53,6 +62,10 @@ export default function ValidateButton(props: ValidateButtonProps) {
       validate();
     }
   }, [wasm]);
+
+  if (wasm.error != null) {
+    return undefined;
+  }
 
   return (
     <div className={styles["container"]}>

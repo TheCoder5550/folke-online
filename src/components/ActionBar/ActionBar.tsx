@@ -11,14 +11,16 @@ import { cls } from "../../helpers/generic-helper";
 import ToggleButton from "../ToggleButton/ToggleButton";
 import RuleDictionary from "../RuleDictionary/RuleDictionary";
 import { useScreenSize } from "../../helpers/use-screen-size";
+import useWasm from "../../helpers/wasm-provider";
 
 export default function ActionBar() {
   const isMobile = useScreenSize() === "mobile";
   
   const [category, setCategory] = useState<"File" | "Edit">("Edit");
   const [autoValidate, setAutoValidate] = useState(true);
-  const [viewRules, setViewRules] = useState(true);
+  const [viewRules, setViewRules] = useState(!isMobile);
 
+  const wasm = useWasm();
   const dispatch = useProofStore((state) => state.dispatch);
   const undo = useProofStore((state) => state.undo);
   const redo = useProofStore((state) => state.redo);
@@ -88,9 +90,11 @@ export default function ActionBar() {
           <div style={{ display: "flex", gap: "0.5rem", marginLeft: "auto" }}>
             <ValidateButton small autoValidate={autoValidate} />
 
-            <ToggleButton toggle={() => setAutoValidate(!autoValidate)} toggled={autoValidate} title="Automatically validate proof whilst writing">
-              <MdOutlineMotionPhotosAuto />
-            </ToggleButton>
+            {!wasm.error && (
+              <ToggleButton toggle={() => setAutoValidate(!autoValidate)} toggled={autoValidate} title="Automatically validate proof whilst writing">
+                <MdOutlineMotionPhotosAuto />
+              </ToggleButton>
+            )}
           </div>
         )}
       </div>
@@ -127,9 +131,11 @@ export default function ActionBar() {
           <div className={styles["current-actions"]}>
             <ValidateButton autoValidate={autoValidate} />
 
-            <ToggleButton toggle={() => setAutoValidate(!autoValidate)} toggled={autoValidate} title="Automatically validate proof whilst writing">
-              <MdOutlineMotionPhotosAuto />
-            </ToggleButton>
+            {!wasm.error && (
+              <ToggleButton toggle={() => setAutoValidate(!autoValidate)} toggled={autoValidate} title="Automatically validate proof whilst writing">
+                <MdOutlineMotionPhotosAuto />
+              </ToggleButton>
+            )}
 
             <ToggleButton toggle={() => setViewRules(!viewRules)} toggled={viewRules} title="Show rule dictionary">
               <FaBookOpen />

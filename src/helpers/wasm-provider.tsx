@@ -1,4 +1,4 @@
-import { createContext, use, useCallback, useEffect, useState } from "react";
+import { createContext, use, useCallback, useEffect, useMemo, useState } from "react";
 import WASM_MODULE_URL from '../../folke-wasm-wrapper/output/folke-wasm-wrapper.wasm?url'
 import ghc_wasm_jsffi from "../../folke-wasm-wrapper/output/ghc_wasm_jsffi.js";
 import { WASI, ConsoleStdout, OpenFile, File } from "@bjorn3/browser_wasi_shim";
@@ -24,12 +24,18 @@ interface HaskellExports {
 const encoder = new TextEncoder()
 const decoder = new TextDecoder()
 
-const WasmContext = createContext<((proof: FlatProof) => Promise<null | CheckProofResult>) | null>(null)
+interface WasmContextType {
+  validate: (proof: FlatProof) => Promise<null | CheckProofResult>;
+  error: string | null;
+}
+
+const WasmContext = createContext<WasmContextType | null>(null)
 
 type WasmProviderProps = React.PropsWithChildren;
 
 export const WasmProvider = ({ children }: WasmProviderProps) => {
   const [hs, setHS] = useState<HaskellExports>();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadWasm() {
@@ -51,16 +57,28 @@ export const WasmProvider = ({ children }: WasmProviderProps) => {
       Object.assign(jsffiExports, inst.exports);
       wasi.initialize(inst);
 
+      throw new Error("test");
+
       const hs = inst.exports;
       hs.hs_init(0, 0);
 
       setHS(hs);
     }
 
-    loadWasm().catch(console.error);
+    loadWasm().catch((reason: unknown) => {
+      const e = reason as string;
+      setError(`Proof validation is not supported on your device! (${e})`);
+      console.log("bruh");
+      console.error(reason);
+    });
   }, []);
 
   const validate = useCallback(async (proof: FlatProof): Promise<null | CheckProofResult> => {
+    if (error) {
+      console.error("WebAssembly failed to start!");
+      return null;
+    }
+
     if (!hs) {
       console.error("WebAssembly not loaded yet");
       return null;
@@ -84,10 +102,15 @@ export const WasmProvider = ({ children }: WasmProviderProps) => {
         resolve(json);
       }).catch(reject);
     });
-  }, [ hs ]);
+  }, [ error, hs ]);
+
+  const value = useMemo(() => ({
+    validate,
+    error,
+  }), [ validate, error ]);
 
   return (
-    <WasmContext value={validate}>
+    <WasmContext value={value}>
       {children}
     </WasmContext>
   )
