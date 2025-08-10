@@ -13,7 +13,7 @@ export const LineNumberMemo = memo(LineNumber);
 
 export default function LineNumber(props: LineNumberProps) {
   const lineNumber = useProofStore((state) => getLineNumber(state.proof, props.uuid));
-  const hasError = useProofStore((state) => state.result?.location == lineNumber);
+  const hasError = useProofStore((state) => matchLineNumber(state.result?.location, lineNumber));
 
   return <ManualLineNumber hasError={hasError} lineNumber={lineNumber} />
 }
@@ -36,4 +36,32 @@ export function ManualLineNumber(props: ManualLineNumberProps) {
   return (
     <span style={{ fontSize }}>{text}</span>
   )
+}
+
+function matchLineNumber(location: string | number | undefined, lineNumber: string): boolean {
+  if (location == undefined) {
+    return false;
+  }
+
+  if (location == lineNumber) {
+    return true;
+  }
+
+  const match = location.toString().match(/^(\d+)-(\d+)$/);
+  if (match) {
+    const l = parseInt(lineNumber);
+    const start = parseInt(match[1]);
+    const end = parseInt(match[2]);
+
+    if (isNaN(l) || isNaN(start) || isNaN(end) || start > end) {
+      return false;
+    }
+
+    return (
+      l >= start &&
+      l <= end
+    );
+  }
+
+  return false;
 }
