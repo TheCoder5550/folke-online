@@ -187,8 +187,8 @@ push env = env { prems = [], fresh = [], depth = depth env + 1}
 
 -- | Bind a variable in the current environment
 bindVar :: Env -> Term -> Result Env
-bindVar env (Term x []) = if Map.member x (bound env)
-    then Err [] env (createUnknownError env ("Trying to rebind " ++ show x ++ "."))
+bindVar env t@(Term x []) = if Map.member x (bound env)
+    then Err [] env (createUnknownError env ("Trying to rebind " ++ show t ++ "."))
     else Ok [] env { bound = Map.insert x () (bound env)}
 bindVar env f = Err [] env (createUnknownError env ("Unable to bind function: " ++ show f))
 
@@ -684,9 +684,9 @@ ruleOrE env [(_, ArgForm (Or a b)), (j, ArgProof (Proof _ [p1] c1)),
             else Err [] env (createRuleConcError env 
                  "The conclusions of the two proofs did not match.")
         else Err [] env (createRuleArgError env k 
-             "The premise of the proof did not match the right hand side of the ∨ statement.")
+             "The assumption in the box did not match the right hand side of the ∨ statement.")
     else Err [] env (createRuleArgError env j 
-         "The premise of the proof did not match the left hand side of the ∨ statement.")
+         "The assumption in the box did not match the left hand side of the ∨ statement.")
 ruleOrE env [b@(_, ArgProof _), a@(_, ArgForm _), c@(_, ArgProof _)] r = 
     ruleOrE env [a, b, c] r
 ruleOrE env [b@(_, ArgProof _), c@(_, ArgProof _), a@(_, ArgForm _)] r = 

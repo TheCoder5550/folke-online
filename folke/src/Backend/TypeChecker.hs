@@ -165,7 +165,7 @@ checkProofFE env [step] i
             let refs_t = [RefRange i (i - 1 + countSteps (FE.SubProof steps))]
             let newEnv = push (pushPos env refs_t)
             _ <- checkProofFE newEnv steps i
-            Err [] newEnv (createTypeError newEnv "Last step in proof was another proof.")
+            Err [] newEnv (createTypeError newEnv "Last step in proof cannot be a box.")
     | FE.Line {} <- step = do
         (new_env, step_t) <- checkStepFE (pushPos env [RefLine i]) step
         case step_t of
