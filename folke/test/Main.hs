@@ -15,7 +15,7 @@ import Data.Text (Text, unpack)
 
 testGoodProof :: FilePath -> Test
 testGoodProof proofPath = TestCase $ do
-    case checkJson proofPath of
+    case checkJsonFile proofPath of
         Err warns env err -> 
             assertFailure $ "Wrong result: Proof is correct but reported as incorrect.\nError:\n" ++ 
                            List.intercalate "\n" [show warn | warn <- warns] ++ 
@@ -28,8 +28,9 @@ testGoodProof proofPath = TestCase $ do
 
 testBadProof :: FilePath -> Test
 testBadProof proofPath = TestCase $ do
-    case checkJson proofPath of
-        Err _warns _env _err ->
+    case checkJsonFile proofPath of
+        Err _warns _env err -> do
+            putStrLn ("\nError message: " ++ show err ++ "\n")
             assertBool ("Proof is incorrect: " ++ proofPath) True
         Ok _warns _ -> do
             assertFailure "Wrong result: Proof is incorrect but reported as correct\n"
@@ -141,16 +142,17 @@ testParseForm t = TestLabel (unpack t) (TestCase (case parseForm newEnv t of
 
 testParser :: Test
 testParser = TestList [
-            testParseForm "A",
-            testParseForm "!A",
-            testParseForm "A&B",
-            testParseForm "A|B",
-            testParseForm "A->B",
-            testParseForm "∃x A",
-            testParseForm "∀x A",
-            testParseForm "x=y",
-            testParseForm "bot"
-        ]
+        testParseForm "A",
+        testParseForm "!A",
+        testParseForm "A&B",
+        testParseForm "A|B",
+        testParseForm "A->B",
+        testParseForm "∃x A",
+        testParseForm "∀x A",
+        testParseForm "x=y",
+        testParseForm "bot"
+    ]
+
 main :: IO ()
 main = do
     -- Collect files

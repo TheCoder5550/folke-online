@@ -64,20 +64,20 @@ clearWarnings (Err _ env err) = Err [] env err
 -- Utility Functions
 ----------------------------------------------------------------------
 
-validateRefs :: Env -> Result ()
-validateRefs env =
-    let allRefs = Map.toList (refs env)
-        premises = getPrems env
+-- validateRefs :: Env -> Result ()
+-- validateRefs env =
+--     let allRefs = Map.toList (refs env)
+--         premises = getPrems env
 
-        isSkippable ref arg = case arg of
-                ArgProof _ -> True
-                ArgForm form -> form == findLastFormula env || isPremiseRef ref premises
-                _ -> False
+--         isSkippable ref arg = case arg of
+--                 ArgProof _ -> True
+--                 ArgForm form -> form == findLastFormula env || isPremiseRef ref premises
+--                 _ -> False
 
-        unusedRefs = [(ref, arg) | (ref, (count, arg)) <- allRefs,
-                     count == 0 && not (isSkippable ref arg)]
-    in
-    (unless (null unusedRefs) $ Ok [createUnusedRefsWarning unusedRefs] ())
+--         unusedRefs = [(ref, arg) | (ref, (count, arg)) <- allRefs,
+--                      count == 0 && not (isSkippable ref arg)]
+--     in
+--     (unless (null unusedRefs) $ Ok [createUnusedRefsWarning unusedRefs] ())
 
 -- | Create warning for duplicate lines
 validateDups :: Env -> Result ()
@@ -127,15 +127,12 @@ findLastFormula :: Env -> Formula
 findLastFormula env =
     case Map.foldrWithKey findForm Nil (refs env) of
         Nil ->
-            if not (null (getPrems env))
-            then case List.last (getPrems env) of
-                Nil -> Nil
-                lastPrem -> lastPrem
-            else Nil
+          case List.unsnoc (getPrems env) of
+            Nothing -> Nil
+            Just (_, last) -> last
         form -> form
     where
         findForm _ (_, ArgForm form) Nil = form
-        findForm _ (_, ArgProof proof) Nil = getConclusion proof
         findForm _ _ acc = acc
 
 -- | Convert a premise to a proof step for verification

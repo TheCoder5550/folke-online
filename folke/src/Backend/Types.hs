@@ -197,35 +197,84 @@ instance Eq Predicate where
 
 instance Show Formula where
   show :: Formula -> String
+
+  -- 4
   show (Pred a) = show a
-  show (Not a) = "¬" <> getOutput a
-        where
-          getOutput form = case form of
-            Pred _ -> c
-            Not _ -> c
-            Bot -> c
-            _ -> p
-            where c = show form; p = "(" <> c <> ")"
-
-  show (And a b) = getOutput a <> " ∧ " <> getOutput b
-    where
-      getOutput form = case form of
-        Impl _ _ -> p
-        _ -> c
-        where c = show form; p = "(" <> c <> ")"
-
-  show (Or a b) = getOutput a <> " ∨ " <> getOutput b
-    where
-      getOutput form = case form of
-        Impl _ _ -> p
-        _ -> c
-        where c = show form; p = "(" <> c <> ")"
-
-  show (Impl a b) = show a <> " → " <> show b
   show (Eq a b) = show a <> "=" <> show b
-  show (All i a) = "∀" <> show i <> " " <> show a
-  show (Some i a) = "∃" <> show i <> " " <> show a
   show Bot = "⊥"
+
+  -- 3
+  show (Not a) = "¬" <> getOutput a
+    where
+      getOutput form = case form of
+        Pred _ -> c
+        Not _ -> c
+        Bot -> c
+        _ -> p
+        where c = show form; p = "(" <> c <> ")"
+
+  show (All i a) = "∀" <> show i <> " " <> getOutput a
+    where
+      getOutput form = case form of
+        Pred _ -> c
+        Not _ -> c
+        Bot -> c
+        _ -> p
+        where c = show form; p = "(" <> c <> ")"
+
+  show (Some i a) = "∃" <> show i <> " " <> getOutput a
+    where
+      getOutput form = case form of
+        Pred _ -> c
+        Not _ -> c
+        Bot -> c
+        _ -> p
+        where c = show form; p = "(" <> c <> ")"
+
+  -- 2
+  show (And a b) = getOutputLeft a <> " ∧ " <> getOutputRight b
+    where
+      getOutputLeft form = case form of
+        Impl _ _ -> p
+        -- Can comment out: And _ _ -> p
+        And _ _ -> p
+        Or _ _ -> p
+        _ -> c
+        where c = show form; p = "(" <> c <> ")"
+      
+      getOutputRight form = case form of
+        Impl _ _ -> p
+        And _ _ -> p
+        Or _ _ -> p
+        _ -> c
+        where c = show form; p = "(" <> c <> ")"
+
+  show (Or a b) = getOutputLeft a <> " ∨ " <> getOutputRight b
+    where
+      getOutputLeft form = case form of
+        Impl _ _ -> p
+        And _ _ -> p
+        -- Can comment out: Or _ _ -> p
+        Or _ _ -> p
+        _ -> c
+        where c = show form; p = "(" <> c <> ")"
+
+      getOutputRight form = case form of
+        Impl _ _ -> p
+        And _ _ -> p
+        Or _ _ -> p
+        _ -> c
+        where c = show form; p = "(" <> c <> ")"
+
+  -- 1
+  show (Impl a b) = getOutput a <> " → " <> getOutput b
+    where
+      getOutput form = case form of
+        Impl _ _ -> p
+        _ -> c
+        where c = show form; p = "(" <> c <> ")"
+
+  -- misc.
   show Nil = "nothing"
 
 -- | Deprecated

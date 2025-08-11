@@ -1,0 +1,1 @@
+{"_sequent":{"_conclusion":"A","_premises":[],"_steps":[{"tag":"SubProof","contents":[{"tag":"Line","_arguments":[],"_usedArguments":0,"_rule":"assume","_statement":"A"}]},{"tag":"Line","_arguments":[],"_usedArguments":0,"_rule":"","_statement":""}]}}

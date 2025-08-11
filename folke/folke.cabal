@@ -68,7 +68,7 @@ test-suite folke-test
     main-is:          Main.hs
 
     build-depends:
-        base ^>=4.17.2.1,
+        base ^>=4.21.0.0,
         folke,
         HUnit,
         directory,

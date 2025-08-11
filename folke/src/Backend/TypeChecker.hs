@@ -12,7 +12,7 @@ module Backend.TypeChecker (
 ) where
 
 import qualified Logic.Abs as Abs
-import Logic.Par (myLexer, pForm, pListArg)
+import Logic.Par (myLexer, pForm, pArg)
 import Shared.Messages
 import Shared.FESequent as FE
 import Backend.Environment
@@ -27,7 +27,7 @@ import Control.Exception (SomeException, try)
 import System.IO.Unsafe (unsafePerformIO)
 
 import Shared.SpecialCharacters (replaceSpecialSymbolsInverse)
-import Data.Text (Text, unpack, pack, intercalate, strip)
+import Data.Text (Text, unpack, pack, strip)
 
 ----------------------------------------------------------------------
 -- Main API Functions
@@ -108,10 +108,11 @@ checkSequentFE env sequent = do
     -- Checking and validation
     prems_t <- checkPremsFE env (_premises sequent)
     conc_t <- checkConcFE env (_conclusion sequent)
+    let seq_t = Proof [] prems_t conc_t
+    
     (proof_t, finalEnv) <- checkProofFE env (sequentSteps sequent) 1
 
     -- Check expected vs actual
-    let seq_t = Proof [] prems_t conc_t
     if proof_t == seq_t
          then return (seq_t, finalEnv)
          else Err [] finalEnv (createMismatchedFormulaError finalEnv conc_t (getConclusion proof_t))
@@ -150,7 +151,7 @@ parseForm :: Env -> Text -> Result Abs.Form
 parseForm env t =
     case pForm $ myLexer $ unpack $ replaceSpecialSymbolsInverse t of
     Left err -> throwError createSyntaxError env $
-        "Failed to parse formula: '" ++ unpack t ++ "'\nError: " ++ err
+        "Failed to parse formula: '" ++ unpack t ++ "': " ++ err
     Right form -> Ok [] form
 
 ----------------------------------------------------------------------
@@ -188,8 +189,8 @@ checkProofFE env (step : elems) i
         let env' = popPos (addRefs (pushPos env refs_t) refs_t step_result) 1
         (seq_t, finalEnv) <- checkProofFE env' elems (i + countSteps (FE.SubProof steps))
         Ok [] (seq_t, finalEnv)
-    | FE.Line {} <- step = do
 
+    | FE.Line {} <- step = do
         let refs_t = [RefLine i]
         (new_env, step_t) <- checkStepFE (pushPos env refs_t) step
 
@@ -228,7 +229,7 @@ checkStepFE env step = case step of
                     new_env <- addPrem env form_t
                     let env_with_ref = addRefs new_env [currentRef] (ArgForm form_t)
                     Ok [] (env_with_ref, ArgForm form_t)
-                else Err [] env (createTypeError env "A premise is not allowed in a subproof.")
+                else Err [] env (createTypeError env "Premises are not allowed inside boxes.")
 
             -- Handle fresh variables
             "fresh" -> if depth env /= 0
@@ -239,7 +240,7 @@ checkStepFE env step = case step of
                     -- Register the reference for this line
                     let env_with_ref = addRefs env2 [currentRef] (ArgTerm t)
                     Ok [] (env_with_ref, ArgTerm t)
-                else Err [] env (createTypeError env "Fresh variables are only allowed in subproofs.")
+                else Err [] env (createTypeError env "Fresh variables are only allowed inside boxes.")
 
             -- Handle assumptions (for subproofs)
             "assume" -> if depth env /= 0
@@ -249,7 +250,7 @@ checkStepFE env step = case step of
                     -- Register the reference for this line
                     let env_with_ref = addRefs new_env [currentRef] (ArgForm form_t)
                     Ok [] (env_with_ref, ArgForm form_t)
-                else Err [] env (createTypeError env "Assumptions are only allowed in subproofs.")
+                else Err [] env (createTypeError env "Assumptions are only allowed inside boxes.")
 
             -- Handle general rule applications
             _ -> do
@@ -267,11 +268,18 @@ checkArgsFE env a = do
 
 -- | Parse arguments from frontend text format
 parseArgs :: Env -> [Text] -> Result [Abs.Arg]
-parseArgs env t =
-    let argText = unpack (intercalate (pack ",") (map replaceSpecialSymbolsInverse t))
-    in case pListArg (myLexer argText) of
+parseArgs env (t:ts) = do
+    args <- parseArgs env ts
+    arg <- parseArg env t
+    Ok [] (arg : args)
+parseArgs _ [] = Ok [] []
+
+-- | Parse a single argument from frontend text format
+parseArg :: Env -> Text -> Result Abs.Arg
+parseArg env t = do
+    case (pArg . myLexer . unpack . replaceSpecialSymbolsInverse) t of
         Left err -> throwError createSyntaxError env $
-            "Could not parse argument list: '" ++ argText ++ "'\nError: " ++ err
+            "Could not parse argument: '" ++ unpack t ++ "': " ++ err
         Right arg -> Ok [] arg
 
 ----------------------------------------------------------------------
