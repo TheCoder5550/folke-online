@@ -295,6 +295,10 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
 
 const RULE_SUGGESTIONS: Suggestion[] = [];
   for (const [key] of Object.entries(RULE_META_DATA)) {
+    if (key === "premise") {
+      continue;
+    }
+
     const aliases = getPermutations(key);
     RULE_SUGGESTIONS.push({
       label: key,

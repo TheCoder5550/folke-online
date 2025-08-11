@@ -6,7 +6,7 @@ export const GlobalErrorMessageMemo = memo(GlobalErrorMessage);
 export default function GlobalErrorMessage() {
   const message = useProofStore((state) => {
     const res = state.result;
-    if (!res) {
+    if (!res || !res.location || !res.message) {
       return "";
     }
 

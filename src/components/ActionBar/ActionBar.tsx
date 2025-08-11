@@ -70,6 +70,8 @@ export default function ActionBar() {
         proof: flatProof
       })
     }).catch(console.error);
+
+    e.target.value = "";
   }
 
   const resetProof = () => {

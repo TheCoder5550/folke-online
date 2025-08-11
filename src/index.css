@@ -116,6 +116,10 @@ button {
   background: rgb(var(--text-rgb), 0.1);
 }
 
+.action-button:focus {
+  outline: 1px solid rgb(var(--text-rgb));
+}
+
 .action-button:disabled {
   opacity: 0.5;
   background: none;

@@ -582,8 +582,7 @@ const createProofStore = (initialProof: FlatProof, localStorageName: string) => 
               const proof = get().proof;
               const unflat = unflattenProof(proof);
               const latex = generateLatex(unflat);
-              console.log(latex);
-              // downloadText(latex, "export.tex");
+              downloadText(latex, "export.tex");
             },
 
             dispatch(action: ProofDispatchAction) {
