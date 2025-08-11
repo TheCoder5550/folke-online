@@ -23,6 +23,24 @@ function App() {
             <h2>Rules</h2>
             <p>These rules (or <i>justifications</i>) are available</p>
             <RulesTable />
+
+            <br /><br />
+
+            <h2>Binding priority</h2>
+            <p>Folke uses the following convention for binding priority between connectives:</p>
+            <ol>
+              <li>¬, ∀ and ∃ has the highest binding priority and bind the tightest</li>
+              <li>∨ and ∧ bind the second tightest and are left-associative</li>
+              <li>→ has the lowest binding priority and is right-associative</li>
+            </ol>
+            <p>Examples:</p>
+            <ul>
+              <li>A ∧ B ∧ C is equivalent to (A ∧ B) ∧ C</li>
+              <li>A ∨ B ∨ C is equivalent to (A ∨ B) ∨ C</li>
+              <li>A ∨ B ∧ C is equivalent to (A ∨ B) ∧ C</li>
+              <li>A → B → C is equivalent to A → (B → C)</li>
+              <li>∀x P(x) → ∃y Q(y) ∧ ¬R(z) is equivalent to (∀x P(x)) → ((∃y Q(y)) ∧ (¬R(z)))</li>
+            </ul>
           </div>
         </div>
 
