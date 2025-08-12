@@ -682,11 +682,11 @@ ruleOrE env [(_, ArgForm (Or a b)), (j, ArgProof (Proof _ [p1] c1)),
         if cmp env b p2 then
             if cmp env c1 c2 then Ok [] c1 
             else Err [] env (createRuleConcError env 
-                 "The conclusions of the two proofs did not match.")
+                 "The conclusions of the two boxes did not match.")
         else Err [] env (createRuleArgError env k 
-             "The assumption in the box did not match the right hand side of the ∨ statement.")
+             ("The assumption in the box (" ++ show p2 ++ ") did not match the right hand side of the ∨ statement (" ++ show b ++ ")."))
     else Err [] env (createRuleArgError env j 
-         "The assumption in the box did not match the left hand side of the ∨ statement.")
+         ("The assumption in the box (" ++ show p1 ++ ") did not match the left hand side of the ∨ statement (" ++ show a ++ ")."))
 ruleOrE env [b@(_, ArgProof _), a@(_, ArgForm _), c@(_, ArgProof _)] r = 
     ruleOrE env [a, b, c] r
 ruleOrE env [b@(_, ArgProof _), c@(_, ArgProof _), a@(_, ArgForm _)] r = 

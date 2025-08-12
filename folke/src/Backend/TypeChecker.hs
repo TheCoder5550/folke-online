@@ -110,7 +110,7 @@ checkSequentFE env sequent = do
     conc_t <- checkConcFE env (_conclusion sequent)
     let seq_t = Proof [] prems_t conc_t
     
-    (proof_t, finalEnv) <- checkProofFE env (sequentSteps sequent) 1
+    (proof_t, finalEnv) <- checkProofFE env (sequentSteps sequent) 1 0
 
     -- Check expected vs actual
     if proof_t == seq_t
@@ -159,17 +159,22 @@ parseForm env t =
 ----------------------------------------------------------------------
 
 -- | Check a proof and return both the proof and the final environment
-checkProofFE :: Env -> [FE.FEStep] -> Integer -> Result (Proof, Env)
-checkProofFE env [] _ = Ok [] (Proof [] (getPrems env) Nil, env)
+checkProofFE ::
+    Env ->              
+    [FE.FEStep] ->
+    Integer ->          -- Line number
+    Integer ->          -- Line number relative to start of box
+    Result (Proof, Env)
+checkProofFE env [] _ _ = Ok [] (Proof [] (getPrems env) Nil, env)
 
-checkProofFE env [step] i
+checkProofFE env [step] i localIdx
     | FE.SubProof steps <- step = do
             let refs_t = [RefRange i (i - 1 + countSteps (FE.SubProof steps))]
             let newEnv = push (pushPos env refs_t)
-            _ <- checkProofFE newEnv steps i
+            _ <- checkProofFE newEnv steps i 0
             Err [] newEnv (createTypeError newEnv "Last step in proof cannot be a box.")
     | FE.Line {} <- step = do
-        (new_env, step_t) <- checkStepFE (pushPos env [RefLine i]) step
+        (new_env, step_t) <- checkStepFE (pushPos env [RefLine i]) step localIdx
         case step_t of
             ArgProof {} -> Err [] env (createTypeError env "Check step could not return a proof.")
             ArgTerm _ -> Err [] env (createTypeError env "Check step could not return a term.")
@@ -181,28 +186,29 @@ checkProofFE env [step] i
                    else Ok [] (Proof (getFreshs new_env) (getPrems new_env) Nil, new_env)
             ArgForm step_t -> Ok [] (Proof (getFreshs new_env) (getPrems new_env) step_t, new_env)
 
-checkProofFE env (step : elems) i
+checkProofFE env (step : elems) i localIdx
     | FE.SubProof steps <- step = do
         let refs_t = [RefRange i (i - 1 + countSteps (FE.SubProof steps))]
-        (proof_t, _) <- checkProofFE (push (pushPos env refs_t)) steps i
+        (proof_t, _) <- checkProofFE (push (pushPos env refs_t)) steps i 0
         let step_result = ArgProof proof_t
+
         let env' = popPos (addRefs (pushPos env refs_t) refs_t step_result) 1
-        (seq_t, finalEnv) <- checkProofFE env' elems (i + countSteps (FE.SubProof steps))
+        (seq_t, finalEnv) <- checkProofFE env' elems (i + countSteps (FE.SubProof steps)) (localIdx + 1)
         Ok [] (seq_t, finalEnv)
 
     | FE.Line {} <- step = do
         let refs_t = [RefLine i]
-        (new_env, step_t) <- checkStepFE (pushPos env refs_t) step
+        (new_env, step_t) <- checkStepFE (pushPos env refs_t) step localIdx
 
         let env' = popPos (addRefs new_env refs_t step_t) (toInteger $ List.length refs_t)
-        (seq_t, finalEnv) <- checkProofFE env' elems (i + 1)
+        (seq_t, finalEnv) <- checkProofFE env' elems (i + 1) (localIdx + 1)
         Ok [] (seq_t, finalEnv)
 
 -- | Check a single frontend proof step
-checkStepFE :: Env -> FE.FEStep -> Result (Env, Arg)
-checkStepFE env step = case step of
+checkStepFE :: Env -> FE.FEStep -> Integer -> Result (Env, Arg)
+checkStepFE env step localIdx = case step of
     FE.SubProof steps -> do
-        (proof_t, _) <- checkProofFE (push env) steps 0
+        (proof_t, _) <- checkProofFE (push env) steps 0 0
         let currentRef = head (pos env)
         let env_with_ref = addRefs env [currentRef] (ArgProof proof_t)
         Ok [] (env_with_ref, ArgProof proof_t)
@@ -222,43 +228,58 @@ checkStepFE env step = case step of
         else if formIsEmpty then 
             Err [] env (createNoFormulaProvidedError env)
             
-        else case unpack rule of
-            "prem" -> if depth env == 0
-                then do
+        else case rule of
+            -- Handle premises
+            "prem"
+                | depth env /= 0 ->
+                    Err [] env (createTypeError env "Premises are not allowed inside boxes.")
+                | otherwise -> do
                     form_t <- checkFormFE env form
                     new_env <- addPrem env form_t
                     let env_with_ref = addRefs new_env [currentRef] (ArgForm form_t)
                     Ok [] (env_with_ref, ArgForm form_t)
-                else Err [] env (createTypeError env "Premises are not allowed inside boxes.")
 
             -- Handle fresh variables
-            "fresh" -> if depth env /= 0
-                then do
+            "fresh"
+                | depth env == 0 ->
+                    Err [] env (createTypeError env "Fresh variables are only allowed inside boxes.")
+                | not (localIdx == 0 || localIdx == 1) ->
+                    Err [] env (createTypeError env "Fresh variables must be placed first in boxes.")
+                | not (null (getFreshs env)) ->
+                    Err [] env (createTypeError env "Only 1 fresh variable is allowed per box.")
+                | otherwise -> do
                     let t = Term (unpack $ replaceSpecialSymbolsInverse form) []
                     env1 <- regTerm env t
                     env2 <- addFresh env1 t
                     -- Register the reference for this line
                     let env_with_ref = addRefs env2 [currentRef] (ArgTerm t)
                     Ok [] (env_with_ref, ArgTerm t)
-                else Err [] env (createTypeError env "Fresh variables are only allowed inside boxes.")
 
             -- Handle assumptions (for subproofs)
-            "assume" -> if depth env /= 0
-                then do
+            "assume"
+                | depth env == 0 ->
+                    Err [] env (createTypeError env "Assumptions are only allowed inside boxes.")
+                | not (localIdx == 0 || localIdx == 1) ->
+                    Err [] env (createTypeError env "Assumptions must be placed first in boxes.")
+                | not (null (prems env)) ->
+                    Err [] env (createTypeError env "Only 1 assumption is allowed per box.")
+                | otherwise -> do
                     form_t <- checkFormFE env form
                     new_env <- addPrem env form_t
                     -- Register the reference for this line
                     let env_with_ref = addRefs new_env [currentRef] (ArgForm form_t)
                     Ok [] (env_with_ref, ArgForm form_t)
-                else Err [] env (createTypeError env "Assumptions are only allowed inside boxes.")
 
             -- Handle general rule applications
-            _ -> do
-                form_t <- checkFormFE env form
-                (env1, args_t) <- checkArgsFE env (take numofargs args)
-                res_t <- applyRule env1 (unpack rule) args_t form_t
-                let env_with_ref = addRefs env1 [currentRef] (ArgForm res_t)
-                Ok [] (env_with_ref, ArgForm res_t)
+            _
+                | depth env /= 0 && localIdx == 0 ->
+                    Err [] env (createTypeError env "First line in box must be an assumption or a fresh variable.")
+                | otherwise -> do
+                    form_t <- checkFormFE env form
+                    (env1, args_t) <- checkArgsFE env (take numofargs args)
+                    res_t <- applyRule env1 (unpack rule) args_t form_t
+                    let env_with_ref = addRefs env1 [currentRef] (ArgForm res_t)
+                    Ok [] (env_with_ref, ArgForm res_t)
 
 -- | Check frontend arguments against rules
 checkArgsFE :: Env -> [Text] -> Result (Env, [Arg])

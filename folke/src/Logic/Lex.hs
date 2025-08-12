@@ -5,7 +5,7 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE MagicHash #-}
 {-# LINE 4 "Logic/Lex.x" #-}
-{-# OPTIONS -fno-warn-incomplete-patterns #-}
+{-# OPTIONS -Wno-incomplete-patterns #-}
 {-# OPTIONS_GHC -w #-}
 
 {-# LANGUAGE PatternSynonyms #-}
