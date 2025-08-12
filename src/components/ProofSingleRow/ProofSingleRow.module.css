@@ -26,8 +26,11 @@
   background-color: rgb(var(--error-background-rgb));
 }
 
-.proof-row.correct input {
+.proof-row.correct {
   color: rgb(var(--correct-color-rgb));
+}
+
+.proof-row.correct input {
   border-color: rgb(var(--correct-color-rgb));
   background-color: rgb(var(--correct-background-rgb));
 }

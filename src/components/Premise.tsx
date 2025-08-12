@@ -14,11 +14,12 @@ export const PremiseMemo = memo(Premise);
 
 export default function Premise(props: PremiseProps) {
   const isMobile = useScreenSize() === "mobile";
+  const isCorrect = useProofStore((state) => state.result?.correct ?? false);
   const hasError = useProofStore((state) => state.result?.location == props.lineNumber);
   const errorMessage = useProofStore((state) => hasError ? state.result?.message : undefined);
 
   return (
-    <div className={cls(rowStyles["proof-row"], hasError && rowStyles["error"])} style={{
+    <div className={cls(rowStyles["proof-row"], hasError && rowStyles["error"], isCorrect && rowStyles["correct"])} style={{
       padding: "0.25rem",
       paddingLeft: isMobile ? undefined : "calc(0.25rem + 0.5rem + 1px)",
       marginRight: isMobile ? undefined : "2.75rem",
