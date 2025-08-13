@@ -1,5 +1,10 @@
+<img src="logo.png" alt="Folke logo" width="200" />
+
 # Folke online
 Web version of [Folke](https://github.com/lambducas/folke)
+
+## Live demo
+[https://thecoder5550.github.io/folke-online/](https://thecoder5550.github.io/folke-online/)
 
 ## Development
 Tech-stack:

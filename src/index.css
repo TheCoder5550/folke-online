@@ -91,6 +91,10 @@ button {
   cursor: pointer;
 }
 
+button:focus {
+  outline: 1px solid rgb(var(--text-rgb));
+}
+
 .action-button {
   display: inline-flex;
   flex-direction: row;
@@ -114,10 +118,6 @@ button {
 
 .action-button:active {
   background: rgb(var(--text-rgb), 0.1);
-}
-
-.action-button:focus {
-  outline: 1px solid rgb(var(--text-rgb));
 }
 
 .action-button:disabled {

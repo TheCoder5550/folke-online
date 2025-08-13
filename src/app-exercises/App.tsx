@@ -51,15 +51,7 @@ function App() {
           <div className="paper-container">
             <div className="paper invisible">
               {id != null && (
-                <button title="Go back to exercise list" type="button" onClick={() => setId(null)} style={{
-                  display: "flex",
-                  gap: "0.5rem",
-                  alignItems: "center",
-                  background: "none",
-                  border: "none",
-                  padding: "1rem 0",
-                  fontSize: "1rem",
-                }}>
+                <button title="Go back to exercise list" type="button" onClick={() => setId(null)} className={styles["secondary-button"]}>
                   <IoMdArrowRoundBack />
                   Back to list
                 </button>

@@ -31,3 +31,6 @@ dist-newstyle
 build
 src/exercise-components
 generate-exercise-components.mjs
+
+# paint.net
+*.pdn
