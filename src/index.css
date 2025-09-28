@@ -140,6 +140,24 @@ button:focus {
   background: rgba(var(--error-color-rgb), 0.2);
 }
 
+.ghost-button {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+
+  width: 2.5em;
+  height: 2.5em;
+
+  font-size: 0.85rem;
+  border-radius: 2px;
+}
+
+.ghost-button:hover {
+  outline: 1px solid rgb(var(--text-rgb), 0.2);
+}
+
 .close-button {
   position: absolute;
   right: 1rem;

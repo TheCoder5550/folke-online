@@ -12,8 +12,8 @@ import { ImRedo, ImUndo } from "react-icons/im";
 import StaticProofRenderer from "./StaticProofRenderer/StaticProofRenderer";
 import { FaLightbulb } from "react-icons/fa6";
 import Modal from "./Modal/Modal";
-import { useScreenSize } from "../helpers/use-screen-size";
-import { isKeybindPressed } from "../helpers/keybinds";
+import { isKeybindPressed, showKeybind } from "../helpers/keybinds";
+import { cls } from "../helpers/generic-helper";
 
 interface PracticeProofRendererProps {
   solution?: FlatProof;
@@ -21,10 +21,15 @@ interface PracticeProofRendererProps {
 }
 
 export default function PracticeProofRenderer(props: PracticeProofRendererProps) {
-  const isMobile = useScreenSize() === "mobile";
   const [showSolution, setShowSolution] = useState(false);
   const dispatch = useProofStore((state) => state.dispatch);
   const sequent = useProofStore((state) => `${state.proof.premises.join("; ")} ${makeSpecialCharacters("=>")} ${state.proof.conclusion}`)
+
+  const maybeShowSolution = () => {
+    if (confirm("Are you sure you want to spoil the solution?")) {
+      setShowSolution(true)
+    }
+  }
 
   const insertLineAfterLast = () => {
     dispatch({
@@ -69,67 +74,36 @@ export default function PracticeProofRenderer(props: PracticeProofRendererProps)
 
   return (
     <StepsContainer>
-      <div className={styles["align"]}>
+      <div className={cls(styles["sequent"], styles["align"])}>
         <span style={{ fontWeight: "bold" }}>{sequent}</span>
+        <ValidateButton onValid={props.onValid} showButton={false} />
       </div>
 
       <StepsRenderer />
 
       <div className={styles["align"]} style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-        {isMobile ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-            <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", justifyContent: "space-between" }}>
-              <div style={{ display: "flex", gap: "0.5rem" }}>
-                <button title={"Insert a line below the last line"} className={"action-button"} type="button" onClick={insertLineAfterLast}>+ New line</button>
-                <button title={"Insert a box below the last line"} className={"action-button"} type="button" onClick={insertBoxAfterLast}>+ New box</button>
-              </div>
-            </div>
-
-            <GlobalErrorMessage />
-
-            <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem" }}>
-              <button title={"Undo"} className={"action-button"} type="button" onClick={undo}>
-                <ImUndo />
-              </button>
-              <button title={"Redo"} className={"action-button"} type="button" onClick={redo}>
-                <ImRedo />
-              </button>
-              <button title={"Remove every"} className={"action-button"} type="button" onClick={startOver}>
-                <LuListRestart /> Restart
-              </button>
-              <button title="Show solution" className={"action-button"} type="button" onClick={() => setShowSolution(true)}>
-                <FaLightbulb /> Show solution
-              </button>
-            </div>
-
-            <ValidateButton onValid={props.onValid} />
+        <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            <button title={"Insert a line below the last line"} className={"action-button"} type="button" onClick={insertLineAfterLast}>+ New line</button>
+            <button title={"Insert a box below the last line"} className={"action-button"} type="button" onClick={insertBoxAfterLast}>+ New box</button>
           </div>
-        ) : (
-          <>
-            <GlobalErrorMessage />
+          <div style={{ display: "flex", gap: "0.25rem" }}>
+            <button title={`Undo (${showKeybind("undo")})`} className={"ghost-button"} type="button" onClick={undo}>
+              <ImUndo />
+            </button>
+            <button title={`Redo (${showKeybind("redo")})`} className={"ghost-button"} type="button" onClick={redo}>
+              <ImRedo />
+            </button>
+            <button title={"Remove everything"} className={"ghost-button"} type="button" onClick={startOver}>
+              <LuListRestart />
+            </button>
+            <button title="Show solution" className={"ghost-button"} type="button" onClick={maybeShowSolution}>
+              <FaLightbulb />
+            </button>
+          </div>
+        </div>
 
-            <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", justifyContent: "space-between" }}>
-              <div style={{ display: "flex", gap: "0.5rem" }}>
-                <button title={"Insert a line below the last line"} className={"action-button"} type="button" onClick={insertLineAfterLast}>+ New line</button>
-                <button title={"Insert a box below the last line"} className={"action-button"} type="button" onClick={insertBoxAfterLast}>+ New box</button>
-                <button title={"Undo"} className={"action-button"} type="button" onClick={undo}>
-                  <ImUndo />
-                </button>
-                <button title={"Redo"} className={"action-button"} type="button" onClick={redo}>
-                  <ImRedo />
-                </button>
-                <button title={"Remove every"} className={"action-button"} type="button" onClick={startOver}>
-                  <LuListRestart /> Restart
-                </button>
-                <button title="Show solution" className={"action-button"} type="button" onClick={() => setShowSolution(true)}>
-                  <FaLightbulb /> Show solution
-                </button>
-              </div>
-
-              <ValidateButton onValid={props.onValid} showButton={false} />
-            </div>
-          </>
-        )}
+        <GlobalErrorMessage />
       </div>
 
 

@@ -14,7 +14,7 @@ export const PremiseMemo = memo(Premise);
 
 export default function Premise(props: PremiseProps) {
   const isMobile = useScreenSize() === "mobile";
-  const isCorrect = useProofStore((state) => state.result?.correct ?? false);
+  const isCorrect = useProofStore((state) => state.result?.correct === true && state.result?.completed === true);
   const hasError = useProofStore((state) => state.result?.location == props.lineNumber);
   const errorMessage = useProofStore((state) => hasError ? state.result?.message : undefined);
 

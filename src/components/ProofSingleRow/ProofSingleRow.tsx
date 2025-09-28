@@ -33,7 +33,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
   const closeBoxEnabled = useProofStore((state) => canCloseBox(state.proof, uuid));
   const hasError = useProofStore((state) => state.result?.location == getLineNumber(state.proof, props.uuid));
   const errorMessage = useProofStore((state) => hasError ? state.result?.message : undefined);
-  const isCorrect = useProofStore((state) => state.result?.correct ?? false);
+  const isCorrect = useProofStore((state) => state.result?.correct === true && state.result?.completed === true);
 
   const lineRef = useRef<HTMLDivElement>(null);
   const startDrag = createDragHandler(lineRef, props.uuid, dispatch);

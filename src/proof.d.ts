@@ -90,7 +90,14 @@ type HaskellStep = {
   Haskell result
 */
 
+interface __CheckProofResultPartial {
+  correct: boolean;
+  message?: string;
+  location?: number | string;
+}
+
 interface CheckProofResult {
+  completed: boolean;
   correct: boolean;
   message?: string;
   location?: number | string;

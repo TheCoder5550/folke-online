@@ -138,6 +138,7 @@
   background: rgb(var(--hover-line-rgb));
 }
 
+input:focus ~ .actions button,
 .proof-row:hover .actions button,
 .actions:hover button {
   visibility: visible;

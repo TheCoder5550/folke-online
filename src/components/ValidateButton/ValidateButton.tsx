@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react"
 import useProofStore from "../../stores/proof-store.js";
 import { HiClipboardDocumentCheck } from "react-icons/hi2";
 import { FaCheckCircle } from "react-icons/fa";
-import { BiSolidErrorAlt } from "react-icons/bi";
+import { BiSolidError } from "react-icons/bi";
 import useWasm from "../../helpers/wasm-provider.js";
 import { ImSpinner4 } from "react-icons/im";
 
@@ -19,6 +19,7 @@ export default function ValidateButton(props: ValidateButtonProps) {
   const proof = useProofStore((state) => state.proof);
   const wasm = useWasm();
   const isCorrect = useProofStore((state) => state.result?.correct);
+  const isCompleted = useProofStore((state) => state.result?.completed);
   const setResult = useProofStore((state) => state.setResult);
   const [isBuffering, setBuffering] = useState(false);
 
@@ -29,6 +30,7 @@ export default function ValidateButton(props: ValidateButtonProps) {
   const validate = useCallback(() => {
     if (wasm.error) {
       setResult({
+        completed: false,
         correct: false,
         message: wasm.error,
         location: "Not supported"
@@ -40,7 +42,7 @@ export default function ValidateButton(props: ValidateButtonProps) {
       setBuffering(false);
       setResult(result);
   
-      if (result && result.correct) {
+      if (result && result.correct && result.completed) {
         props.onValid?.();
       }
     }).catch(console.error);
@@ -71,14 +73,14 @@ export default function ValidateButton(props: ValidateButtonProps) {
 
   return (
     <div className={styles["container"]}>
-      {isCorrect === true && (
+      {isCorrect === true && isCompleted === true && (
         <span className={styles["correct"]}>
-          <FaCheckCircle /> Correct
+          Correct <FaCheckCircle />
         </span>
       )}
       {isCorrect === false && (
         <span className={styles["error"]}>
-          <BiSolidErrorAlt /> Incorrect
+          Incorrect <BiSolidError />
         </span>
       )}
 

@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { getLineNumber } from "../../helpers/proof-helper";
 import useProofStore from "../../stores/proof-store";
-import { BiSolidErrorAlt } from "react-icons/bi";
+import { BiSolidError } from "react-icons/bi";
 import styles from "./LineNumber.module.css";
 import { useScreenSize } from "../../helpers/use-screen-size";
 
@@ -27,7 +27,7 @@ export function ManualLineNumber(props: ManualLineNumberProps) {
   const isMobile = useScreenSize() === "mobile";
 
   if (props.hasError) {
-    return <BiSolidErrorAlt className={styles["icon"]} />
+    return <BiSolidError className={styles["icon"]} />
   }
 
   const text = isMobile ? props.lineNumber : `${props.lineNumber}.`;

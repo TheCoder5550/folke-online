@@ -1,3 +1,10 @@
+.sequent {
+  border-bottom: 1px solid rgb(var(--text-rgb));
+  
+  display: flex;
+  justify-content: space-between;
+}
+
 .align {
   padding: 0.25rem;
 }

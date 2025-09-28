@@ -80,8 +80,18 @@ export const WasmProvider = ({ children }: WasmProviderProps) => {
         const resultBytes = new Uint8Array(hs.memory.buffer, resultPtr, length);
         const output = decoder.decode(resultBytes);
         console.log(output);
-        const json = JSON.parse(output) as CheckProofResult;
-        resolve(json);
+        const json = JSON.parse(output) as __CheckProofResultPartial;
+        const proofStatus = {
+          ...json,
+          completed: json.correct,
+        } as CheckProofResult;
+
+        if (proofStatus.message && proofStatus.message.includes("Conclusion not reached")) {
+          proofStatus.correct = true;
+          proofStatus.completed = false;
+        }
+
+        resolve(proofStatus);
       }).catch(reject);
     });
   }, [ error, hs ]);
