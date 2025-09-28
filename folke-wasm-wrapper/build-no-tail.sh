@@ -1,9 +1,10 @@
+#!/bin/sh
+
 ghc_wasm=/root/.ghc-wasm-no-tail-call
 
 NODE="/root/.ghc-wasm/nodejs/bin/node"
 CABAL="$ghc_wasm/wasm32-wasi-cabal/bin/wasm32-wasi-cabal"
 GHC="/root/.ghc-wasm-no-tail-call/wasm32-wasi-ghc/ghc/_build/stage1/bin/wasm32-wasi-ghc"
-# GHC="$ghc_wasm/wasm32-wasi-ghc/bin/wasm32-wasi-ghc"
 
 # From https://github.com/fourmolu/fourmolu/blob/main/web/fourmolu-wasm/build.sh
 listbin() {
@@ -31,17 +32,10 @@ listbin() {
 # $CABAL update
 
 # Remove dist-newstyle
-cd folke
-rm -rf dist-newstyle
-cd ../folke-wasm-wrapper
-rm -rf dist-newstyle
-
-# Make folke
 cd ../folke
-make
+rm -rf dist-newstyle
 cd ../folke-wasm-wrapper
-
-# cd folke-wasm-wrapper
+rm -rf dist-newstyle
 
 # Build project
 $CABAL build exe:folke-wasm-wrapper
@@ -53,5 +47,3 @@ cp "$(listbin folke-wasm-wrapper)" output/folke-wasm-wrapper-fallback.wasm
 $NODE $($GHC --print-libdir)/post-link.mjs \
   -i ./output/folke-wasm-wrapper-fallback.wasm \
   -o ./output/ghc_wasm_jsffi_fallback.js
-
-cd ..

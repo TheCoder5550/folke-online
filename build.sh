@@ -1,10 +1,12 @@
+#!/bin/sh
+
 # Build haskell
 cd folke
 make
 cd ..
 
 cd folke-wasm-wrapper
-source build.sh
+. ./build.sh
 cd ..
 
 # Compile to js
