@@ -52,7 +52,7 @@ import qualified GHC.Exts as Happy_GHC_Exts
 import Control.Applicative(Applicative(..))
 import Control.Monad (ap)
 
--- parser produced by Happy Version 2.1.6
+-- parser produced by Happy Version 2.1.7
 
 newtype HappyAbsSyn  = HappyAbsSyn HappyAny
 #if __GLASGOW_HASKELL__ >= 607
@@ -660,49 +660,49 @@ happyAbort :: () => [(Token)] -> (Err a)
 happyAbort = Happy_Prelude.error "Called abort handler in non-resumptive parser"
 
 pArg tks = happySomeParser where
- happySomeParser = happyThen (happyParse 0# tks) (\x -> happyReturn (let {(HappyWrap21 x') = happyOut21 x} in x'))
+ happySomeParser = happyThen (happyDoParse 0# tks) (\x -> happyReturn (let {(HappyWrap21 x') = happyOut21 x} in x'))
 
 pListArg tks = happySomeParser where
- happySomeParser = happyThen (happyParse 1# tks) (\x -> happyReturn (let {(HappyWrap22 x') = happyOut22 x} in x'))
+ happySomeParser = happyThen (happyDoParse 1# tks) (\x -> happyReturn (let {(HappyWrap22 x') = happyOut22 x} in x'))
 
 pForm5 tks = happySomeParser where
- happySomeParser = happyThen (happyParse 2# tks) (\x -> happyReturn (let {(HappyWrap23 x') = happyOut23 x} in x'))
+ happySomeParser = happyThen (happyDoParse 2# tks) (\x -> happyReturn (let {(HappyWrap23 x') = happyOut23 x} in x'))
 
 pForm4 tks = happySomeParser where
- happySomeParser = happyThen (happyParse 3# tks) (\x -> happyReturn (let {(HappyWrap24 x') = happyOut24 x} in x'))
+ happySomeParser = happyThen (happyDoParse 3# tks) (\x -> happyReturn (let {(HappyWrap24 x') = happyOut24 x} in x'))
 
 pForm3 tks = happySomeParser where
- happySomeParser = happyThen (happyParse 4# tks) (\x -> happyReturn (let {(HappyWrap25 x') = happyOut25 x} in x'))
+ happySomeParser = happyThen (happyDoParse 4# tks) (\x -> happyReturn (let {(HappyWrap25 x') = happyOut25 x} in x'))
 
 pForm2 tks = happySomeParser where
- happySomeParser = happyThen (happyParse 5# tks) (\x -> happyReturn (let {(HappyWrap26 x') = happyOut26 x} in x'))
+ happySomeParser = happyThen (happyDoParse 5# tks) (\x -> happyReturn (let {(HappyWrap26 x') = happyOut26 x} in x'))
 
 pForm1 tks = happySomeParser where
- happySomeParser = happyThen (happyParse 6# tks) (\x -> happyReturn (let {(HappyWrap27 x') = happyOut27 x} in x'))
+ happySomeParser = happyThen (happyDoParse 6# tks) (\x -> happyReturn (let {(HappyWrap27 x') = happyOut27 x} in x'))
 
 pForm tks = happySomeParser where
- happySomeParser = happyThen (happyParse 7# tks) (\x -> happyReturn (let {(HappyWrap28 x') = happyOut28 x} in x'))
+ happySomeParser = happyThen (happyDoParse 7# tks) (\x -> happyReturn (let {(HappyWrap28 x') = happyOut28 x} in x'))
 
 pListForm tks = happySomeParser where
- happySomeParser = happyThen (happyParse 8# tks) (\x -> happyReturn (let {(HappyWrap29 x') = happyOut29 x} in x'))
+ happySomeParser = happyThen (happyDoParse 8# tks) (\x -> happyReturn (let {(HappyWrap29 x') = happyOut29 x} in x'))
 
 pPred tks = happySomeParser where
- happySomeParser = happyThen (happyParse 9# tks) (\x -> happyReturn (let {(HappyWrap30 x') = happyOut30 x} in x'))
+ happySomeParser = happyThen (happyDoParse 9# tks) (\x -> happyReturn (let {(HappyWrap30 x') = happyOut30 x} in x'))
 
 pTerm tks = happySomeParser where
- happySomeParser = happyThen (happyParse 10# tks) (\x -> happyReturn (let {(HappyWrap31 x') = happyOut31 x} in x'))
+ happySomeParser = happyThen (happyDoParse 10# tks) (\x -> happyReturn (let {(HappyWrap31 x') = happyOut31 x} in x'))
 
 pLabel tks = happySomeParser where
- happySomeParser = happyThen (happyParse 11# tks) (\x -> happyReturn (let {(HappyWrap32 x') = happyOut32 x} in x'))
+ happySomeParser = happyThen (happyDoParse 11# tks) (\x -> happyReturn (let {(HappyWrap32 x') = happyOut32 x} in x'))
 
 pListLabel tks = happySomeParser where
- happySomeParser = happyThen (happyParse 12# tks) (\x -> happyReturn (let {(HappyWrap33 x') = happyOut33 x} in x'))
+ happySomeParser = happyThen (happyDoParse 12# tks) (\x -> happyReturn (let {(HappyWrap33 x') = happyOut33 x} in x'))
 
 pListTerm tks = happySomeParser where
- happySomeParser = happyThen (happyParse 13# tks) (\x -> happyReturn (let {(HappyWrap34 x') = happyOut34 x} in x'))
+ happySomeParser = happyThen (happyDoParse 13# tks) (\x -> happyReturn (let {(HappyWrap34 x') = happyOut34 x} in x'))
 
 pListIdent tks = happySomeParser where
- happySomeParser = happyThen (happyParse 14# tks) (\x -> happyReturn (let {(HappyWrap35 x') = happyOut35 x} in x'))
+ happySomeParser = happyThen (happyDoParse 14# tks) (\x -> happyReturn (let {(HappyWrap35 x') = happyOut35 x} in x'))
 
 happySeq = happyDontSeq
 
@@ -770,7 +770,7 @@ data HappyStk a = HappyStk a (HappyStk a)
 -----------------------------------------------------------------------------
 -- starting the parse
 
-happyParse start_state = happyNewToken start_state notHappyAtAll notHappyAtAll
+happyDoParse start_state = happyNewToken start_state notHappyAtAll notHappyAtAll
 
 -----------------------------------------------------------------------------
 -- Accepting the parse

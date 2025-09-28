@@ -1,3 +1,5 @@
-packages: . ../folke
+packages:
+  .
+  ../folke
 
 active-repositories: hackage.haskell.org

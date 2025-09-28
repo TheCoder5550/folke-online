@@ -31,7 +31,7 @@ library
                     , Shared.FESequent
                     , Shared.SpecialCharacters
                     , Shared.Parse
-    build-depends:    base ^>=4.21.0.0
+    build-depends:    base
                     , mtl
                     , containers
                     , text
@@ -68,7 +68,7 @@ test-suite folke-test
     main-is:          Main.hs
 
     build-depends:
-        base ^>=4.21.0.0,
+        base,
         folke,
         HUnit,
         directory,

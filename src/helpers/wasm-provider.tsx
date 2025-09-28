@@ -1,6 +1,10 @@
-import { createContext, use, useCallback, useEffect, useMemo, useState } from "react";
 import WASM_MODULE_URL from '../../folke-wasm-wrapper/output/folke-wasm-wrapper.wasm?url'
 import ghc_wasm_jsffi from "../../folke-wasm-wrapper/output/ghc_wasm_jsffi.js";
+
+import WASM_MODULE_FALLBACK_URL from '../../folke-wasm-wrapper/output/folke-wasm-wrapper-fallback.wasm?url'
+import { default as ghc_wasm_jsffi_fallback } from "../../folke-wasm-wrapper/output/ghc_wasm_jsffi_fallback.js";
+
+import { createContext, use, useCallback, useEffect, useMemo, useState } from "react";
 import { WASI, ConsoleStdout, OpenFile, File } from "@bjorn3/browser_wasi_shim";
 import { proofToHaskellProof, unflattenProof } from "./proof-helper.js";
 
@@ -38,37 +42,17 @@ export const WasmProvider = ({ children }: WasmProviderProps) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function loadWasm() {
-      const args: string[] = [];
-      const env: string[] = [];
-      const fds = [
-        new OpenFile(new File([])),
-        ConsoleStdout.lineBuffered(msg => console.log(`[WASI stdout] ${msg}`)),
-        ConsoleStdout.lineBuffered(msg => console.warn(`[WASI stderr] ${msg}`)),
-      ];
-      const wasi = new WASI(args, env, fds);
-      const jsffiExports = {};
-
-      const wasm = await WebAssembly.compileStreaming(fetch(WASM_MODULE_URL));
-      const inst = await WebAssembly.instantiate(wasm, {
-        "wasi_snapshot_preview1": wasi.wasiImport,
-        "ghc_wasm_jsffi": ghc_wasm_jsffi(jsffiExports),
-      }) as HaskellInstance;
-      Object.assign(jsffiExports, inst.exports);
-      wasi.initialize(inst);
-
-      const hs = inst.exports;
-      hs.hs_init(0, 0);
-
-      setHS(hs);
-    }
-
-    loadWasm().catch((reason: unknown) => {
-      const e = reason as string;
-      setError(`Proof validation is not supported on your device! (${e})`);
-      console.log("bruh");
-      console.error(reason);
-    });
+    loadWasm(WASM_MODULE_URL, ghc_wasm_jsffi)
+      .catch((reason: unknown) => {
+        console.error("[WASM] Compile error:", reason);
+        console.warn("[WASM] Using back-up wasm module without tail calls");
+        return loadWasm(WASM_MODULE_FALLBACK_URL, ghc_wasm_jsffi_fallback);
+      })
+      .then(setHS)
+      .catch((reason: unknown) => {
+        const e = reason as string;
+        setError(`Proof validation is not supported on your device! (${e})`);
+      })
   }, []);
 
   const validate = useCallback(async (proof: FlatProof): Promise<null | CheckProofResult> => {
@@ -112,6 +96,31 @@ export const WasmProvider = ({ children }: WasmProviderProps) => {
       {children}
     </WasmContext>
   )
+}
+
+async function loadWasm(moduleUrl: string, jsffi: typeof ghc_wasm_jsffi) {
+  const args: string[] = [];
+  const env: string[] = [];
+  const fds = [
+    new OpenFile(new File([])),
+    ConsoleStdout.lineBuffered(msg => console.log(`[WASI stdout] ${msg}`)),
+    ConsoleStdout.lineBuffered(msg => console.warn(`[WASI stderr] ${msg}`)),
+  ];
+  const wasi = new WASI(args, env, fds);
+  const jsffiExports = {};
+
+  const wasm = await WebAssembly.compileStreaming(fetch(moduleUrl));
+  const inst = await WebAssembly.instantiate(wasm, {
+    "wasi_snapshot_preview1": wasi.wasiImport,
+    "ghc_wasm_jsffi": jsffi(jsffiExports),
+  }) as HaskellInstance;
+  Object.assign(jsffiExports, inst.exports);
+  wasi.initialize(inst);
+
+  const hs = inst.exports;
+  hs.hs_init(0, 0);
+
+  return hs;
 }
 
 function useWasm() {

@@ -1,116 +1,109 @@
-FROM node:24-alpine3.21 AS development
+#
+# Development 
+#
+FROM thecoder5550/ghc-wasm-no-tail-call AS development
 
-RUN apk add git
+# Copy .cabal config
+COPY cabal-config /root/.ghc-wasm-no-tail-call/.cabal/config
 
-# RUN apk add --no-cache \
-#         curl \
-#     && apk add --no-cache \
-#         xz \
-#     && apk add --no-cache \
-#         bash \
-#     && curl -L https://nixos.org/nix/install | sh -s -- --daemon
+# Normal ghc, hls, cabal versions
+ARG GHC_VERSION=9.10.2
+ARG HLS_VERSION=2.10.0.0
+ARG CABAL_VERSION=3.12.1.0
+# Separate node install version
+ENV NODE_VERSION=24.8.0
+# Handle unicode???
+ENV LANG=C.UTF-8
 
-# RUN echo 'https://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories
-# RUN apk add --update --no-cache shadow bash curl ca-certificates jq unzip zstd make
+# Unset from when installing ghc-wasm inside thecoder5550/ghc-wasm-no-tail-call
+ENV PREFIX=
+ENV FLAVOUR=
 
-# RUN groupadd nixbld -U node && mkdir /nix && \
-#     curl -L https://hydra.nixos.org/job/nix/maintenance-2.14/buildStatic.x86_64-linux/latest/download-by-type/file/binary-dist > /bin/nix && chmod +x /bin/nix && \
-#     echo "alias nix='nix --extra-experimental-features \"nix-command flakes\"'" > ~/.profile && ln -s ~/.profile ~/.bashrc
+# Install packages
+RUN apt-get update \
+  && apt-get install -y \
+    curl \
+    libnuma-dev \
+    zlib1g-dev \
+    libgmp-dev \
+    libgmp10 \
+    git \
+    wget \
+    lsb-release \
+    software-properties-common \
+    gnupg2 \
+    apt-transport-https \
+    gcc \
+    autoconf \
+    automake \
+    build-essential \
+    jq \
+    zstd \
+    zip \
+    unzip
 
-# RUN nix shell --extra-experimental-features "nix-command flakes" 'gitlab:haskell-wasm/ghc-wasm-meta?host=gitlab.haskell.org'
+# Install prebuilt ghc-wasm
+RUN export PREFIX="/root/.ghc-wasm" \
+  && export FLAVOUR="9.10" \
+  && curl https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/bootstrap.sh | sh
 
-# USER node
-# RUN echo 'https://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories
+# Install node since ghc-wasms node doesnt
+# work for building the project
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+ENV NVM_DIR=/root/.nvm
+RUN unset PREFIX \
+  && . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION} \
+  && . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION} \
+  && . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
+ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:$PATH"
 
-# Fixes: /usr/bin/env: unrecognized option: S 
-RUN apk add --no-cache coreutils
+WORKDIR /root/.ghc-wasm-no-tail-call
 
-# Install normal ghc
-# From https://github.com/ExtremaIS/lsupg-haskell/blob/4a33818d5906d39c905b95f30a7845ace833e21c/docker/Dockerfile
-ARG GHC_VERSION=9.12.2
-ARG HLS_VERSION=2.11.0.0
-ARG CABAL_VERSION=3.14.1.0
+# Install ghcup
+RUN curl --fail --output '/usr/bin/ghcup' \
+    'https://downloads.haskell.org/ghcup/x86_64-linux-ghcup' \
+  && chmod 0755 '/usr/bin/ghcup' \
 
-RUN apk upgrade --no-cache \
-    && apk add --no-cache \
-        bash \
-        binutils-gold \
-        curl \
-        g++ \
-        gcc \
-        gmp-dev \
-        libc-dev \
-        libffi-dev \
-        make \
-        musl-dev \
-        ncurses-dev \
-        perl \
-        pkgconfig \
-        shadow \
-        tar \
-        xz \
-    # Install ghcup
-    && curl --fail --output '/usr/local/bin/ghcup' \
-        'https://downloads.haskell.org/ghcup/x86_64-linux-ghcup' \
-    && chmod 0755 '/usr/local/bin/ghcup' \
-    
-    # Cabal
-    && ghcup install cabal "${CABAL_VERSION}" \
-        --isolate '/usr/local/bin' \
+  # GHC
+  && ghcup install ghc --isolate /usr/local --force "${GHC_VERSION}" \
 
-    # HLS
-    && mkdir '/usr/local/opt' \
-    && ghcup install hls "${HLS_VERSION}" \
-        --isolate "/usr/local/opt/hls-${HLS_VERSION}" \
-    && find "/usr/local/opt/hls-${HLS_VERSION}/bin" \
-        \( -type f -o -type l \) -exec ln -s {} '/usr/local/bin' \; \
+  # Cabal
+  && ghcup install cabal --isolate /usr/local/bin --force "${CABAL_VERSION}" \
 
-    # GHC
-    && ghcup install ghc "${GHC_VERSION}" \
-        --isolate "/usr/local/opt/ghc-${GHC_VERSION}" \
-    && find "/usr/local/opt/ghc-${GHC_VERSION}/bin" \
-        \( -type f -o -type l \) -exec ln -s {} '/usr/local/bin' \; \
-    && find "/usr/local/opt/ghc-${GHC_VERSION}/lib" \
-        -type f \( -name '*_p.a' -o -name '*.p_hi' \) -delete \
-    && rm -rf "/usr/local/opt/ghc-${GHC_VERSION}/share" \
+  # HLS
+  && mkdir '/usr/local/opt' \
+  && ghcup install hls "${HLS_VERSION}" \
+      --isolate "/usr/local/opt/hls-${HLS_VERSION}" \
+  && find "/usr/local/opt/hls-${HLS_VERSION}/bin" \
+      \( -type f -o -type l \) -exec ln -s {} '/usr/local/bin' \;
 
-    # Remove ghcup
-    && ghcup gc -p -s -c -t \
-    && rm '/usr/local/bin/ghcup'
-
-# Install ghc-wasm where node user can access it 
-ENV PREFIX="/home/node/.ghc-wasm"
-
-# Select ghc version
-ENV FLAVOUR="9.12"
-
-# Install ghc-wasm and make user node owner of the folder
-RUN apk add --update --no-cache shadow bash curl ca-certificates jq unzip zstd make \
-    && curl https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/bootstrap.sh | sh \
-    && chown -R node:node /home/node/.ghc-wasm
-
-# RUN chmod 777 /home/node/.ghc-wasm
-
-USER node
+# Create cabal version for no-tail-call
+RUN mkdir -p /root/.ghc-wasm-no-tail-call/wasm32-wasi-cabal/bin \
+  && echo "#!/bin/sh" >> /root/.ghc-wasm-no-tail-call/wasm32-wasi-cabal/bin/wasm32-wasi-cabal \
+  && echo \
+    'CABAL_DIR=/root/.ghc-wasm-no-tail-call/.cabal' \
+    'exec' \
+    '/usr/local/bin/cabal' \
+    '--enable-shared' \
+    '--enable-executable-dynamic' \
+    '--no-semaphore' \
+    '--with-compiler=/root/.ghc-wasm-no-tail-call/wasm32-wasi-ghc/ghc/_build/stage1/bin/wasm32-wasi-ghc' \
+    '--with-hc-pkg=/root/.ghc-wasm-no-tail-call/wasm32-wasi-ghc/ghc/_build/stage1/bin/wasm32-wasi-ghc-pkg' \
+    '--with-hsc2hs=/root/.ghc-wasm-no-tail-call/wasm32-wasi-ghc/ghc/_build/stage1/bin/wasm32-wasi-hsc2hs' \
+    '--with-haddock=/root/.ghc-wasm-no-tail-call/wasm32-wasi-ghc/ghc/_build/stage1/bin/wasm32-wasi-haddock' \
+    '${1+"$@"}' >> /root/.ghc-wasm-no-tail-call/wasm32-wasi-cabal/bin/wasm32-wasi-cabal \
+  && chmod 755 /root/.ghc-wasm-no-tail-call/wasm32-wasi-cabal/bin/wasm32-wasi-cabal \
+  && /root/.ghc-wasm-no-tail-call/wasm32-wasi-cabal/bin/wasm32-wasi-cabal update
 
 # Install folke dependencies
-RUN /home/node/.ghc-wasm/cabal/bin/cabal update \
-    && /home/node/.ghc-wasm/cabal/bin/cabal install alex \
-    && /home/node/.ghc-wasm/cabal/bin/cabal install happy \
-    && /home/node/.ghc-wasm/cabal/bin/cabal install BNFC
+RUN cabal update \
+  && cabal install alex --installdir=/usr/local/bin --overwrite-policy=always \
+  && cabal install happy --installdir=/usr/local/bin --overwrite-policy=always \
+  && cabal install BNFC --installdir=/usr/local/bin --overwrite-policy=always
 
-# Update path
-ENV PATH="/home/node/.local/bin/:\
-/usr/local/bin:\
-/home/node/.ghc-wasm/wasm32-wasi-ghc/bin:\
-/home/node/.ghc-wasm/wasi-sdk/bin:\
-/home/node/.ghc-wasm/nodejs/bin:\
-/home/node/.ghc-wasm/binaryen/bin:\
-/home/node/.ghc-wasm/wasmtime/bin:\
-/home/node/.ghc-wasm/wasm32-wasi-cabal/bin:\
-/home/node/.ghc-wasm/wasm-run/bin:\
-$PATH"
-
+#
+# Production
+#
 FROM development AS production
 
 USER root

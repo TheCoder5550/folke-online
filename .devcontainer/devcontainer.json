@@ -12,9 +12,9 @@
         "justusadam.language-haskell"
       ]
     }
-  },
+  }
 
-  "remoteUser": "node"
+  // "remoteUser": "node"
 
   // "forwardPorts": [3000]
 }

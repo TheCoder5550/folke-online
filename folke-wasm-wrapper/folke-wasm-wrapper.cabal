@@ -26,5 +26,7 @@ executable folke-wasm-wrapper
     build-depends:
         , base
         , folke
-        , aeson==2.2.3.0
-        , utf8-string==1.0.2
+        , aeson
+        , utf8-string
+        -- , aeson==2.2.3.0
+        -- , utf8-string==1.0.2
