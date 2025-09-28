@@ -12,6 +12,7 @@ interface ValidateButtonProps {
   autoValidate?: boolean;
   autoValidateMs?: number;
   small?: boolean;
+  showButton?: boolean;
 }
 
 export default function ValidateButton(props: ValidateButtonProps) {
@@ -23,6 +24,7 @@ export default function ValidateButton(props: ValidateButtonProps) {
 
   const autoValidate = props.autoValidate !== false;
   const small = props.small === true;
+  const showButton = props.showButton !== false;
 
   const validate = useCallback(() => {
     if (wasm.error) {
@@ -80,19 +82,21 @@ export default function ValidateButton(props: ValidateButtonProps) {
         </span>
       )}
 
-      <button title="Validate proof" className="action-button" type="button" onClick={() => validate()} disabled={!wasm}>
-        {!isBuffering ? (
-          <HiClipboardDocumentCheck />
-        ) : (
-          <ImSpinner4 className={styles["spin"]} />
-        )}
+      {showButton && (
+        <button title="Validate proof" className="action-button" type="button" onClick={() => validate()} disabled={!wasm}>
+          {!isBuffering ? (
+            <HiClipboardDocumentCheck />
+          ) : (
+            <ImSpinner4 className={styles["spin"]} />
+          )}
 
-        {!small && (
-          <span>
-            Validate
-          </span>
-        )}
-      </button>
+          {!small && (
+            <span>
+              Validate
+            </span>
+          )}
+        </button>
+      )}
     </div>
   )
 }

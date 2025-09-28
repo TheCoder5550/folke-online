@@ -125,7 +125,7 @@ export default function PracticeProofRenderer(props: PracticeProofRendererProps)
                 </button>
               </div>
 
-              <ValidateButton onValid={props.onValid} />
+              <ValidateButton onValid={props.onValid} showButton={false} />
             </div>
           </>
         )}
