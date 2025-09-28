@@ -1,6 +1,7 @@
 import ContextMenu from '../components/ContextMenu/ContextMenu';
 import ErrorBoundary from '../components/ErrorBoundary';
 import Header from '../components/Header/Header';
+import KeybindsTable from '../components/KeybindsTable/KeybindsTable';
 import RulesTable from '../components/RulesTable/RulesTable';
 import SymbolTable from '../components/SymbolTable/SymbolTable';
 
@@ -41,6 +42,11 @@ function App() {
               <li>A → B → C is equivalent to A → (B → C)</li>
               <li>∀x P(x) → ∃y Q(y) ∧ ¬R(z) is equivalent to (∀x P(x)) → ((∃y Q(y)) ∧ (¬R(z)))</li>
             </ul>
+
+            <br /><br />
+
+            <h2>Keyboard shortcuts</h2>
+            <KeybindsTable />
           </div>
         </div>
 

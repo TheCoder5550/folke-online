@@ -55,3 +55,7 @@ export function downloadText(text: string, filename = "text.txt") {
   elem.download = filename;
   elem.click();
 }
+
+export function titleCase(str: string): string {
+  return str.charAt(0).toUpperCase() + str.substring(1).toLowerCase();
+}

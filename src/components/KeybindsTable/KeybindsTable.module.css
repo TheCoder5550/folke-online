@@ -1,0 +1,16 @@
+.table {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.5rem 0;
+}
+
+.table > * {
+  border-bottom: 2px dotted rgb(var(--text-rgb), 0.2);
+  padding-bottom: 0.5rem;
+}
+
+.table > *:nth-child(1),
+.table > *:nth-child(2) {
+  padding: 0.5rem 0;
+  border-bottom: 2px solid rgb(var(--text-rgb));
+}

@@ -12,6 +12,7 @@ import ToggleButton from "../ToggleButton/ToggleButton";
 import RuleDictionary from "../RuleDictionary/RuleDictionary";
 import { useScreenSize } from "../../helpers/use-screen-size";
 import useWasm from "../../helpers/wasm-provider";
+import { isKeybindPressed } from "../../helpers/keybinds";
 
 export default function ActionBar() {
   const isMobile = useScreenSize() === "mobile";
@@ -29,11 +30,11 @@ export default function ActionBar() {
 
   useEffect(() => {
     const keydown = (e: KeyboardEvent) => {
-      if (e.code === "KeyZ" && e.ctrlKey && !e.shiftKey) {
+      if (isKeybindPressed("undo", e)) {
         undo();
         e.preventDefault();
       }
-      if (e.code === "KeyZ" && e.ctrlKey && e.shiftKey) {
+      if (isKeybindPressed("redo", e)) {
         redo();
         e.preventDefault();
       }

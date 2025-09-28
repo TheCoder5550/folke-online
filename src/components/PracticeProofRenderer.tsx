@@ -13,6 +13,7 @@ import StaticProofRenderer from "./StaticProofRenderer/StaticProofRenderer";
 import { FaLightbulb } from "react-icons/fa6";
 import Modal from "./Modal/Modal";
 import { useScreenSize } from "../helpers/use-screen-size";
+import { isKeybindPressed } from "../helpers/keybinds";
 
 interface PracticeProofRendererProps {
   solution?: FlatProof;
@@ -50,11 +51,11 @@ export default function PracticeProofRenderer(props: PracticeProofRendererProps)
 
   useEffect(() => {
     const keydown = (e: KeyboardEvent) => {
-      if (e.code === "KeyZ" && e.ctrlKey && !e.shiftKey) {
+      if (isKeybindPressed("undo", e)) {
         undo();
         e.preventDefault();
       }
-      if (e.code === "KeyZ" && e.ctrlKey && e.shiftKey) {
+      if (isKeybindPressed("redo", e)) {
         redo();
         e.preventDefault();
       }

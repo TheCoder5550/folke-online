@@ -15,6 +15,7 @@ import { IoReturnDownBack } from "react-icons/io5";
 import { createDragHandler } from "../../helpers/drag-drop";
 import useContextMenuStore from "../../stores/context-menu-store";
 import { useScreenSize } from "../../helpers/use-screen-size";
+import { isKeybindPressed, showKeybind } from "../../helpers/keybinds";
 
 interface ProofSingleRowProps {
   uuid: string;
@@ -111,36 +112,32 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     })
   }, [ dispatch, uuid ]);
 
-  const keydown: React.KeyboardEventHandler<HTMLInputElement> = useCallback((e) => {
-    if (e.code === "KeyB" && e.ctrlKey) {
+  const commonKeydown: React.KeyboardEventHandler<HTMLInputElement> = useCallback((e) => {
+    if (isKeybindPressed("proof-toBox", e)) {
       toBox();
     }
-    else if (toLineEnabled && e.code === "KeyB" && e.altKey) {
+    else if (toLineEnabled && isKeybindPressed("proof-toLine", e)) {
       toLine();
     }
-    else if (closeBoxEnabled && e.code === "Enter" && e.ctrlKey) {
+    else if (closeBoxEnabled && isKeybindPressed("proof-closeBox", e)) {
       closeBox();
     }
-    else if (e.code === "Delete") {
+    else if (isKeybindPressed("proof-remove", e)) {
       remove();
+    }
+    else if (isKeybindPressed("proof-insertBefore", e)) {
+      insertBefore();
     }
   }, [ toBox, toLine, closeBox, remove ]);
 
+  const keydown: React.KeyboardEventHandler<HTMLInputElement> = useCallback((e) => {
+    commonKeydown(e);
+  }, [ toBox, toLine, closeBox, remove ]);
+
   const keydownLastInput: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
-    if (e.code === "KeyB" && e.ctrlKey) {
-      toBox();
-    }
-    else if (toLineEnabled && e.code === "KeyB" && e.altKey) {
-      toLine();
-    }
-    else if (closeBoxEnabled && e.code === "Enter" && e.ctrlKey) {
-      closeBox();
-    }
-    else if (e.code === "Enter" && !e.ctrlKey) {
+    commonKeydown(e);
+    if (isKeybindPressed("proof-insertAfter", e)) {
       insertAfter();
-    }
-    else if (e.code === "Delete") {
-      remove();
     }
   }
 
@@ -153,37 +150,39 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
       {
         label: "Remove Line",
         icon: <MdDelete />,
-        shortcut: "Delete",
+        shortcut: showKeybind("proof-remove"),
         action: remove,
         type: "danger",
       },
       {
         label: "Insert Line Above",
         icon: <TbRowInsertTop />,
+        shortcut: showKeybind("proof-insertBefore"),
         action: insertBefore,
       },
       {
         label: "Insert Line Below",
         icon: <TbRowInsertBottom />,
+        shortcut: showKeybind("proof-insertAfter"),
         action: insertAfter,
       },
       {
         label: "Close Box (Insert Line Below Box)",
         icon: <IoReturnDownBack />,
-        shortcut: "Ctrl+Enter",
+        shortcut: showKeybind("proof-closeBox"),
         action: closeBox,
         enabled: closeBoxEnabled,
       },
       {
         label: "Convert Line to Box",
         icon: <TbBox />,
-        shortcut: "Ctrl+B",
+        shortcut: showKeybind("proof-toBox"),
         action: toBox,
       },
       {
         label: "Remove Box Around Line",
         icon: <TbBoxOff />,
-        shortcut: "Alt+B",
+        shortcut: showKeybind("proof-toLine"),
         action: toLine,
         enabled: toLineEnabled
       },
@@ -261,25 +260,25 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
           <button type="button" title="Drag to re-arrange proof" className={cls(styles["action-button"], styles["drag"])} onMouseDown={startDrag}>
             <MdDragIndicator />
           </button>
-          <button type="button" title="Remove line" className={cls(styles["action-button"], styles["delete"])} onClick={remove}>
+          <button type="button" title={`Remove line (${showKeybind("proof-remove")})`} className={cls(styles["action-button"], styles["delete"])} onClick={remove}>
             <MdDelete />
           </button>
-          <button type="button" title="Insert line above" className={styles["action-button"]} onClick={insertBefore}>
+          <button type="button" title={`Insert line above (${showKeybind("proof-insertBefore")})`} className={styles["action-button"]} onClick={insertBefore}>
             <TbRowInsertTop />
           </button>
-          <button type="button" title="Insert line below" className={styles["action-button"]} onClick={insertAfter}>
+          <button type="button" title={`Insert line below (${showKeybind("proof-insertAfter")})`} className={styles["action-button"]} onClick={insertAfter}>
             <TbRowInsertBottom />
           </button>
-          <button type="button" title="Convert line to box" className={styles["action-button"]} onClick={toBox}>
+          <button type="button" title={`Convert line to box (${showKeybind("proof-toBox")})`} className={styles["action-button"]} onClick={toBox}>
             <TbBox />
           </button>
           {toLineEnabled && (
-            <button type="button" title="Remove box around line" className={styles["action-button"]} onClick={toLine}>
+            <button type="button" title={`Remove box around line (${showKeybind("proof-toLine")})`} className={styles["action-button"]} onClick={toLine}>
               <TbBoxOff />
             </button>
           )}
           {closeBoxEnabled && (
-            <button type="button" title="Close box (Insert line below box)" className={styles["action-button"]} onClick={closeBox}>
+            <button type="button" title={`Close box (Insert line below box) (${showKeybind("proof-closeBox")})`} className={styles["action-button"]} onClick={closeBox}>
               <IoReturnDownBack />
             </button>
           )}
