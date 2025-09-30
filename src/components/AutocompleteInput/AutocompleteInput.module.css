@@ -16,7 +16,7 @@
   overflow-y: auto;
   scrollbar-gutter: stable;
 
-  z-index: 1;
+  z-index: 20;
   background: rgb(var(--card-background-rgb));
   border: 1px solid rgb(var(--text-rgb), 0.2);
   font-family: monospace;
