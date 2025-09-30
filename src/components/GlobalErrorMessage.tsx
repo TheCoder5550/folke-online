@@ -4,9 +4,23 @@ import useProofStore from "../stores/proof-store"
 export const GlobalErrorMessageMemo = memo(GlobalErrorMessage);
 
 export default function GlobalErrorMessage() {
+  const color = useProofStore((state) => {
+    if (state.result?.message?.includes("Conclusion not reached")) {
+      return "orange";
+    }
+    return "rgb(var(--error-color-rgb))";
+  });
+
+  const visible = useProofStore((state) => {
+    return (
+      state.proof.steps.length !== 0 ||
+      !state.result?.message?.includes("Conclusion not reached")
+    )
+  })
+
   const message = useProofStore((state) => {
     const res = state.result;
-    if (!res || !res.location || !res.message) {
+    if (!res || !res.location || !res.message || !visible) {
       return "";
     }
 
@@ -17,5 +31,5 @@ export default function GlobalErrorMessage() {
     return res.location + ": " + res.message;
   });
 
-  return <span style={{ color: "rgb(var(--error-color-rgb))" }}>{message}&nbsp;</span>
+  return <span style={{ color }}>{message}&nbsp;</span>
 }
