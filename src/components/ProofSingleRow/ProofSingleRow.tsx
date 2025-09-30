@@ -16,6 +16,7 @@ import { createDragHandler } from "../../helpers/drag-drop";
 import useContextMenuStore from "../../stores/context-menu-store";
 import { useScreenSize } from "../../helpers/use-screen-size";
 import { isKeybindPressed, showKeybind } from "../../helpers/keybinds";
+import { HiOutlineEllipsisVertical } from "react-icons/hi2";
 
 interface ProofSingleRowProps {
   uuid: string;
@@ -141,11 +142,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     }
   }
 
-  const handleMouse: React.MouseEventHandler<HTMLDivElement> = (e) => {
-    if (e.button !== 2) {
-      return;
-    } 
-
+  const openThisContextMenu = (e: React.MouseEvent) => {
     openContextMenu(e, [
       {
         label: "Remove Line",
@@ -187,6 +184,14 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
         enabled: toLineEnabled
       },
     ]);
+  }
+
+  const handleMouse: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    if (e.button !== 2) {
+      return;
+    } 
+
+    openThisContextMenu(e);
 
     e.preventDefault();
   }
@@ -255,6 +260,10 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
           />
           {argumentInputs}
         </div>
+
+        <button type="button" title="Open context menu" onClick={(e) => openThisContextMenu(e)} className={styles["context-dots"]}>
+          <HiOutlineEllipsisVertical />
+        </button>
 
         <div className={styles["actions"]}>
           <button type="button" title="Drag to re-arrange proof" className={cls(styles["action-button"], styles["drag"])} onMouseDown={startDrag}>

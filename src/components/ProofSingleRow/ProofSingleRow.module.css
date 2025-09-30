@@ -77,6 +77,10 @@
   width: 60px;
 }
 
+.context-dots {
+  display: none;
+}
+
 .actions {
   position: absolute;
   right: 0;
@@ -144,6 +148,7 @@ input:focus ~ .actions button,
   visibility: visible;
 }
 
+input:focus ~ .actions,
 .proof-row:hover .actions {
   background: rgb(var(--card-background-rgb));
 }
@@ -178,6 +183,10 @@ fieldset input[type=text] {
 }
 
 @media screen and (max-width: 640px) {
+  .context-dots {
+    display: block;
+  }
+  
   .actions {
     display: none;
   }

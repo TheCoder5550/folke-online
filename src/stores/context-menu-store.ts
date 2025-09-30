@@ -12,6 +12,8 @@ interface ContextMenuItem {
   enabled?: boolean;
 }
 
+const width = 300;
+
 const useContextMenuStore = create(
   immer(
     combine(
@@ -27,12 +29,15 @@ const useContextMenuStore = create(
             state.isOpen = false
           })
         },
-        open(e: React.MouseEvent<HTMLDivElement, MouseEvent>, items: ContextMenuItem[]) {
+        open(e: React.MouseEvent, items: ContextMenuItem[]) {
+          // Estimate height
+          const height = items.length * 40;
+          
           set((state) => {
             state.isOpen = true;
             state.items = items;
-            state.xOffset = e.clientX;
-            state.yOffset = e.clientY;
+            state.xOffset = Math.min(innerWidth - width - 20, e.clientX);
+            state.yOffset = Math.min(innerHeight - height - 20, e.clientY);
           })
         }
       })
