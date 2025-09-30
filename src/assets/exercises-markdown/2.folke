@@ -1,0 +1,1 @@
+{"_sequent":{"_conclusion":"A ∧ D","_premises":["A ∧ B","C ∧ D"],"_steps":[{"tag":"Line","_arguments":["1"],"_usedArguments":1,"_rule":"∧EL","_statement":"A"},{"tag":"Line","_arguments":["2"],"_usedArguments":1,"_rule":"∧ER","_statement":"D"},{"tag":"Line","_arguments":["3","4"],"_usedArguments":2,"_rule":"∧I","_statement":"A ∧ D"}]}}
