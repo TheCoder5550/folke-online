@@ -3,11 +3,12 @@ import styles from "./ToggleButton.module.css";
 import type { PropsWithChildren } from "react"
 
 type ToggleButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & PropsWithChildren & {
+  label?: string;
   toggled: boolean;
   toggle: () => void;
 }
 
-export default function ToggleButton({ children, toggled, toggle, ...props }: ToggleButtonProps) {
+export default function ToggleButton({ children, label, toggled, toggle, ...props }: ToggleButtonProps) {
   return (
     <button
       type="button"
@@ -16,6 +17,7 @@ export default function ToggleButton({ children, toggled, toggle, ...props }: To
       {...props}
     >
       {children}
+      {label}
     </button>
   )
 }

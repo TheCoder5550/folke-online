@@ -3,9 +3,9 @@
   border-color: transparent;
   background: none;
 
-  height: unset;
+  /* height: unset;
   font-size: 1.25rem;
-  padding: 0.25em;
+  padding: 0.25em; */
 }
 
 .toggle-button.toggled {

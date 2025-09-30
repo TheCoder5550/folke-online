@@ -14,10 +14,17 @@ import { useScreenSize } from "../../helpers/use-screen-size";
 import useWasm from "../../helpers/wasm-provider";
 import { isKeybindPressed } from "../../helpers/keybinds";
 
+const categories = [
+  "File",
+  "Edit",
+  "Validation"
+] as const;
+type Categories = typeof categories[number];
+
 export default function ActionBar() {
   const isMobile = useScreenSize() === "mobile";
   
-  const [category, setCategory] = useState<"File" | "Edit">("Edit");
+  const [category, setCategory] = useState<Categories>("Edit");
   const [autoValidate, setAutoValidate] = useState(true);
   const [viewRules, setViewRules] = useState(!isMobile);
 
@@ -86,20 +93,28 @@ export default function ActionBar() {
   return (
     <div className={styles["action-bar"]}>
       <div className={styles["categories"]}>
-        <button className={cls(styles["category-button"], category === "File" && styles["selected"])} type="button" onClick={() => setCategory("File")}>File</button>
-        <button className={cls(styles["category-button"], category === "Edit" && styles["selected"])} type="button" onClick={() => setCategory("Edit")}>Edit</button>
-      
-        {isMobile && (
-          <div style={{ display: "flex", gap: "0.5rem", marginLeft: "auto" }}>
-            <ValidateButton small autoValidate={autoValidate} />
+        <div className={styles["left"]}>
+          {categories.map(c => (
+            <button
+              key={c}
+              className={cls(styles["category-button"], category === c && styles["selected"])}
+              type="button"
+              onClick={() => setCategory(c)}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
 
-            {!wasm.error && (
-              <ToggleButton toggle={() => setAutoValidate(!autoValidate)} toggled={autoValidate} title="Automatically validate proof whilst writing">
-                <MdOutlineMotionPhotosAuto />
-              </ToggleButton>
-            )}
-          </div>
-        )}
+        <div className={styles["right"]}>
+          {isMobile && (
+            <ValidateButton small autoValidate={autoValidate} showButton={!autoValidate} />
+          )}
+
+          <ToggleButton toggle={() => setViewRules(!viewRules)} toggled={viewRules} title="Show rule dictionary" style={{ padding: "0.25em", height: "unset" }}>
+            <FaBookOpen />
+          </ToggleButton>
+        </div>
       </div>
 
       <div className={styles["tab-content"]}>
@@ -128,21 +143,21 @@ export default function ActionBar() {
               <SymbolDictionary />
             </>
           )}
+
+          {category === "Validation" && (
+            <>
+              {!wasm.error && (
+                <ToggleButton label="Auto validate" toggle={() => setAutoValidate(!autoValidate)} toggled={autoValidate} title="Automatically validate proof whilst writing">
+                  <MdOutlineMotionPhotosAuto />
+                </ToggleButton>
+              )}
+            </>
+          )}
         </div>
         
         {!isMobile && (
           <div className={styles["current-actions"]}>
-            <ValidateButton autoValidate={autoValidate} />
-
-            {!wasm.error && (
-              <ToggleButton toggle={() => setAutoValidate(!autoValidate)} toggled={autoValidate} title="Automatically validate proof whilst writing">
-                <MdOutlineMotionPhotosAuto />
-              </ToggleButton>
-            )}
-
-            <ToggleButton toggle={() => setViewRules(!viewRules)} toggled={viewRules} title="Show rule dictionary">
-              <FaBookOpen />
-            </ToggleButton>
+            <ValidateButton autoValidate={autoValidate} showButton={!autoValidate} />
           </div>
         )}
       </div>
