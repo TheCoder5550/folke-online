@@ -75,21 +75,9 @@ USER node
 
 # Install folke dependencies
 RUN cabal update \
-    && cabal install alex --installdir=/usr/local/bin \
-    && cabal install happy --installdir=/usr/local/bin \
-    && cabal install BNFC --installdir=/usr/local/bin
-
-# # Update path
-# ENV PATH="${GHC_USER}/.local/bin/:\
-# /usr/local/bin:\
-# ${GHC_USER}/.ghc-wasm/wasm32-wasi-ghc/bin:\
-# ${GHC_USER}/.ghc-wasm/wasi-sdk/bin:\
-# ${GHC_USER}/.ghc-wasm/nodejs/bin:\
-# ${GHC_USER}/.ghc-wasm/binaryen/bin:\
-# ${GHC_USER}/.ghc-wasm/wasmtime/bin:\
-# ${GHC_USER}/.ghc-wasm/wasm32-wasi-cabal/bin:\
-# ${GHC_USER}/.ghc-wasm/wasm-run/bin:\
-# $PATH"
+    && cabal install alex \
+    && cabal install happy \
+    && cabal install BNFC
 
 #
 # Production

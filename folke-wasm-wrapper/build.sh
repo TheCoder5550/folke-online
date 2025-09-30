@@ -6,6 +6,8 @@ NODE="$ghc_wasm/nodejs/bin/node"
 CABAL="$ghc_wasm/wasm32-wasi-cabal/bin/wasm32-wasi-cabal"
 GHC="$ghc_wasm/wasm32-wasi-ghc/bin/wasm32-wasi-ghc"
 
+export PATH="$HOME/.local/bin:$PATH"
+
 # From https://github.com/fourmolu/fourmolu/blob/main/web/fourmolu-wasm/build.sh
 listbin() {
     # https://github.com/haskell/cabal/commit/ed407b17f371c5b9ce3d40db6c939b408ef9e093
@@ -17,10 +19,10 @@ listbin() {
 }
 
 # Remove dist-newstyle
-cd ../folke
-rm -rf dist-newstyle
-cd ../folke-wasm-wrapper
-rm -rf dist-newstyle
+# cd ../folke
+# rm -rf dist-newstyle
+# cd ../folke-wasm-wrapper
+# rm -rf dist-newstyle
 
 # Build cabal project
 # wasm32-wasi-cabal v2-build exe:folke-wasm-wrapper
