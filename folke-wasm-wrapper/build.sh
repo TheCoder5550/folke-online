@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ghc_wasm=/root/.ghc-wasm
+ghc_wasm=/home/node/.ghc-wasm
 
 NODE="$ghc_wasm/nodejs/bin/node"
 CABAL="$ghc_wasm/wasm32-wasi-cabal/bin/wasm32-wasi-cabal"
@@ -38,17 +38,5 @@ $NODE $($GHC --print-libdir)/post-link.mjs \
   -i ./output/folke-wasm-wrapper.wasm \
   -o ./output/ghc_wasm_jsffi.js
 
-# # Compile Haskell to WASM
-# wasm32-wasi-ghc hello.hs \
-#   -outputdir ./output/ \
-#   -o ./output/hello.wasm \
-#   -no-hs-main \
-#   -optl-mexec-model=reactor \
-#   -optl-Wl,--export=hs_init,--export=my_fac
-
-# # Create js file to specify imports for WebAssembly.instantiate
-# /home/node/.ghc-wasm/nodejs/bin/node $(wasm32-wasi-ghc --print-libdir)/post-link.mjs \
-#   -i ./output/hello.wasm \
-#   -o ./output/ghc_wasm_jsffi.js
-
+# Build without tail calls
 . ./build-no-tail.sh
