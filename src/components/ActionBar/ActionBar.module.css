@@ -5,7 +5,7 @@
   background: rgb(var(--card-background-rgb));
   border-bottom: 1px solid rgb(var(--text-rgb), 0.2);
   box-shadow: 0 -10px 30px rgba(0, 0, 50, 0.3);
-  z-index: 100000;
+  z-index: 5;
 }
 
 .categories {

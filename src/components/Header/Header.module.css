@@ -1,10 +1,13 @@
 .header {
   display: flex;
   gap: 2rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
 
   color: rgb(var(--header-color-rgb));
   background: rgb(var(--header-background-rgb));
+
+  position: relative;
+  z-index: 10;
 }
 
 .logo {

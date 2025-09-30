@@ -1,5 +1,5 @@
-import { GiPlagueDoctorProfile } from "react-icons/gi";
 import styles from "./Header.module.css";
+import logoUrl from "../../../logo.png";
 
 const isProd = import.meta.env.PROD;
 const isPages = window.location.hostname === "thecoder5550.github.io";
@@ -12,7 +12,7 @@ export default function Header() {
   return (
     <header className={styles["header"]}>
       <a href={`${BASE_PATH}/`} className={styles["logo"]}>
-        <GiPlagueDoctorProfile size="2rem" />
+        <img height="32" src={logoUrl}></img>
         <span>Folke Online</span>
       </a>
 

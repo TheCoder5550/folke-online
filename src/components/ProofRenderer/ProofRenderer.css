@@ -13,5 +13,5 @@
   color: rgb(var(--error-color-rgb));
   background: rgb(var(--card-background-rgb));
   box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.2);
-  z-index: 10;
+  z-index: 15;
 }
