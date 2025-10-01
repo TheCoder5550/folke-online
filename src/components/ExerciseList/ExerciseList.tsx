@@ -11,7 +11,7 @@ const totalExercises = Object.keys(EXAM_COMPONENT_MAP).length + Object.keys(EXER
 
 interface ExerciseListProps {
   id: string | null;
-  setId: React.Dispatch<React.SetStateAction<string | null>>
+  setId: React.Dispatch<React.SetStateAction<string | null>> | ((id: string | null) => void);
 }
 
 export default function ExerciseList(props: ExerciseListProps) {
@@ -37,7 +37,7 @@ export default function ExerciseList(props: ExerciseListProps) {
           <ListItem key={id} id={id} select={() => props.setId(id)} isSelected={props.id === id} />
         ))}
 
-        <h2>All exams</h2>
+        <h2>Practice old exams</h2>
         {examCategories.map(([exam, ids]) => (
           <div key={exam} className={styles["card"]}>
             <h3>Exam {formatExamDate(exam)}</h3>

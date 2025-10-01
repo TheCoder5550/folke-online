@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import ErrorBoundary from '../components/ErrorBoundary';
 import ExerciseList from '../components/ExerciseList/ExerciseList';
 import Header from '../components/Header/Header';
-import { COMPONENT_MAP as EXAM_COMPONENT_MAP } from '../exercise-components/exam-data';
+import { EXAM_CATEGORIES, COMPONENT_MAP as EXAM_COMPONENT_MAP } from '../exercise-components/exam-data';
 import { COMPONENT_MAP as EXERCISE_COMPONENT_MAP } from '../exercise-components/exercise-data';
 import ContextMenu from '../components/ContextMenu/ContextMenu';
 import { IoMdArrowRoundBack } from 'react-icons/io';
@@ -14,6 +14,7 @@ import { FaBook } from 'react-icons/fa';
 import { RiCharacterRecognitionFill } from 'react-icons/ri';
 import SymbolDictionary from '../components/SymbolDictionary/SymbolDictionary';
 import Footer from "../components/Footer/Footer";
+import { IDS, NAMES } from "../exercise-components/id-data";
 
 const ALL_COMPONENTS = {
   ...EXAM_COMPONENT_MAP,
@@ -33,7 +34,9 @@ function getComponentById(id: string | null) {
 }
 
 function App() {
-  const [id, setId] = useState<string | null>(null);
+  const params = new URL(window.location.href).searchParams;
+
+  const [id, setId] = useState<string | null>(params.get("exercise"));
   const CurrentComp = getComponentById(id);
 
   const [viewRules, setViewRules] = useState(false);
@@ -42,6 +45,45 @@ function App() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
+
+  useEffect(() => {
+    const onPopState = (event: PopStateEvent) => {
+      const state = event.state as {id: string | null} | null;
+      const id = state === null ? null : state.id as string;
+      setId(id);
+    }
+
+    window.addEventListener("popstate", onPopState);
+    return () => {
+      window.removeEventListener("popstate", onPopState);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (id === null) {
+      document.title = "Folke Online - Exercises";
+    }
+    else {
+      const name = NAMES[IDS.indexOf(id)];
+      const exam = Object.entries(EXAM_CATEGORIES).find(([_, questions]) => {
+        return questions.find(q => q === id)
+      });
+      if (exam) {
+        document.title = `Folke Online - ${exam[0]} ${name}`;
+      }
+      else {
+        document.title = "Folke Online - " + name;
+      }
+    }
+  }, [id]);
+
+  const openExercise = (id: string | null) => {
+    const stateObj = { id };
+    const url = id === null ? "./" : "?exercise=" + id;
+    history.pushState(stateObj, "", url);
+
+    setId(id);
+  }
 
   return (
     <>
@@ -52,7 +94,7 @@ function App() {
           <div className="paper-container">
             <div className="paper invisible">
               {id != null && (
-                <button title="Go back to exercise list" type="button" onClick={() => setId(null)} className={styles["secondary-button"]}>
+                <button title="Go back to exercise list" type="button" onClick={() => openExercise(null)} className={styles["secondary-button"]}>
                   <IoMdArrowRoundBack />
                   Back to list
                 </button>
@@ -91,11 +133,11 @@ function App() {
                   </div>
                 </>
               ) : (
-                <ExerciseList id={id} setId={setId} />
+                <ExerciseList id={id} setId={openExercise} />
               )}
 
               {id != null && (
-                <button title="Close question" type="button" onClick={() => setId(null)} className="close-button">✕</button>
+                <button title="Close question" type="button" onClick={() => openExercise(null)} className="close-button">✕</button>
               )}
             </div>
           </div>
