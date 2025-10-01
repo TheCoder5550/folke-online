@@ -15,15 +15,10 @@ function App() {
         <div className="paper-container">
           <div className="paper invisible">
             <h1>Guide</h1>
-
-            <h2>Symbol shortcuts</h2>
-            <p>Various keyboard shortcuts exists to type special characters.</p>
-            <SymbolTable />
-
-            <br /><br />
+            <p>Follow the <a href="../exercises/?exercise=getting-started.md">Getting started exercise</a> to learn how to use the proof editor.</p>
 
             <h2>Rules</h2>
-            <p>These rules (or <i>justifications</i>) are available</p>
+            <p>The following rules (or <i>justifications</i>) are available:</p>
             <RulesTable />
 
             <br /><br />
@@ -43,6 +38,12 @@ function App() {
               <li>A → B → C is equivalent to A → (B → C)</li>
               <li>∀x P(x) → ∃y Q(y) ∧ ¬R(z) is equivalent to (∀x P(x)) → ((∃y Q(y)) ∧ (¬R(z)))</li>
             </ul>
+
+            <br /><br />
+
+            <h2>Symbol shortcuts</h2>
+            <p>Various keyboard shortcuts exists to type special characters.</p>
+            <SymbolTable />
 
             <br /><br />
 
