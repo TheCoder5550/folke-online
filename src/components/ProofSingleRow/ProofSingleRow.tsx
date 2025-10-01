@@ -171,6 +171,16 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
         enabled: closeBoxEnabled,
       },
       {
+        label: "Close Box with Box",
+        icon: <IoReturnDownBack />,
+        action: () => {
+          dispatch({
+            type: ProofDispatchActionTypeEnum.CloseBoxWithBox,
+            uuid,
+          })
+        },
+      },
+      {
         label: "Convert Line to Box",
         icon: <TbBox />,
         shortcut: showKeybind("proof-toBox"),
@@ -247,7 +257,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
         <span className={styles["number"]}>
           <LineNumberMemo uuid={props.uuid} />
         </span>
-        <TextFieldMemo focusOnAdd placeholder="Enter statement" className={styles["statement-input"]} value={step.statement} onChange={setStatement} onKeyDown={keydown} />
+        <TextFieldMemo placeholder="Enter statement" className={styles["statement-input"]} value={step.statement} onChange={setStatement} onKeyDown={keydown} />
         <div className={styles["rule-args-container"]}>
           <AutocompleteInput
             suggestions={RULE_SUGGESTIONS}

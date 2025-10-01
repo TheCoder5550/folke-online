@@ -343,6 +343,43 @@ export function canCloseBox(proof: FlatProof, uuid: UUID): boolean {
   return true;
 }
 
+/**
+ * Get an ordered list (by line number) of all rows in a proof
+ */
+function getAllRows(proof: FlatProof): FlatLine[] {
+  const rows: FlatLine[] = [];
+
+  const addRows = (uuid: UUID) => {
+    const step = getStep(proof, uuid);
+    if (isFlatLine(step)) {
+      rows.push(step);
+    }
+    else {
+      step.steps.map(addRows);
+    }
+  }
+  
+  proof.steps.map(addRows);
+
+  return rows;
+}
+
+export function getUUIDOfRowAbove(proof: FlatProof, uuid: UUID): UUID | null {
+  const allRows = getAllRows(proof);
+  const index = allRows.findIndex(row => row.uuid === uuid);
+  if (index === -1) {
+    return null;
+  }
+
+  const prevIndex = index - 1;
+  if (prevIndex < 0) {
+    return null;
+  }
+
+  const prevUUID = allRows[prevIndex].uuid;
+  return prevUUID;
+}
+
 export function getUUIDOfLastRow(proof: FlatProof): UUID | null {
   const findUUID = (uuids: UUID[]): UUID | null => {
     const lastUUID = uuids[uuids.length - 1];
@@ -398,6 +435,9 @@ export function getProofDepth(proof: FlatProof): number {
   return getDepth(proof.steps, 0);
 }
 
+/**
+ * Calculate how many levels a step is nested
+ */
 export function getNestedLevel(proof: FlatProof, uuid: UUID): number {
   let nested = 0;
   let current: FlatStep | null = getStep(proof, uuid);
@@ -413,6 +453,9 @@ export function getNestedLevel(proof: FlatProof, uuid: UUID): number {
   return nested;
 }
 
+/**
+ * Get line number of a row or line number range of a box
+ */
 export function getLineNumber(proof: FlatProof, uuid: UUID): string {
   let nextStep: UUID | null = uuid;
   let lineNumber = 1;

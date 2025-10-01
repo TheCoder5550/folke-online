@@ -1,6 +1,6 @@
 import { devtools, persist} from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
-import { closeBoxWith, convertToBox, convertToLine, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, insertAfter, insertBefore, insertInto, moveAfter, proofToHaskellProof, removeFromProof, setArgument, setRule, setStatement, unflattenProof } from '../helpers/proof-helper';
+import { closeBoxWith, convertToBox, convertToLine, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, getUUIDOfRowAbove, insertAfter, insertBefore, insertInto, moveAfter, proofToHaskellProof, removeFromProof, setArgument, setRule, setStatement, unflattenProof } from '../helpers/proof-helper';
 import { createStore, useStore } from 'zustand';
 import { createContext, use, useState } from 'react';
 import { downloadText } from '../helpers/generic-helper';
@@ -742,35 +742,49 @@ function reducer(draft: {
       break;
     }
     case ProofDispatchActionTypeEnum.Remove: {
+      const prevRow = getUUIDOfRowAbove(draft.proof, action.uuid);
       removeFromProof(draft.proof, action.uuid)
+      if (prevRow) {
+        setFocus(prevRow);
+      }
       break;
     }
     case ProofDispatchActionTypeEnum.InsertLineBefore: {
-      insertBefore(draft.proof, action.uuid, createNewLine())
+      const line = createNewLine();
+      insertBefore(draft.proof, action.uuid, line);
+      setFocus(line.uuid);
       break;
     }
     case ProofDispatchActionTypeEnum.InsertLineAfter: {
-      insertAfter(draft.proof, action.uuid, createNewLine())
+      const line = createNewLine();
+      insertAfter(draft.proof, action.uuid, line)
+      setFocus(line.uuid);
       break;
     }
     case ProofDispatchActionTypeEnum.InsertBoxBefore: {
       const box = createNewBox();
       insertBefore(draft.proof, action.uuid, box);
-      insertInto(draft.proof, box.uuid, createNewLine());
+      const line = createNewLine();
+      insertInto(draft.proof, box.uuid, line);
+      setFocus(line.uuid);
       break;
     }
     case ProofDispatchActionTypeEnum.InsertBoxAfter: {
       const box = createNewBox();
       insertAfter(draft.proof, action.uuid, box);
-      insertInto(draft.proof, box.uuid, createNewLine());
+      const line = createNewLine();
+      insertInto(draft.proof, box.uuid, line);
+      setFocus(line.uuid);
       break;
     }
     case ProofDispatchActionTypeEnum.ToBox: {
       convertToBox(draft.proof, action.uuid)
+      setFocus(action.uuid);
       break;
     }
     case ProofDispatchActionTypeEnum.ToLine: {
       convertToLine(draft.proof, action.uuid)
+      setFocus(action.uuid);
       break;
     }
     case ProofDispatchActionTypeEnum.InsertLineAfterLast: {
@@ -779,6 +793,7 @@ function reducer(draft: {
         const line = createNewLine();
         draft.proof.stepLookup[line.uuid] = line;
         draft.proof.steps.push(line.uuid);
+        setFocus(line.uuid);
 
         return;
       }
@@ -796,7 +811,9 @@ function reducer(draft: {
         draft.proof.stepLookup[box.uuid] = box;
         draft.proof.steps.push(box.uuid);
 
-        insertInto(draft.proof, box.uuid, createNewLine());
+        const line = createNewLine();
+        insertInto(draft.proof, box.uuid, line);
+        setFocus(line.uuid);
 
         return;
       }
@@ -808,11 +825,17 @@ function reducer(draft: {
       break;
     }
     case ProofDispatchActionTypeEnum.CloseBoxWithLine: {
-      closeBoxWith(draft.proof, action.uuid, createNewLine());
+      const line = createNewLine();
+      closeBoxWith(draft.proof, action.uuid, line);
+      setFocus(line.uuid);
       break;
     }
     case ProofDispatchActionTypeEnum.CloseBoxWithBox: {
-      closeBoxWith(draft.proof, action.uuid, createNewBox());
+      const box = createNewBox();
+      closeBoxWith(draft.proof, action.uuid, box);
+      const line = createNewLine();
+      insertInto(draft.proof, box.uuid, line);
+      setFocus(line.uuid);
       break;
     }
     case ProofDispatchActionTypeEnum.MoveAfter: {
@@ -820,4 +843,15 @@ function reducer(draft: {
       break;
     }
   }
+}
+
+function setFocus(uuid: UUID) {
+  requestAnimationFrame(() => {
+    const step = document.querySelector(`*[data-uuid="${uuid}"]`);
+    if (!step) {
+      return;
+    }
+    const input = step.querySelector("input");
+    input?.focus();
+  });
 }

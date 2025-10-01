@@ -138,10 +138,10 @@
   background: none;
 }
 
-.proof-row:hover,
+/* .proof-row:hover,
 .proof-row:hover .number {
   background: rgb(var(--hover-line-rgb));
-}
+} */
 
 input:focus ~ .actions button,
 .proof-row:hover .actions button,
