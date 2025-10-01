@@ -1,5 +1,6 @@
 import ContextMenu from '../components/ContextMenu/ContextMenu';
 import ErrorBoundary from '../components/ErrorBoundary';
+import Footer from '../components/Footer/Footer';
 import Header from '../components/Header/Header';
 import KeybindsTable from '../components/KeybindsTable/KeybindsTable';
 import RulesTable from '../components/RulesTable/RulesTable';
@@ -49,6 +50,8 @@ function App() {
             <KeybindsTable />
           </div>
         </div>
+        
+        <Footer />
 
         <ContextMenu />
       </ErrorBoundary>

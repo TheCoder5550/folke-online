@@ -13,6 +13,7 @@ import ToggleButton from '../components/ToggleButton/ToggleButton';
 import { FaBook } from 'react-icons/fa';
 import { RiCharacterRecognitionFill } from 'react-icons/ri';
 import SymbolDictionary from '../components/SymbolDictionary/SymbolDictionary';
+import Footer from "../components/Footer/Footer";
 
 const ALL_COMPONENTS = {
   ...EXAM_COMPONENT_MAP,
@@ -98,6 +99,8 @@ function App() {
               )}
             </div>
           </div>
+
+          <Footer />
           
           <ContextMenu />
         </WasmProvider>

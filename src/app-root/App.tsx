@@ -1,6 +1,7 @@
 import ActionBar from '../components/ActionBar/ActionBar'
 import ContextMenu from '../components/ContextMenu/ContextMenu'
 import ErrorBoundary from '../components/ErrorBoundary'
+import Footer from '../components/Footer/Footer'
 import Header from '../components/Header/Header'
 import ProofRenderer from '../components/ProofRenderer/ProofRenderer'
 import { WasmProvider } from '../helpers/wasm-provider'
@@ -24,6 +25,7 @@ function App() {
 
           <ContextMenu />
         </WasmProvider>
+        <Footer />
       </ErrorBoundary>
     </>
   )

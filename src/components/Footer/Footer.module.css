@@ -1,0 +1,18 @@
+footer {
+  display: flex;
+  justify-content: space-between;
+
+  color: rgb(var(--header-color-rgb));
+  background: rgb(var(--header-background-rgb));
+
+  padding: 1rem 2rem;
+}
+
+footer a {
+  color: inherit;
+}
+
+footer a:hover {
+  color: inherit;
+  text-decoration: underline;
+}
