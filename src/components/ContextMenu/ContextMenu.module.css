@@ -40,16 +40,21 @@
   font-size: 0.85rem;
 }
 
+.menu-item:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
 .menu-item.danger {
   color: rgb(var(--error-color-rgb));
   background: rgb(var(--error-background-rgb));
 }
 
-.menu-item:hover {
+.menu-item:not(:disabled):hover {
   background: rgb(var(--text-rgb), 0.05);
 }
 
-.menu-item:active {
+.menu-item:not(:disabled):active {
   background: rgb(var(--text-rgb), 0.1);
 }
 

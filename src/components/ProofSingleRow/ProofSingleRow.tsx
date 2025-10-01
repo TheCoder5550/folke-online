@@ -179,6 +179,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
             uuid,
           })
         },
+        enabled: closeBoxEnabled,
       },
       {
         label: "Convert Line to Box",
