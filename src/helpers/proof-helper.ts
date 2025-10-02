@@ -41,6 +41,10 @@ export function createNewBox(): FlatBox {
   }
 }
 
+export function getSequent(proof: FlatProof): string {
+  return `${proof.premises.join("; ")} ${makeSpecialCharacters("=>")} ${proof.conclusion}`
+}
+
 export function setStatement(proof: FlatProof, uuid: UUID, statement: string) {
   const step = getStep(proof, uuid);
   if (!isFlatLine(step)) {

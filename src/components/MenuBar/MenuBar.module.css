@@ -1,0 +1,51 @@
+.menubar {
+  position: relative;
+}
+
+.menu-button {
+  padding: 0.125em 1em;
+
+  font-size: 0.85rem;
+  border-radius: 2px;
+}
+
+.menu-button:focus {
+  outline: none;
+}
+
+.dropdown-button {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+
+  gap: 1em;
+  padding: 0.5em 1em;
+}
+
+.dropdown-button.danger {
+  color: rgb(var(--error-color-rgb));
+  background: rgb(var(--error-background-rgb));
+}
+
+.menu-button.active,
+.menu-button:hover,
+.dropdown-button.active,
+.dropdown-button:hover {
+  background: rgba(var(--text-rgb), 0.1);
+}
+
+.dropdown {
+  position: absolute;
+  bottom: 0;
+  transform: translateY(100%);
+  width: 250px;
+
+  display: flex;
+  flex-direction: column;
+
+  font-size: 0.85rem;
+  background: rgb(var(--card-background-rgb));
+  border: 1px solid rgba(var(--text-rgb), 0.2);
+  box-shadow: var(--card-shadow);
+  z-index: 50;
+}

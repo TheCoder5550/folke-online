@@ -17,7 +17,7 @@ export default function Header() {
       </a>
 
       <div className={styles["links"]}>
-        <a href={`${BASE_PATH}/`}>Editor</a>
+        <a href={`${BASE_PATH}/editor/`}>Editor</a>
         <a href={`${BASE_PATH}/exercises/`}>Exercises</a>
         <a href={`${BASE_PATH}/guide/`}>Guide</a>
       </div>

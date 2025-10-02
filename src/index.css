@@ -48,9 +48,9 @@
   background: rgba(0, 0, 0, 0.1);
 }
 
-html {
+/* html {
   scrollbar-gutter: stable;
-}
+} */
 
 body {
   margin: 0;

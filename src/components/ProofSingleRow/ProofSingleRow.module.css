@@ -27,11 +27,11 @@
 }
 
 .proof-row.correct {
+  font-weight: bold;
   color: rgb(var(--correct-color-rgb));
 }
 
 .proof-row.correct input {
-  font-weight: bold;
   border-color: rgb(var(--correct-color-rgb));
   /* background-color: rgb(var(--correct-background-rgb)); */
 }

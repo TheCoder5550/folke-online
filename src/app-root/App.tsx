@@ -1,30 +1,21 @@
-import ActionBar from '../components/ActionBar/ActionBar'
-import ContextMenu from '../components/ContextMenu/ContextMenu'
 import ErrorBoundary from '../components/ErrorBoundary'
 import Footer from '../components/Footer/Footer'
 import Header from '../components/Header/Header'
-import ProofRenderer from '../components/ProofRenderer/ProofRenderer'
-import { WasmProvider } from '../helpers/wasm-provider'
-import { ProofStoreProvider } from '../stores/proof-store'
 
 function App() {
   return (
     <>
       <ErrorBoundary>
         <Header />
-        <WasmProvider>
-          <ProofStoreProvider localStorageName='current-proof-storage'>
-            <ActionBar />
-
-            <div className="paper-container">
-              <div className="paper">
-                <ProofRenderer />
-              </div>
-            </div>
-          </ProofStoreProvider>
-
-          <ContextMenu />
-        </WasmProvider>
+        <div className="paper-container">
+          <div className="paper">
+            <h1>Folke Online</h1>
+            <p>Folke is an interactive proof editor for propositional and first-order logic.</p>
+            <p>
+              Go to the <a href="./editor/">editor</a> to write proofs or practice <a href="./exercises/">old exams and exercises</a>.
+            </p>
+          </div>
+        </div>
         <Footer />
       </ErrorBoundary>
     </>

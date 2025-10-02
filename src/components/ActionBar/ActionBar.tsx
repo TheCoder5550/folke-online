@@ -5,28 +5,19 @@ import React, { useEffect, useRef, useState, type JSX } from "react";
 import { flattenProof, haskellProofToProof } from "../../helpers/proof-helper";
 import { MdDelete, MdOutlineMotionPhotosAuto } from "react-icons/md";
 import ValidateButton from "../ValidateButton/ValidateButton";
-import { FaBookOpen, FaFileExport, FaUpload } from "react-icons/fa6";
+import { FaDownload, FaFile, FaFileImport, FaFolder } from "react-icons/fa6";
 import SymbolDictionary from "../SymbolDictionary/SymbolDictionary";
 import { cls } from "../../helpers/generic-helper";
 import ToggleButton from "../ToggleButton/ToggleButton";
-import RuleDictionary from "../RuleDictionary/RuleDictionary";
 import { useScreenSize } from "../../helpers/use-screen-size";
 import useWasm from "../../helpers/wasm-provider";
 import { isKeybindPressed } from "../../helpers/keybinds";
-
-const categories = [
-  "File",
-  "Edit",
-  "Validation"
-] as const;
-type Categories = typeof categories[number];
+import MenuBar, { type MenuBarData } from "../MenuBar/MenuBar";
 
 export default function ActionBar() {
   const isMobile = useScreenSize() === "mobile";
   
-  const [category, setCategory] = useState<Categories>("Edit");
   const [autoValidate, setAutoValidate] = useState(true);
-  const [viewRules, setViewRules] = useState(!isMobile);
 
   const wasm = useWasm();
   const dispatch = useProofStore((state) => state.dispatch);
@@ -90,20 +81,80 @@ export default function ActionBar() {
     }
   };
 
+  const menuBarData: MenuBarData = [
+    {
+      label: "File",
+      children: [
+        {
+          icon: <FaFile />,
+          label: "New Proof",
+          action: () => {},
+        },
+        {
+          icon: <FaFolder />,
+          label: "Open Proof",
+          children: [
+            
+          ]
+        },
+        {
+          icon: <FaFileImport />,
+          label: "Import .folke",
+          action: openUpload,
+        },
+        {
+          icon: <FaDownload />,
+          label: "Download",
+          children: [
+            {
+              label: "Download .folke",
+              action: exportFolke,
+            },
+            {
+              label: "Download Latex",
+              action: exportLatex,
+            },
+          ]
+        },
+        {
+          icon: <MdDelete />,
+          label: "Delete Proof",
+          danger: true,
+          action: resetProof,
+        },
+      ],
+    },
+    {
+      label: "Edit",
+      children: [
+        {
+          icon: <ImUndo />,
+          label: "Undo",
+          action: undo,
+        },
+        {
+          icon: <ImRedo />,
+          label: "Redo",
+          action: redo,
+        },
+        {
+          icon: <MdOutlineMotionPhotosAuto />,
+          label: "Auto validate: " + (autoValidate ? "On" : "Off"),
+          action: () => {
+            setAutoValidate(v => !v)
+            return false;
+          },
+        },
+      ]
+    }
+  ]
+
   return (
     <div className={styles["action-bar"]}>
       <div className={styles["categories"]}>
         <div className={styles["left"]}>
-          {categories.map(c => (
-            <button
-              key={c}
-              className={cls(styles["category-button"], category === c && styles["selected"])}
-              type="button"
-              onClick={() => setCategory(c)}
-            >
-              {c}
-            </button>
-          ))}
+          <MenuBar data={menuBarData} />
+          <input type="file" ref={fileRef} onChange={uploadProof} style={{ display: "none" }} />
         </div>
 
         <div className={styles["right"]}>
@@ -111,48 +162,27 @@ export default function ActionBar() {
             <ValidateButton small autoValidate={autoValidate} showButton={!autoValidate} />
           )}
 
-          <ToggleButton toggle={() => setViewRules(!viewRules)} toggled={viewRules} title="Show rule dictionary" style={{ padding: "0.25em", height: "unset" }}>
+          {/* <ToggleButton toggle={() => setViewRules(!viewRules)} toggled={viewRules} title="Show rule dictionary" style={{ padding: "0.25em", height: "unset" }}>
             <FaBookOpen />
-          </ToggleButton>
+          </ToggleButton> */}
         </div>
       </div>
 
       <div className={styles["tab-content"]}>
         <div className={styles["current-actions"]}>
-          {category === "File" && (
-            <>
-              <Button icon={<FaFileExport /> } label="Export .folke" title="Download as export.folke" onClick={exportFolke} small={isMobile} />
-              <Button icon={<FaFileExport /> } label="Export Latex" title="Download as export.tex" onClick={exportLatex} small={isMobile} />
-
-              <Divider />
-
-              <input type="file" ref={fileRef} onChange={uploadProof} style={{ display: "none" }} />
-              <Button icon={<FaUpload />} label="Upload .folke" title="Upload proof" onClick={openUpload} small={isMobile} />
-              
-              <Divider />
-
-              <Button danger icon={<MdDelete />} label="Clear" title="Delete proof" onClick={resetProof} small={isMobile} />
-            </>
-          )}
-
-          {category === "Edit" && (
-            <>
-              <Button icon={<ImUndo />} label="Undo" title={"Undo"} onClick={undo} small={isMobile} />
-              <Button icon={<ImRedo />} label="Redo" title={"Redo"} onClick={redo} small={isMobile} />
-              <Divider />
-              <SymbolDictionary />
-            </>
-          )}
-
-          {category === "Validation" && (
-            <>
-              {!wasm.error && (
-                <ToggleButton label="Auto validate" toggle={() => setAutoValidate(!autoValidate)} toggled={autoValidate} title="Automatically validate proof whilst writing">
-                  <MdOutlineMotionPhotosAuto />
-                </ToggleButton>
-              )}
-            </>
-          )}
+          <>
+            <Button icon={<ImUndo />} label="Undo" title={"Undo"} onClick={undo} small />
+            <Button icon={<ImRedo />} label="Redo" title={"Redo"} onClick={redo} small />
+            <Divider />
+            <SymbolDictionary />
+          </>
+          <>
+            {!wasm.error && !isMobile && (
+              <ToggleButton label="Auto validate" toggle={() => setAutoValidate(!autoValidate)} toggled={autoValidate} title="Automatically validate proof whilst writing">
+                <MdOutlineMotionPhotosAuto />
+              </ToggleButton>
+            )}
+          </>
         </div>
         
         {!isMobile && (
@@ -162,7 +192,7 @@ export default function ActionBar() {
         )}
       </div>
 
-      <RuleDictionary visible={viewRules} setVisible={setViewRules} />
+      {/* <RuleDictionary visible={viewRules} setVisible={setViewRules} /> */}
     </div>
   )
 }

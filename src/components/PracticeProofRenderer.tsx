@@ -3,7 +3,6 @@ import styles from "./ProofRenderer/ProofRenderer.module.css";
 import StepsContainer from "./StepsContainer/StepsContainer";
 import StepsRenderer from "./StepsRenderer";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-store";
-import { makeSpecialCharacters } from "../helpers/special-characters";
 import ValidateButton from "./ValidateButton/ValidateButton";
 import { LuListRestart } from "react-icons/lu";
 import GlobalErrorMessage from "./GlobalErrorMessage";
@@ -14,6 +13,7 @@ import { FaLightbulb } from "react-icons/fa6";
 import Modal from "./Modal/Modal";
 import { isKeybindPressed, showKeybind } from "../helpers/keybinds";
 import { cls } from "../helpers/generic-helper";
+import { getSequent } from "../helpers/proof-helper";
 
 interface PracticeProofRendererProps {
   solution?: FlatProof;
@@ -23,7 +23,7 @@ interface PracticeProofRendererProps {
 export default function PracticeProofRenderer(props: PracticeProofRendererProps) {
   const [showSolution, setShowSolution] = useState(false);
   const dispatch = useProofStore((state) => state.dispatch);
-  const sequent = useProofStore((state) => `${state.proof.premises.join("; ")} ${makeSpecialCharacters("=>")} ${state.proof.conclusion}`)
+  const sequent = useProofStore((state) => getSequent(state.proof));
 
   const maybeShowSolution = () => {
     if (confirm("Are you sure you want to spoil the solution?")) {

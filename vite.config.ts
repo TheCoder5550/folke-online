@@ -24,6 +24,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
+        editor: resolve(__dirname, 'editor/index.html'),
         exercises: resolve(__dirname, 'exercises/index.html'),
         guide: resolve(__dirname, 'guide/index.html'),
       },
