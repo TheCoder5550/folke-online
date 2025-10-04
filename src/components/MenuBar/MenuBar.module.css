@@ -1,5 +1,6 @@
 .menubar {
   position: relative;
+  display: flex;
 }
 
 .menu-button {
