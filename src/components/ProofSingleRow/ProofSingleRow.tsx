@@ -28,11 +28,11 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
   const isMobile = useScreenSize() === "mobile";
   const dispatch = useProofStore((state) => state.dispatch);
   const uuid = props.uuid;
-  const step = useProofStore(useShallow((state) => state.proof.stepLookup[uuid]));
-  const level = useProofStore((state) => getNestedLevel(state.proof, uuid));
-  const toLineEnabled = useProofStore((state) => canConvertToLine(state.proof, uuid));
-  const closeBoxEnabled = useProofStore((state) => canCloseBox(state.proof, uuid));
-  const hasError = useProofStore((state) => state.result?.location == getLineNumber(state.proof, props.uuid));
+  const step = useProofStore(useShallow((state) => state.getProof().stepLookup[uuid]));
+  const level = useProofStore((state) => getNestedLevel(state.getProof(), uuid));
+  const toLineEnabled = useProofStore((state) => canConvertToLine(state.getProof(), uuid));
+  const closeBoxEnabled = useProofStore((state) => canCloseBox(state.getProof(), uuid));
+  const hasError = useProofStore((state) => state.result?.location == getLineNumber(state.getProof(), props.uuid));
   const errorMessage = useProofStore((state) => hasError ? state.result?.message : undefined);
   const isCorrect = useProofStore((state) => state.result?.correct === true && state.result?.completed === true);
 

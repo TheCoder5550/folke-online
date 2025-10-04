@@ -17,7 +17,7 @@ interface ValidateButtonProps {
 }
 
 export default function ValidateButton(props: ValidateButtonProps) {
-  const proof = useProofStore((state) => state.proof);
+  const proof = useProofStore((state) => state.getProof());
   const wasm = useWasm();
   const isCorrect = useProofStore((state) => state.result?.correct);
   const isCompleted = useProofStore((state) => state.result?.completed);
@@ -75,7 +75,7 @@ export default function ValidateButton(props: ValidateButtonProps) {
     if (autoValidate) {
       validate();
     }
-  }, [wasm]);
+  }, [ wasm, autoValidate ]);
 
   if (wasm.error != null) {
     return undefined;

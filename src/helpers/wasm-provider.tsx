@@ -68,7 +68,6 @@ export const WasmProvider = ({ children }: WasmProviderProps) => {
 
     const unflattenedProof = unflattenProof(proof);
     const haskellJSON = proofToHaskellProof(unflattenedProof);
-    console.log(haskellJSON);
     const inputBytes = encoder.encode(JSON.stringify(haskellJSON));
 
     return new Promise((resolve, reject) => {
@@ -79,7 +78,6 @@ export const WasmProvider = ({ children }: WasmProviderProps) => {
 
         const resultBytes = new Uint8Array(hs.memory.buffer, resultPtr, length);
         const output = decoder.decode(resultBytes);
-        console.log(output);
         const json = JSON.parse(output) as __CheckProofResultPartial;
         const proofStatus = {
           ...json,

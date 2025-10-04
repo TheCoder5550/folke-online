@@ -3,28 +3,34 @@ import Accordion from '../components/Accordion/Accordion'
 import ActionBar from '../components/ActionBar/ActionBar'
 import ContextMenu from '../components/ContextMenu/ContextMenu'
 import ErrorBoundary from '../components/ErrorBoundary'
-// import Footer from '../components/Footer/Footer'
 import Header from '../components/Header/Header'
 import ProofRenderer from '../components/ProofRenderer/ProofRenderer'
 import { WasmProvider } from '../helpers/wasm-provider'
-// import { ProofStoreProvider } from '../stores/proof-store'
-import { ProofCollectionStoreProvider } from "../stores/proof-collection-store";
+import { ProofStoreProvider } from '../stores/proof-store'
+import { useState } from "react";
 
 function App() {
+  const [viewSidebar, setViewSidebar] = useState(true);
+
   return (
     <>
       <ErrorBoundary>
         <div className={styles["fixed"]}>
           <Header />
           <WasmProvider>
-            <ProofCollectionStoreProvider>
-              <ActionBar />
+            <ProofStoreProvider localStorageName="current-proof-storage">
+              <ActionBar
+                viewSidebar={viewSidebar}
+                setViewSidebar={setViewSidebar}
+              />
 
               <div style={{
                 display: "flex",
                 overflow: "hidden",
               }}>
-                <Accordion className={styles["sidebar"]}></Accordion>
+                {viewSidebar && (
+                  <Accordion className={styles["sidebar"]}></Accordion>
+                )}
 
                 <div className="paper-container" style={{
                   flex: "1",
@@ -38,11 +44,10 @@ function App() {
                   </div>
                 </div>
               </div>
-            </ProofCollectionStoreProvider>
+            </ProofStoreProvider>
 
             <ContextMenu />
           </WasmProvider>
-          {/* <Footer /> */}
         </div>
       </ErrorBoundary>
     </>

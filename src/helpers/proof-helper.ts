@@ -4,6 +4,7 @@ import { makeSpecialCharacters } from "./special-characters";
 
 export function createExercise(premises: string[], conclusion: string): FlatProof {
   return {
+    uuid: getUUID(),
     premises: premises.map(p => makeSpecialCharacters(p)),
     conclusion: makeSpecialCharacters(conclusion),
     steps: [],
@@ -11,8 +12,18 @@ export function createExercise(premises: string[], conclusion: string): FlatProo
   }
 }
 
+export function isProofEmpty(proof: FlatProof): boolean {
+  return (
+    proof.premises.length === 0 &&
+    proof.conclusion === "" &&
+    proof.steps.length === 0 &&
+    Object.keys(proof.stepLookup).length === 0
+  );
+}
+
 export function createEmptyProof(): FlatProof {
   return {
+    uuid: getUUID(),
     premises: [],
     conclusion: "",
     steps: [],
@@ -38,6 +49,18 @@ export function createNewBox(): FlatBox {
     parent: null,
 
     steps: []
+  }
+}
+
+export function cloneProof(proof: FlatProof): FlatProof {
+  return {
+    name: proof.name,
+    uuid: proof.uuid,
+    premises: proof.premises.slice(),
+    conclusion: proof.conclusion,
+    steps: proof.steps.slice(),
+    // TODO: Don't use JSON.parse/stringify
+    stepLookup: JSON.parse(JSON.stringify(proof.stepLookup)) as StepLookup
   }
 }
 
@@ -546,6 +569,8 @@ export function flattenProof(proof: Proof): FlatProof {
   const steps = flattenSteps(proof.steps, null);
 
   return {
+    name: proof.name,
+    uuid: proof.uuid,
     premises: proof.premises,
     conclusion: proof.conclusion,
     steps: steps,
@@ -574,6 +599,8 @@ export function unflattenProof(proof: FlatProof): Proof {
   };
 
   return {
+    name: proof.name,
+    uuid: proof.uuid,
     premises: proof.premises,
     conclusion: proof.conclusion,
     steps: unflattenSteps(proof.steps)
@@ -626,6 +653,7 @@ export function haskellProofToProof(proof: HaskellProof): Proof {
   };
 
   return {
+    uuid: getUUID(),
     premises: proof._sequent._premises,
     conclusion: proof._sequent._conclusion,
     steps: proof._sequent._steps.map(convertStep),

@@ -1,12 +1,14 @@
 import { devtools, persist} from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
-import { closeBoxWith, convertToBox, convertToLine, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, getUUIDOfRowAbove, insertAfter, insertBefore, insertInto, moveAfter, proofToHaskellProof, removeFromProof, setArgument, setRule, setStatement, unflattenProof } from '../helpers/proof-helper';
+import { cloneProof, closeBoxWith, convertToBox, convertToLine, createEmptyProof, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, getUUIDOfRowAbove, insertAfter, insertBefore, insertInto, moveAfter, proofToHaskellProof, removeFromProof, setArgument, setRule, setStatement, unflattenProof } from '../helpers/proof-helper';
 import { createStore, useStore } from 'zustand';
 import { createContext, use, useState } from 'react';
-import { downloadText } from '../helpers/generic-helper';
+import { clamp, downloadText, getUUID, mod } from '../helpers/generic-helper';
 import generateLatex from '../helpers/generate-latex';
 
 const defaultProof = {
+  name: "Default proof",
+  uuid: getUUID(),
   premises: ["A", "B"],
   conclusion: "A ∧ B",
   steps: [
@@ -494,7 +496,13 @@ type History =
     }
 
 interface ProofState {
-  proof: FlatProof;
+  proofs: FlatProof[];
+  index: number;
+  getProof: () => FlatProof;
+  setActiveProof: (newIndex: number) => void;
+  addProof: (proof: FlatProof) => void;
+  removeProof: (index: number) => void;
+
   premiseInput: string;
   result: CheckProofResult | null;
 
@@ -511,20 +519,70 @@ interface ProofState {
   setResult: (result: CheckProofResult | null) => void;
 }
 
-const ProofStoreContext = createContext<ProofStore | null>(null)
+export const ProofStoreContext = createContext<ProofStore | null>(null)
 
-const createProofStore = (initialProof: FlatProof, localStorageName: string) => (
+const PROOF_LIST_LIMIT = 50;
+
+export const createProofStore = (initialProof: FlatProof, localStorageName: string) => (
   createStore<ProofState>()(
     devtools(
       immer(
         persist(
           (set, get) => ({
-            proof: initialProof,
+            proofs: [ initialProof ],
+            index: 0,
+
+            // TODO: Should be stored per proof
             premiseInput: initialProof.premises.join("; "),
             result: null,
 
+            // FIXME: History should be stored per proof
             history: [],
             historyIndex: 0,
+
+            getProof() {
+              const state = get();
+              return state.proofs[state.index];
+            },
+
+            setActiveProof(newIndex: number) {
+              set(state => {
+                newIndex = mod(newIndex, state.proofs.length);
+                if (newIndex === state.index) {
+                  return;
+                }
+
+                state.index = newIndex;
+                state.premiseInput = state.proofs[state.index].premises.join("; ");
+                state.result = null;
+              })
+            },
+
+            addProof(proof: FlatProof) {
+              set(state => {
+                state.proofs.push(proof);
+                if (state.proofs.length > PROOF_LIST_LIMIT) {
+                  state.proofs.splice(0, state.proofs.length - PROOF_LIST_LIMIT);
+                }
+
+                state.index = state.proofs.length - 1;
+                state.premiseInput = state.proofs[state.index].premises.join("; ");
+                state.result = null;
+              })
+            },
+
+            removeProof(index: number) {
+              set(state => {
+                state.proofs.splice(index, 1);
+                if (state.proofs.length === 0) {
+                  state.proofs.push(createEmptyProof());
+                }
+
+                state.index = clamp(state.index, 0, state.proofs.length - 1);
+                state.premiseInput = state.proofs[state.index].premises.join("; ");
+                state.result = null;
+              })
+            },
 
             undo() {
               set(state => {
@@ -540,10 +598,10 @@ const createProofStore = (initialProof: FlatProof, localStorageName: string) => 
                 }
 
                 if (prev.type === "ChangeProof") {
-                  state.proof = prev.old;
+                  state.proofs[state.index] = prev.old;
                 }
                 else if (prev.type === "ChangeStep") {
-                  state.proof.stepLookup[prev.uuid] = prev.old;
+                  state.proofs[state.index].stepLookup[prev.uuid] = prev.old;
                 }
               })
             },
@@ -562,16 +620,16 @@ const createProofStore = (initialProof: FlatProof, localStorageName: string) => 
                 }
 
                 if (prev.type === "ChangeProof") {
-                  state.proof = prev.new;
+                  state.proofs[state.index] = prev.new;
                 }
                 else if (prev.type === "ChangeStep") {
-                  state.proof.stepLookup[prev.uuid] = prev.new;
+                  state.proofs[state.index].stepLookup[prev.uuid] = prev.new;
                 }
               })
             },
 
             exportFolke() {
-              const proof = get().proof;
+              const proof = get().getProof();
               const unflat = unflattenProof(proof);
               const haskell = proofToHaskellProof(unflat);
               const text = JSON.stringify(haskell);
@@ -579,7 +637,7 @@ const createProofStore = (initialProof: FlatProof, localStorageName: string) => 
             },
             
             exportLatex() {
-              const proof = get().proof;
+              const proof = get().getProof();
               const unflat = unflattenProof(proof);
               const latex = generateLatex(unflat);
               downloadText(latex, "export.tex");
@@ -587,24 +645,23 @@ const createProofStore = (initialProof: FlatProof, localStorageName: string) => 
 
             dispatch(action: ProofDispatchAction) {
               set(state => {
-                const old: FlatProof = {
-                  premises: state.proof.premises.slice(),
-                  conclusion: state.proof.conclusion,
-                  steps: state.proof.steps.slice(),
-                  stepLookup: JSON.parse(JSON.stringify(state.proof.stepLookup)) as StepLookup
-                }
+                let proof = state.proofs[state.index];
+                const old = cloneProof(proof);
 
-                reducer(state, action);
+                const singleProof = {
+                  proof: state.proofs[state.index],
+                  premiseInput: state.premiseInput,
+                };
+                reducer(singleProof, action);
+                state.proofs[state.index] = singleProof.proof;
+                state.premiseInput = singleProof.premiseInput;
+
+                proof = state.proofs[state.index];
 
                 const historyItem: History = {
                   type: "ChangeProof",
                   old: old,
-                  new: {
-                    premises: state.proof.premises.slice(),
-                    conclusion: state.proof.conclusion,
-                    steps: state.proof.steps.slice(),
-                    stepLookup: JSON.parse(JSON.stringify(state.proof.stepLookup)) as StepLookup
-                  }
+                  new: cloneProof(proof)
                 };
                 state.history.splice(state.historyIndex, Infinity);
                 state.history.push(historyItem);
@@ -625,7 +682,8 @@ const createProofStore = (initialProof: FlatProof, localStorageName: string) => 
           {
             name: localStorageName,
             partialize: (state) => ({
-              proof: state.proof,
+              proofs: state.proofs,
+              index: state.index,
               premiseInput: state.premiseInput
             })
           },

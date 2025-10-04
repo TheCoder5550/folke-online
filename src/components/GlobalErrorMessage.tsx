@@ -13,7 +13,7 @@ export default function GlobalErrorMessage() {
 
   const visible = useProofStore((state) => {
     return (
-      state.proof.steps.length !== 0 ||
+      state.getProof().steps.length !== 0 ||
       !state.result?.message?.includes("Conclusion not reached")
     )
   })

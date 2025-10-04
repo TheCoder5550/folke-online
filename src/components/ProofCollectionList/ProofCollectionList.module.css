@@ -1,0 +1,7 @@
+.selected {
+  background: rgb(var(--text-rgb), 0.2);
+}
+
+.selected:hover {
+  background: rgb(var(--text-rgb), 0.25);
+}

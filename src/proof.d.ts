@@ -1,6 +1,9 @@
 type Step = StepBox | StepLine;
 
 interface Proof {
+  name?: string;
+  uuid: UUID;
+
   premises: string[];
   conclusion: string;
   steps: Step[];
@@ -26,6 +29,9 @@ type StepPath = number[]
 type UUID = string;
 
 interface FlatProof {
+  name?: string;
+  uuid: UUID;
+
   premises: string[];
   conclusion: string;
   steps: UUID[];

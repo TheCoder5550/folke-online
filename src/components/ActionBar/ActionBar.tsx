@@ -1,8 +1,8 @@
 import styles from "./ActionBar.module.css";
 import { ImRedo, ImUndo } from "react-icons/im";
-import useProofStore, { ProofDispatchActionTypeEnum } from "../../stores/proof-store";
+import useProofStore from "../../stores/proof-store";
 import React, { useEffect, useRef, useState, type JSX } from "react";
-import { flattenProof, haskellProofToProof } from "../../helpers/proof-helper";
+import { createEmptyProof, flattenProof, getSequent, haskellProofToProof, isProofEmpty } from "../../helpers/proof-helper";
 import { MdDelete, MdOutlineMotionPhotosAuto } from "react-icons/md";
 import ValidateButton from "../ValidateButton/ValidateButton";
 import { FaDownload, FaFile, FaFileImport, FaFolder } from "react-icons/fa6";
@@ -13,18 +13,38 @@ import { useScreenSize } from "../../helpers/use-screen-size";
 import useWasm from "../../helpers/wasm-provider";
 import { isKeybindPressed } from "../../helpers/keybinds";
 import MenuBar, { type MenuBarData } from "../MenuBar/MenuBar";
+import { useShallow } from "zustand/shallow";
+import { RULE_META_DATA, type RuleMetaData } from "../../helpers/rules-data";
+import RuleModal from "../RuleModal";
 
-export default function ActionBar() {
+interface ActionBarProps {
+  viewSidebar: boolean;
+  setViewSidebar: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export default function ActionBar(props: ActionBarProps) {
   const isMobile = useScreenSize() === "mobile";
   
   const [autoValidate, setAutoValidate] = useState(true);
+  const [rule, setRule] = useState<[string, RuleMetaData] | undefined>();
 
   const wasm = useWasm();
-  const dispatch = useProofStore((state) => state.dispatch);
   const undo = useProofStore((state) => state.undo);
   const redo = useProofStore((state) => state.redo);
   const exportFolke = useProofStore((state) => state.exportFolke);
   const exportLatex = useProofStore((state) => state.exportLatex);
+  const activeIndex = useProofStore((state) => state.index);
+  const addProof = useProofStore((state) => state.addProof);
+  const removeProof = useProofStore((state) => state.removeProof);
+  const setActiveProof = useProofStore((state) => state.setActiveProof);
+  const latestIsEmpty = useProofStore((state) => isProofEmpty(state.proofs[state.proofs.length - 1]));
+  const proofLabels = useProofStore(useShallow((state) => state.proofs.map(proof => isProofEmpty(proof) ? "New proof" : proof.name ?? getSequent(proof))));
+  const proofButtons = proofLabels
+    .map((label, index) => ({
+      label,
+      action: () => setActiveProof(index)
+    }))
+    .reverse();
 
   useEffect(() => {
     const keydown = (e: KeyboardEvent) => {
@@ -59,27 +79,34 @@ export default function ActionBar() {
     }
 
     const file = files.item(0)
-    file?.text().then(text => {
-      const haskellProof = JSON.parse(text) as HaskellProof;
-      const proof = haskellProofToProof(haskellProof);
-      const flatProof = flattenProof(proof);
-
-      dispatch({
-        type: ProofDispatchActionTypeEnum.SetProof,
-        proof: flatProof
+    file
+      ?.text()
+      .then(text => {
+        const haskellProof = JSON.parse(text) as HaskellProof;
+        const proof = haskellProofToProof(haskellProof);
+        const flatProof = flattenProof(proof);
+        flatProof.name = file.name;
+        addProof(flatProof);
       })
-    }).catch(console.error);
+      .catch(console.error);
 
     e.target.value = "";
   }
 
-  const resetProof = () => {
+  const removeActiveProof = () => {
     if (confirm("Are you sure you want the reset the proof? Everything will be deleted!")) {
-      dispatch({
-        type: ProofDispatchActionTypeEnum.Reset
-      })
+      removeProof(activeIndex);
     }
   };
+
+  const newProof = () => {
+    if (latestIsEmpty) {
+      setActiveProof(-1);
+      return;
+    }
+
+    addProof(createEmptyProof());
+  }
 
   const menuBarData: MenuBarData = [
     {
@@ -88,14 +115,12 @@ export default function ActionBar() {
         {
           icon: <FaFile />,
           label: "New Proof",
-          action: () => {},
+          action: newProof,
         },
         {
           icon: <FaFolder />,
-          label: "Open Proof",
-          children: [
-            
-          ]
+          label: "Open Recent Proofs",
+          children: proofButtons
         },
         {
           icon: <FaFileImport />,
@@ -120,7 +145,7 @@ export default function ActionBar() {
           icon: <MdDelete />,
           label: "Delete Proof",
           danger: true,
-          action: resetProof,
+          action: removeActiveProof,
         },
       ],
     },
@@ -145,6 +170,25 @@ export default function ActionBar() {
             return false;
           },
         },
+      ]
+    },
+    {
+      label: "View",
+      children: [
+        {
+          label: "Rule Guide",
+          children:
+            Object.entries(RULE_META_DATA).map(([rule, data]) => {
+              return {
+                label: rule,
+                action: () => data && setRule([rule, data])
+              }
+            })
+        },
+        {
+          label: props.viewSidebar ? "Hide Sidebar" : "Show Sidebar",
+          action: () => props.setViewSidebar(s => !s)
+        }
       ]
     }
   ]
@@ -192,7 +236,7 @@ export default function ActionBar() {
         )}
       </div>
 
-      {/* <RuleDictionary visible={viewRules} setVisible={setViewRules} /> */}
+      <RuleModal rule={rule} closeModal={() => setRule(undefined)} />
     </div>
   )
 }

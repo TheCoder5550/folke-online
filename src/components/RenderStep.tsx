@@ -8,7 +8,7 @@ export const RenderStepMemo = memo(RenderStep);
 
 export function RenderStep(props: { uuid: UUID }) {
   const isLine = useProofStore((state) => {
-    const step = state.proof.stepLookup[props.uuid];
+    const step = state.getProof().stepLookup[props.uuid];
     return step && isFlatLine(step);
   });
 

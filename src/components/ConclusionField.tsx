@@ -7,7 +7,7 @@ export const ConclusionFieldMemo = memo(ConclusionField);
 
 export default function ConclusionField() {
   const dispatch = useProofStore((state) => state.dispatch);
-  const conclusion = useProofStore((state) => state.proof.conclusion);
+  const conclusion = useProofStore((state) => state.getProof().conclusion);
 
   const conclusionChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({

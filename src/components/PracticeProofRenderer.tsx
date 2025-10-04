@@ -23,7 +23,7 @@ interface PracticeProofRendererProps {
 export default function PracticeProofRenderer(props: PracticeProofRendererProps) {
   const [showSolution, setShowSolution] = useState(false);
   const dispatch = useProofStore((state) => state.dispatch);
-  const sequent = useProofStore((state) => getSequent(state.proof));
+  const sequent = useProofStore((state) => getSequent(state.getProof()));
 
   const maybeShowSolution = () => {
     if (confirm("Are you sure you want to spoil the solution?")) {

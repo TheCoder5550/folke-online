@@ -3,16 +3,13 @@ import { cls } from "../../helpers/generic-helper";
 import RuleDictionary from "../RuleDictionary/RuleDictionary";
 import styles from "./Accordion.module.css";
 import { useState, type PropsWithChildren } from "react";
-import { useProofCollectionStore } from "../../stores/proof-collection-store";
-import { getSequent } from "../../helpers/proof-helper";
+import ProofCollectionList from "../ProofCollectionList/ProofCollectionList";
 
 type AccordionProps = React.ButtonHTMLAttributes<HTMLDivElement> & PropsWithChildren & {
 }
 
 export default function Accordion({ className, ...other }: AccordionProps) {
-  const proofs = useProofCollectionStore((state) => state.proofs);
-
-  const [open, setOpen] = useState([true, false]);
+  const [open, setOpen] = useState([false, true]);
 
   const toggleOpen = (index: number) => {
     setOpen(open => {
@@ -39,18 +36,11 @@ export default function Accordion({ className, ...other }: AccordionProps) {
           ) : (
             <FaChevronRight size="0.75em" />
           )}
-          <span>Proofs</span>
+          <span>Recent proofs</span>
         </button>
         {open[0] && (
           <div className={styles["body"]}>
-            {proofs.map((proof, index) => (
-              <button
-                key={index}
-                type="button"
-              >
-                {getSequent(proof)}
-              </button>
-            ))}
+            <ProofCollectionList />
           </div>
         )}
       </div>

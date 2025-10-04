@@ -12,7 +12,7 @@ interface LineNumberProps {
 export const LineNumberMemo = memo(LineNumber);
 
 export default function LineNumber(props: LineNumberProps) {
-  const lineNumber = useProofStore((state) => getLineNumber(state.proof, props.uuid));
+  const lineNumber = useProofStore((state) => getLineNumber(state.getProof(), props.uuid));
   const hasError = useProofStore((state) => matchLineNumber(state.result?.location, lineNumber));
 
   return <ManualLineNumber hasError={hasError} lineNumber={lineNumber} />

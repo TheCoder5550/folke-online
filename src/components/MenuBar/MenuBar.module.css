@@ -34,11 +34,17 @@
   background: rgba(var(--text-rgb), 0.1);
 }
 
-.dropdown {
+.dropdown-container {
   position: absolute;
-  bottom: 0;
-  transform: translateY(100%);
+  display: flex;
+  transform: translateX(100%);
+
+  z-index: 50;
+}
+
+.dropdown {
   width: 250px;
+  max-height: 80vh;
 
   display: flex;
   flex-direction: column;
@@ -47,5 +53,6 @@
   background: rgb(var(--card-background-rgb));
   border: 1px solid rgba(var(--text-rgb), 0.2);
   box-shadow: var(--card-shadow);
-  z-index: 50;
+
+  overflow-y: auto;
 }

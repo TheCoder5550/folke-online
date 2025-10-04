@@ -12,6 +12,10 @@ export function clamp(t: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, t));
 }
 
+export function mod(x: number, max: number) {
+  return ((x % max) + max) % max;
+}
+
 export function insertAtIndex<T>(arr: T[], index: number, item: T): T[] {
   arr.splice(index, 0, item);
   return arr;
