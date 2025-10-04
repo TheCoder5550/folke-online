@@ -13,6 +13,7 @@ export interface MenuBarItem {
   danger?: boolean;
   children?: MenuBarItem[];
   action?: () => boolean | void;
+  enabled?: boolean;
 }
 
 interface MenuBarProps {
@@ -180,7 +181,7 @@ function Dropdown({ items, closeAll, preventParentChange, ...props }: DropdownPr
 
   const handleOpen = (index: number) => {
     let nextOpenState: number | null = index;
-    if (items[index].children === undefined) {
+    if (items[index].children === undefined || items[index].enabled === false) {
       nextOpenState = null;
     }
 
@@ -208,11 +209,12 @@ function Dropdown({ items, closeAll, preventParentChange, ...props }: DropdownPr
             className={cls(
               styles["dropdown-button"],
               child.danger && styles["danger"],
-              openState === index && styles["active"]
+              openState === index && styles["active"],
+              child.enabled === false && styles["disabled"]
             )}
             onMouseEnter={() => handleOpen(index)}
             onClick={() => {
-              if (child.action) {
+              if (child.action && child.enabled !== false) {
                 const res = child.action();
                 if (res !== false) {
                   closeAll();

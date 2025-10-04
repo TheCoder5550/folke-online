@@ -186,7 +186,8 @@ export default function ActionBar(props: ActionBarProps) {
             })
         },
         {
-          label: props.viewSidebar ? "Hide Sidebar" : "Show Sidebar",
+          label: !isMobile && props.viewSidebar ? "Hide Sidebar" : "Show Sidebar",
+          enabled: !isMobile,
           action: () => props.setViewSidebar(s => !s)
         }
       ]

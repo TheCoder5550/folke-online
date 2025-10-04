@@ -38,6 +38,7 @@ export default function ExerciseList(props: ExerciseListProps) {
         ))}
 
         <h2>Practice old exams</h2>
+        <span>All questions are from old exams for the course <a href="https://www.chalmers.se/en/education/your-studies/find-course-and-programme-syllabi/course-syllabus/DAT060/">DAT060 Logic in computer science</a> on Chalmers.</span>
         {examCategories.map(([exam, ids]) => (
           <div key={exam} className={styles["card"]}>
             <h3>Exam {formatExamDate(exam)}</h3>

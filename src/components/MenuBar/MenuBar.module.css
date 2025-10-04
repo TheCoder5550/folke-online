@@ -26,15 +26,20 @@
   padding: 0.5em 1em;
 }
 
+.dropdown-button.disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .dropdown-button.danger {
   color: rgb(var(--error-color-rgb));
   background: rgb(var(--error-background-rgb));
 }
 
 .menu-button.active,
-.menu-button:hover,
+.menu-button:not(.disabled):hover,
 .dropdown-button.active,
-.dropdown-button:hover {
+.dropdown-button:not(.disabled):hover {
   background: rgba(var(--text-rgb), 0.1);
 }
 
