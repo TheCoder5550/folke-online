@@ -49,6 +49,12 @@ function App() {
 
             <h2>Keyboard shortcuts</h2>
             <KeybindsTable />
+            <br />
+            <h3>Extra shortcuts</h3>
+            <ul>
+              <li>Type <code>box</code> in the statement field to create a box around the row.</li>
+              <li>Press <code>Enter</code> when focused on the last input field on a row when the proof is complete to hide the keyboard (on mobile). This means that it is not possible to insert a new row using <code>Enter</code> when a proof is complete and correct.</li>
+            </ul>
           </div>
         </div>
         

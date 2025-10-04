@@ -1,6 +1,6 @@
-import { memo, useCallback, useRef, type JSX } from "react";
+import { memo, useCallback, useEffect, useRef, type JSX } from "react";
 import styles from "./ProofSingleRow.module.css"
-import { canCloseBox, canConvertToLine, getLineNumber, getNestedLevel, isFlatLine } from "../../helpers/proof-helper";
+import { canCloseBox, canConvertToLine, getLineNumber, getNestedLevel, isFlatLine, isLineEmpty } from "../../helpers/proof-helper";
 import { TbBox, TbBoxOff, TbRowInsertBottom, TbRowInsertTop } from "react-icons/tb";
 import AutocompleteInput, { type Suggestion } from "../AutocompleteInput/AutocompleteInput";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../../stores/proof-store";
@@ -10,7 +10,7 @@ import { RULE_META_DATA } from "../../helpers/rules-data";
 import TextField, { TextFieldMemo } from "../TextField";
 import { LineNumberMemo } from "../LineNumber/LineNumber";
 import { MdDelete, MdDragIndicator } from "react-icons/md";
-import { cls, trimPrefix } from "../../helpers/generic-helper";
+import { blur, cls, trimPrefix } from "../../helpers/generic-helper";
 import { IoReturnDownBack } from "react-icons/io5";
 import { createDragHandler } from "../../helpers/drag-drop";
 import useContextMenuStore from "../../stores/context-menu-store";
@@ -41,6 +41,25 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
 
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const openContextMenu = useContextMenuStore((state) => state.open);
+
+  // Write "box" to convert line to box
+  useEffect(() => {
+    if (!step || !isFlatLine(step)) {
+      return;
+    }
+
+    if (step.statement.trim() === "box") {
+      dispatch({
+        type: ProofDispatchActionTypeEnum.ToBox,
+        uuid,
+      })
+      dispatch({
+        type: ProofDispatchActionTypeEnum.SetStatement,
+        uuid,
+        statement: "",
+      })
+    }
+  }, [ step ])
 
   if (!step || !isFlatLine(step)) {
     return <></>
@@ -131,14 +150,52 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     }
   }, [ toBox, toLine, closeBox, remove ]);
 
-  const keydown: React.KeyboardEventHandler<HTMLInputElement> = useCallback((e) => {
+  const gotoNextField = useCallback(() => {
+    const inputs = document.querySelectorAll("input");
+    if (document.activeElement instanceof HTMLInputElement) {
+      const currentIndex = [...inputs].indexOf(document.activeElement);
+      if (currentIndex !== -1) {
+        const next = inputs[currentIndex + 1];
+        next.focus();
+      }
+    }
+  }, []);
+
+  const keydownFirst: React.KeyboardEventHandler<HTMLInputElement> = useCallback((e) => {
     commonKeydown(e);
+
+    if (isKeybindPressed("proof-nextField", e)) {
+      gotoNextField();
+    }
+
+    if (isLineEmpty(step) && isKeybindPressed("proof-removeIfEmpty", e)) {
+      if (toLineEnabled) {
+        toLine();
+      }
+      else {
+        remove();
+      }
+    }
+  }, [ step, toBox, toLine, closeBox, remove ]);
+
+  const keydownMiddle: React.KeyboardEventHandler<HTMLInputElement> = useCallback((e) => {
+    commonKeydown(e);
+
+    if (isKeybindPressed("proof-nextField", e)) {
+      gotoNextField();
+    }
   }, [ toBox, toLine, closeBox, remove ]);
 
-  const keydownLastInput: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+  const keydownLast: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
     commonKeydown(e);
+
     if (isKeybindPressed("proof-insertAfter", e)) {
-      insertAfter();
+      if (isCorrect) {
+        blur();
+      }
+      else {
+        insertAfter();
+      }
     }
   }
 
@@ -230,7 +287,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
               placeholder={placeholder}
               value={arg}
               onChange={e => setArgument(i, prefix + e.currentTarget.value)}
-              onKeyDown={isLast ? keydownLastInput : keydown}
+              onKeyDown={isLast ? keydownLast : keydownMiddle}
             />
           </fieldset>
         ) : (
@@ -238,7 +295,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
             placeholder={placeholder}
             value={arg}
             onChange={e => setArgument(i, prefix + e.currentTarget.value)}
-            onKeyDown={isLast ? keydownLastInput : keydown}
+            onKeyDown={isLast ? keydownLast : keydownMiddle}
           />
         )}
       </div>
@@ -258,7 +315,13 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
         <span className={styles["number"]}>
           <LineNumberMemo uuid={props.uuid} />
         </span>
-        <TextFieldMemo placeholder="Enter statement" className={styles["statement-input"]} value={step.statement} onChange={setStatement} onKeyDown={keydown} />
+        <TextFieldMemo
+          placeholder="Enter statement"
+          className={styles["statement-input"]}
+          value={step.statement}
+          onChange={setStatement}
+          onKeyDown={keydownFirst}
+        />
         <div className={styles["rule-args-container"]}>
           <AutocompleteInput
             suggestions={RULE_SUGGESTIONS}
@@ -267,7 +330,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
             value={step.rule}
             onChange={setRule}
             onSelectItem={selectRule}
-            onKeyDown={step.usedArguments === 0 ? keydownLastInput : keydown}
+            onKeyDown={step.usedArguments === 0 ? keydownLast : keydownMiddle}
           />
           {argumentInputs}
         </div>

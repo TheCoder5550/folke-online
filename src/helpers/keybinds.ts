@@ -39,12 +39,18 @@ export const KEYBINDS = {
   "proof-remove": {
     key: "Delete",
   },
+  "proof-removeIfEmpty": {
+    key: "Backspace",
+  },
   "proof-insertAfter": {
     key: "Enter",
   },
   "proof-insertBefore": {
     ctrl: true,
     shift: true,
+    key: "Enter",
+  },
+  "proof-nextField": {
     key: "Enter",
   }
 }

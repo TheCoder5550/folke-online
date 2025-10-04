@@ -31,6 +31,14 @@ export function createEmptyProof(): FlatProof {
   }
 }
 
+export function isLineEmpty(line: FlatLine): boolean {
+  return (
+    line.statement === "" &&
+    line.rule === "" &&
+    line.arguments.slice(0, line.usedArguments).every(a => a === "")
+  )
+}
+
 export function createNewLine(): FlatLine {
   return {
     uuid: getUUID(),

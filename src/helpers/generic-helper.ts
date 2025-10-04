@@ -63,3 +63,12 @@ export function downloadText(text: string, filename = "text.txt") {
 export function titleCase(str: string): string {
   return str.charAt(0).toUpperCase() + str.substring(1).toLowerCase();
 }
+
+/**
+ * Blur active element
+ */
+export function blur() {
+  if (document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
+}
