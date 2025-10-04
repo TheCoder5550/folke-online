@@ -240,7 +240,7 @@ input[type=text]::placeholder {
   .paper {
     padding: 0 2rem;
     border: none;
-    margin-top: -3rem;
+    margin-top: -1rem;
     background: none;
   }
 

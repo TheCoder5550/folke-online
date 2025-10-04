@@ -9,15 +9,12 @@ function App() {
       <ErrorBoundary>
         <Header />
         <div className="paper-container" style={{
-          padding: "0",
+          paddingBottom: "0",
           flexGrow: "1",
         }}>
-          <div className="paper" style={{
-            margin: "0",
-            padding: "2rem",
-          }}>
+          <div className="paper">
             <h1>Folke Online</h1>
-            <p>Folke is an interactive proof editor for propositional and first-order logic. It is based on the course <a href="https://www.chalmers.se/en/education/your-studies/find-course-and-programme-syllabi/course-syllabus/DAT060/">DAT060 Logic in computer science</a> on Chalmers.</p>
+            <p>Folke is an interactive proof editor for propositional and first-order logic. It is based on the course <a target="_blank" rel="noreferrer noopener" href="https://www.chalmers.se/en/education/your-studies/find-course-and-programme-syllabi/course-syllabus/DAT060/">DAT060 Logic in computer science</a> on Chalmers.</p>
             <h2>Get started</h2>
             <p>Read the <a href="./guide/">guide</a> to help you get started.</p>
             <p>Go to the <a href="./editor/">editor</a> to write your own proofs.</p>

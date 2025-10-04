@@ -84,13 +84,23 @@ function App() {
         <WasmProvider>
           <Header />
 
-          <div className="paper-container">
+          <div className="paper-container" style={{
+            paddingBottom: CurrentComp ? undefined : "8rem",
+          }}>
             <div className="paper invisible">
-              {id != null && (
-                <button title="Go back to exercise list" type="button" onClick={() => openExercise(null)} className={styles["secondary-button"]}>
-                  <IoMdArrowRoundBack />
-                  Back to list
-                </button>
+              {CurrentComp && (
+                <>
+                  <button
+                    type="button"
+                    title="Go back to exercise list"
+                    onClick={() => openExercise(null)}
+                    className={styles["secondary-button"]}
+                  >
+                    <IoMdArrowRoundBack />
+                    Back to list
+                  </button>
+                  <br />
+                </>
               )}
 
               {CurrentComp ? (
@@ -99,8 +109,18 @@ function App() {
                 <ExerciseList id={id} setId={openExercise} />
               )}
 
-              {id != null && (
-                <button title="Close question" type="button" onClick={() => openExercise(null)} className="close-button">✕</button>
+              {CurrentComp && (
+                <button
+                  type="button"
+                  title="Close question"
+                  onClick={() => openExercise(null)}
+                  className="close-button"
+                  style={{
+                    top: "0",
+                  }}
+                >
+                  ✕
+                </button>
               )}
             </div>
           </div>

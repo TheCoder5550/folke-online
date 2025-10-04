@@ -12,7 +12,9 @@ function App() {
       <ErrorBoundary>
         <Header />
 
-        <div className="paper-container">
+        <div className="paper-container" style={{
+          paddingBottom: "8rem",
+        }}>
           <div className="paper invisible">
             <h1>Guide</h1>
             <p>Follow the <a href="../exercises/?exercise=getting-started.md">Getting started exercise</a> to learn how to use the proof editor.</p>
