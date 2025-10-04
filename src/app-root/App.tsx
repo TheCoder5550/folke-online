@@ -1,4 +1,3 @@
-import "./App.module.css";
 import ErrorBoundary from '../components/ErrorBoundary'
 import Footer from '../components/Footer/Footer'
 import Header from '../components/Header/Header'

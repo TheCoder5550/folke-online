@@ -11,11 +11,12 @@ export default defineConfig({
   plugins: [
     react(),
     favicons('logo.png', {
+      path: "/folke-online",
       appName: "Folke Online - Proof editor",
       appShortName: "Folke",
       appDescription: "An interactive proof editor for propositional and first-order logic",
       developerName: "TheCoder5550 and the Folke team",
-      developerURL: "https://github.com/TheCoder5550/folke-online"
+      developerURL: "https://github.com/TheCoder5550/folke-online",
     })
   ],
   

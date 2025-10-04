@@ -1,4 +1,4 @@
-footer {
+.footer {
   display: flex;
   justify-content: space-between;
 
@@ -8,17 +8,17 @@ footer {
   padding: 1rem 2rem;
 }
 
-footer a {
+.footer a {
   color: inherit;
 }
 
-footer a:hover {
+.footer a:hover {
   color: inherit;
   text-decoration: underline;
 }
 
 @media screen and (max-width: 640px) {
-  footer {
+  .footer {
     padding: 0.75rem;
   }
 }
