@@ -17,166 +17,8 @@ export interface MenuBarItem {
 
 interface MenuBarProps {
   data: MenuBarData;
+  above?: boolean;
 }
-
-// export default function MenuBar(props: MenuBarProps) {
-//   const SMOOTH_TIME = 100;
-
-//   const menuBarRef = useRef<HTMLDivElement>(null);
-//   const [openState, setOpenState] = useState<number[]>([]);
-//   const [openStateRendered, setOpenStateRendered] = useState<number[]>([]);
-//   const [offset, setOffset] = useState(0);
-
-//   // Compute smoothed openState
-//   useEffect(() => {
-//     const timeout = setTimeout(() => {
-//       setOpenStateRendered(openState);
-//     }, SMOOTH_TIME);
-
-//     return () => {
-//       clearTimeout(timeout);
-//     }
-//   }, [ openState ])
-
-//   // Press outside to close menu
-//   useEffect(() => {
-//     const onClick = (event: MouseEvent) => {
-//       if (!menuBarRef.current) {
-//         return;
-//       }
-
-//       const pressedInside = menuBarRef.current.contains(event.target as Node);
-//       if (!pressedInside && openState.length !== 0) {
-//         closeAll();
-//       }
-//     };
-
-//     document.addEventListener("click", onClick);
-//     return () => {
-//       document.removeEventListener("click", onClick);
-//     }
-//   }, [ openState, menuBarRef.current ]);
-
-//   const anyOpen = openState.length !== 0;
-
-//   const closeAll = () => {
-//     setOpenState([]);
-//     setOffset(0);
-//   }
-
-//   const toggleOpen = (buttonIndex: number, nestLevel: number) => {
-//     if (openState[nestLevel] === buttonIndex) {
-//       handleOpen(null, nestLevel);
-//     }
-//     else {
-//       handleOpen(buttonIndex, nestLevel);
-//     }
-//   }
-
-//   const handleOpen = (buttonIndex: number | null, nestLevel: number) => {
-//     let newOpen = openStateRendered.slice(0, nestLevel);
-//     if (buttonIndex !== null) {
-//       newOpen[nestLevel] = buttonIndex;
-//     }
-//     const hasChildren = getMenuBarItem(props.data, newOpen).children;
-//     if (!hasChildren) {
-//       newOpen = newOpen.slice(0, nestLevel);
-//     }
-//     setOpenState(newOpen);
-//     if (nestLevel === 0) {
-//       setOpenStateRendered(newOpen.slice());
-//     }
-
-//     const menuBar = menuBarRef.current;
-//     if (!menuBar) {
-//       return;
-//     }
-
-//     const activeMenuButton = menuBar.children[newOpen[0]];
-//     if (!activeMenuButton) {
-//       return;
-//     }
-
-//     const parentBR = menuBar.getBoundingClientRect();
-//     const childBR = activeMenuButton.getBoundingClientRect();
-//     const newOffset = childBR.left - parentBR.left;
-//     setOffset(newOffset);
-//   };
-
-//   return (
-//     <div className={styles["menubar"]} ref={menuBarRef}>
-//       {props.data.map((item, index) => (
-//         <button
-//           key={index}
-//           type="button"
-//           className={cls(styles["menu-button"], openState[0] === index && styles["active"])}
-//           onClick={() => toggleOpen(index, 0)}
-//           onMouseEnter={() => {
-//             if (anyOpen) {
-//               handleOpen(index, 0)
-//             }
-//           }}
-//         >{item.label}</button>
-//       ))}
-
-//       {openStateRendered.map((_, nestLevel) => (
-//         <div
-//           key={nestLevel}
-//           className={styles["dropdown"]}
-//           style={{
-//             transform: `translateY(100%) translateX(calc(${offset}px + ${nestLevel * 100}%))`
-//           }}
-//         >
-//           {getMenuBarItem(props.data, openStateRendered.slice(0, nestLevel + 1))?.children?.map((child, index) => (
-//             <button
-//               key={index}
-//               type="button"
-//               className={cls(
-//                 styles["dropdown-button"],
-//                 child.danger && styles["danger"],
-//                 openState[nestLevel + 1] === index && styles["active"]
-//               )}
-//               onMouseEnter={() => handleOpen(index, nestLevel + 1)}
-//               onClick={() => {
-//                 if (child.action) {
-//                   const res = child.action();
-//                   if (res !== false) {
-//                     closeAll();
-//                   }
-//                 }
-//               }}
-//             >
-//               {child.icon ?? <span></span>}
-//               <span>{child.label}</span>
-//               {child.children && (
-//                 <FaChevronRight />
-//               )}
-//             </button>
-//           ))}
-//         </div>
-//       ))}
-//     </div>
-//   )
-// }
-
-// function getMenuBarItem(data: MenuBarData, path: number[]): MenuBarItem {
-//   let item: MenuBarItem = {
-//     label: "",
-//     children: data
-//   };
-
-//   path = path.slice();
-
-//   while (path.length > 0) {
-//     const buttonIndex = path.shift()!;
-//     if (!item.children) {
-//       throw new Error();
-//     }
-//     item = item.children[buttonIndex];
-//   }
-
-//   return item;
-// }
 
 export default function MenuBar(props: MenuBarProps) {
   const menuBarRef = useRef<HTMLDivElement>(null);
@@ -241,6 +83,14 @@ export default function MenuBar(props: MenuBarProps) {
     setOffset(newOffset);
   };
 
+  const style = props.above === true ? {
+    top: "0",
+    transform: `translateY(-100%) translateX(${offset}px)`,
+  } : {
+    bottom: "0",
+    transform: `translateY(100%) translateX(${offset}px)`,
+  };
+
   return (
     <div className={styles["menubar"]} ref={menuBarRef}>
       {props.data.map((item, index) => (
@@ -254,16 +104,18 @@ export default function MenuBar(props: MenuBarProps) {
               handleOpen(index)
             }
           }}
-        >{item.label}</button>
+        >
+          {item.icon}
+          {item.label}
+        </button>
       ))}
 
       {openState !== null && props.data[openState].children && (
         <DropdownMemo
           key={openState}
           style={{
-            bottom: "0",
             left: "0",
-            transform: `translateY(100%) translateX(${offset}px)`,
+            ...style
           }}
           items={props.data[openState].children}
           closeAll={closeAll}
@@ -345,7 +197,10 @@ function Dropdown({ items, closeAll, preventParentChange, ...props }: DropdownPr
         ...props.style,
       }}
     >
-      <div ref={itemsRef} className={styles["dropdown"]}>
+      <div
+        ref={itemsRef}
+        className={styles["dropdown"]}
+      >
         {items.map((child, index) => (
           <button
             key={index}

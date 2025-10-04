@@ -1,0 +1,23 @@
+.toolbar-container {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem;
+
+  border-top: 1px solid rgb(var(--text-rgb), 0.2);
+  background: rgb(var(--card-background-rgb));
+  z-index: 10;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  width: 100%;
+  max-width: calc(1000px - 4rem);
+}

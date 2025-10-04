@@ -57,12 +57,12 @@ export const WasmProvider = ({ children }: WasmProviderProps) => {
 
   const validate = useCallback(async (proof: FlatProof): Promise<null | CheckProofResult> => {
     if (error) {
-      console.error("WebAssembly failed to start!");
+      console.error("Wasm failed to start!");
       return null;
     }
 
     if (!hs) {
-      console.error("WebAssembly not loaded yet");
+      console.warn("Wasm not loaded yet...");
       return null;
     }
 
