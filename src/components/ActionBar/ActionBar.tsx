@@ -77,19 +77,23 @@ export default function ActionBar(props: ActionBarProps) {
 
   const uploadProof: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const files = e.target.files;
-    if (!files) {
+    if (!files || files.length === 0) {
       return;
     }
 
-    const file = files.item(0)
-    file
-      ?.text()
-      .then(text => {
-        const haskellProof = JSON.parse(text) as HaskellProof;
-        const proof = haskellProofToProof(haskellProof);
-        const flatProof = flattenProof(proof);
-        flatProof.name = file.name;
-        addProof(flatProof);
+    Promise
+      .all([...files].map(async file => {
+        const text = await file.text();
+        return [file.name, text];
+      }))
+      .then(values => {
+        for (const [name, text] of values) {
+          const haskellProof = JSON.parse(text) as HaskellProof;
+          const proof = haskellProofToProof(haskellProof);
+          const flatProof = flattenProof(proof);
+          flatProof.name = name;
+          addProof(flatProof);
+        }
       })
       .catch(console.error);
 
@@ -202,7 +206,7 @@ export default function ActionBar(props: ActionBarProps) {
       <div className={styles["categories"]}>
         <div className={styles["left"]}>
           <MenuBar data={menuBarData} />
-          <input type="file" ref={fileRef} onChange={uploadProof} style={{ display: "none" }} />
+          <input type="file" multiple ref={fileRef} onChange={uploadProof} style={{ display: "none" }} />
         </div>
 
         <div className={styles["right"]}>
