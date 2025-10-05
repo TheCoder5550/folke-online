@@ -37,8 +37,11 @@ export default function ActionBar(props: ActionBarProps) {
   const addProof = useProofStore((state) => state.addProof);
   const removeProof = useProofStore((state) => state.removeProof);
   const setActiveProof = useProofStore((state) => state.setActiveProof);
-  const latestIsEmpty = useProofStore((state) => isProofEmpty(state.proofs[state.proofs.length - 1]));
-  const proofLabels = useProofStore(useShallow((state) => state.proofs.map(proof => isProofEmpty(proof) ? "New proof" : proof.name ?? getSequent(proof))));
+  const latestIsEmpty = useProofStore((state) => isProofEmpty(state.proofs[state.proofs.length - 1].proof));
+  const proofLabels = useProofStore(useShallow((state) => state.proofs
+    .map(d => d.proof)
+    .map(proof => isProofEmpty(proof) ? "New proof" : proof.name ?? getSequent(proof))
+  ));
   const proofButtons = proofLabels
     .map((label, index) => ({
       label,

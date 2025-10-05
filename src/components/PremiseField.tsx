@@ -7,7 +7,7 @@ export const PremiseFieldMemo = memo(PremiseField);
 
 export default function PremiseField() {
   const dispatch = useProofStore((state) => state.dispatch);
-  const premiseInput = useProofStore((state) => state.premiseInput);
+  const premiseInput = useProofStore((state) => state.proofs[state.index].premiseInput);
   const setPremiseInput = useProofStore((state) => state.setPremiseInput);
 
   useEffect(() => {

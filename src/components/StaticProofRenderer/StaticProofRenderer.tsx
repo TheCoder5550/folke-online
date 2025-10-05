@@ -14,6 +14,7 @@ export default function StaticProofRenderer(props: StaticProofRendererProps) {
   return (
     <StepsContainer className={styles["container"]}>
       {premises.map((premise, index) => (
+        // eslint-disable-next-line react-x/no-array-index-key
         <Premise key={index} premise={premise} lineNumber={(index + 1).toString()} />
       ))}
       {uuids.map(uuid => (

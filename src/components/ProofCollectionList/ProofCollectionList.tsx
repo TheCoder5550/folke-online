@@ -6,6 +6,7 @@ import { useShallow } from "zustand/shallow";
 
 export default function ProofCollectionList() {
   const sequents = useProofStore(useShallow((state) => state.proofs
+    .map(d => d.proof)
     .map(proof => isProofEmpty(proof) ? "New proof" : proof.name ?? getSequent(proof))
   ));
   const reversed = sequents

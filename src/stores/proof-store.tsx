@@ -496,18 +496,21 @@ type History =
     }
 
 interface ProofState {
-  proofs: FlatProof[];
+  proofs: {
+    proof: FlatProof;
+    premiseInput: string;
+    history: History[];
+    historyIndex: number;
+  }[];
+
   index: number;
+  result: CheckProofResult | null;
+
   getProof: () => FlatProof;
   setActiveProof: (newIndex: number) => void;
   addProof: (proof: FlatProof) => void;
   removeProof: (index: number) => void;
 
-  premiseInput: string;
-  result: CheckProofResult | null;
-
-  history: History[];
-  historyIndex: number;
   undo: () => void;
   redo: () => void;
 
@@ -529,20 +532,16 @@ export const createProofStore = (initialProof: FlatProof, localStorageName: stri
       immer(
         persist(
           (set, get) => ({
-            proofs: [ initialProof ],
+            proofs: [
+              createNewProofData(initialProof)
+            ],
             index: 0,
 
-            // TODO: Should be stored per proof
-            premiseInput: initialProof.premises.join("; "),
             result: null,
-
-            // FIXME: History should be stored per proof
-            history: [],
-            historyIndex: 0,
 
             getProof() {
               const state = get();
-              return state.proofs[state.index];
+              return state.proofs[state.index].proof;
             },
 
             setActiveProof(newIndex: number) {
@@ -553,20 +552,18 @@ export const createProofStore = (initialProof: FlatProof, localStorageName: stri
                 }
 
                 state.index = newIndex;
-                state.premiseInput = state.proofs[state.index].premises.join("; ");
                 state.result = null;
               })
             },
 
             addProof(proof: FlatProof) {
               set(state => {
-                state.proofs.push(proof);
+                state.proofs.push(createNewProofData(proof));
                 if (state.proofs.length > PROOF_LIST_LIMIT) {
                   state.proofs.splice(0, state.proofs.length - PROOF_LIST_LIMIT);
                 }
 
                 state.index = state.proofs.length - 1;
-                state.premiseInput = state.proofs[state.index].premises.join("; ");
                 state.result = null;
               })
             },
@@ -575,55 +572,58 @@ export const createProofStore = (initialProof: FlatProof, localStorageName: stri
               set(state => {
                 state.proofs.splice(index, 1);
                 if (state.proofs.length === 0) {
-                  state.proofs.push(createEmptyProof());
+                  state.proofs.push(createNewProofData(createEmptyProof()));
                 }
 
                 state.index = clamp(state.index, 0, state.proofs.length - 1);
-                state.premiseInput = state.proofs[state.index].premises.join("; ");
                 state.result = null;
               })
             },
 
             undo() {
               set(state => {
-                if (state.historyIndex <= 0) {
+                const proofData = state.proofs[state.index];
+
+                if (proofData.historyIndex <= 0) {
                   return;
                 }
 
-                state.historyIndex--;
-                const prev = state.history[state.historyIndex];
+                proofData.historyIndex--;
+                const prev = proofData.history[proofData.historyIndex];
 
                 if (!prev) {
                   return;
                 }
 
                 if (prev.type === "ChangeProof") {
-                  state.proofs[state.index] = prev.old;
+                  state.proofs[state.index].proof = prev.old;
                 }
                 else if (prev.type === "ChangeStep") {
-                  state.proofs[state.index].stepLookup[prev.uuid] = prev.old;
+                  state.proofs[state.index].proof.stepLookup[prev.uuid] = prev.old;
                 }
               })
             },
 
             redo() {
               set(state => {
-                if (state.historyIndex >= state.history.length) {
+                const proofData = state.proofs[state.index];
+
+                if (proofData.historyIndex >= proofData.history.length) {
                   return;
                 }
 
-                const prev = state.history[state.historyIndex];
-                state.historyIndex++;
+                const prev = proofData.history[proofData.historyIndex];
+                proofData.historyIndex++;
 
                 if (!prev) {
                   return;
                 }
 
                 if (prev.type === "ChangeProof") {
-                  state.proofs[state.index] = prev.new;
+                  state.proofs[state.index].proof = prev.new;
                 }
                 else if (prev.type === "ChangeStep") {
-                  state.proofs[state.index].stepLookup[prev.uuid] = prev.new;
+                  state.proofs[state.index].proof.stepLookup[prev.uuid] = prev.new;
                 }
               })
             },
@@ -645,32 +645,35 @@ export const createProofStore = (initialProof: FlatProof, localStorageName: stri
 
             dispatch(action: ProofDispatchAction) {
               set(state => {
-                let proof = state.proofs[state.index];
-                const old = cloneProof(proof);
+                const proofData = state.proofs[state.index];
+                const old = cloneProof(proofData.proof);
 
                 const singleProof = {
-                  proof: state.proofs[state.index],
-                  premiseInput: state.premiseInput,
+                  proof: proofData.proof,
+                  premiseInput: proofData.premiseInput,
                 };
                 reducer(singleProof, action);
-                state.proofs[state.index] = singleProof.proof;
-                state.premiseInput = singleProof.premiseInput;
+                proofData.proof = singleProof.proof;
+                proofData.premiseInput = singleProof.premiseInput;
 
-                proof = state.proofs[state.index];
+                const new_ = cloneProof(proofData.proof);
 
-                const historyItem: History = {
-                  type: "ChangeProof",
-                  old: old,
-                  new: cloneProof(proof)
-                };
-                state.history.splice(state.historyIndex, Infinity);
-                state.history.push(historyItem);
-                state.historyIndex++;
+                // TODO: Use compare function
+                if (JSON.stringify(old) !== JSON.stringify(new_)) {
+                  const historyItem: History = {
+                    type: "ChangeProof",
+                    old: old,
+                    new: new_,
+                  };
+                  proofData.history.splice(proofData.historyIndex, Infinity);
+                  proofData.history.push(historyItem);
+                  proofData.historyIndex++;
+                }
               })
             },
             setPremiseInput(input: string) {
               set(state => {
-                state.premiseInput = input;
+                state.proofs[state.index].premiseInput = input;
               })
             },
             setResult(result: CheckProofResult | null) {
@@ -682,9 +685,13 @@ export const createProofStore = (initialProof: FlatProof, localStorageName: stri
           {
             name: localStorageName,
             partialize: (state) => ({
-              proofs: state.proofs,
+              proofs: state.proofs.map(p => ({
+                proof: p.proof,
+                premiseInput: p.premiseInput,
+                history: [],
+                historyIndex: 0,
+              })),
               index: state.index,
-              premiseInput: state.premiseInput
             })
           },
         )
@@ -912,4 +919,13 @@ function setFocus(uuid: UUID) {
     const input = step.querySelector("input");
     input?.focus();
   });
+}
+
+function createNewProofData(proof: FlatProof) {
+  return {
+    proof: proof,
+    premiseInput: proof.premises.join("; "),
+    history: [],
+    historyIndex: 0,
+  }
 }
