@@ -1,4 +1,4 @@
-import { getUUID, insertAtIndex, logProxy, sum } from "./generic-helper";
+import { getUUID, insertAtIndex, logProxy, mapObject, sum } from "./generic-helper";
 import { RULE_META_DATA } from "./rules-data";
 import { makeSpecialCharacters } from "./special-characters";
 
@@ -67,8 +67,39 @@ export function cloneProof(proof: FlatProof): FlatProof {
     premises: proof.premises.slice(),
     conclusion: proof.conclusion,
     steps: proof.steps.slice(),
-    // TODO: Don't use JSON.parse/stringify
-    stepLookup: JSON.parse(JSON.stringify(proof.stepLookup)) as StepLookup
+    stepLookup: mapObject(proof.stepLookup, (s) => cloneStep(s))
+  }
+}
+
+function cloneStep(step: FlatStep | undefined): FlatStep | undefined {
+  if (!step) {
+    return undefined;
+  }
+
+  if (isFlatLine(step)) {
+    return cloneLine(step);
+  }
+  else {
+    return cloneBox(step);
+  }
+}
+
+function cloneLine(line: FlatLine): FlatLine {
+  return {
+    uuid: line.uuid,
+    parent: line.parent,
+    statement: line.statement,
+    rule: line.rule,
+    arguments: line.arguments.slice(),
+    usedArguments: line.usedArguments,
+  }
+}
+
+function cloneBox(box: FlatBox): FlatBox {
+  return {
+    uuid: box.uuid,
+    parent: box.parent,
+    steps: box.steps.slice(),
   }
 }
 

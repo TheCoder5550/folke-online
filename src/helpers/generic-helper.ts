@@ -72,3 +72,14 @@ export function blur() {
     document.activeElement.blur();
   }
 }
+
+/**
+ * Map function for objects instead of arrays
+ */
+export function mapObject<T>(obj: { [id: string]: T }, func: (value: T, key: string, index: number) => T): { [id: string]: T } {
+  return Object.fromEntries(
+    Object.entries(obj).map(
+      ([k, v], i) => [k, func(v, k, i)]
+    )
+  )
+}
