@@ -1,0 +1,1 @@
+{"_sequent":{"_conclusion":"¬p","_premises":["q → (p → r)","¬r","q"],"_steps":[{"tag":"Line","_arguments":["3","1"],"_usedArguments":2,"_rule":"→E","_statement":"p → r"},{"tag":"Line","_arguments":["4","2"],"_usedArguments":2,"_rule":"MT","_statement":"¬p"}]}}

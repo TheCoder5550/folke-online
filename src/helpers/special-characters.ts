@@ -30,7 +30,7 @@ const characterLookupTable = [
   // Implies
   [">", "→"],
   ["->", "→"],
-  ["¬>", "→"], // Fix for when "-" becomes negation
+  ["¬>", "→"], // A fix for when "-" becomes negation
 
   // And
   ["/\\", "∧"],
