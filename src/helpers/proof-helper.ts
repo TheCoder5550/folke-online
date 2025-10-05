@@ -1,4 +1,4 @@
-import { getUUID, insertAtIndex, logProxy, mapObject, sum } from "./generic-helper";
+import { compareArrays, getUUID, insertAtIndex, logProxy, mapObject, sum } from "./generic-helper";
 import { RULE_META_DATA } from "./rules-data";
 import { makeSpecialCharacters } from "./special-characters";
 
@@ -101,6 +101,73 @@ function cloneBox(box: FlatBox): FlatBox {
     parent: box.parent,
     steps: box.steps.slice(),
   }
+}
+
+export function compareProofs(a: FlatProof, b: FlatProof): boolean {
+  return (
+    a.name === b.name &&
+    a.uuid === b.uuid &&
+    compareArrays(a.premises, b.premises) &&
+    a.conclusion === b.conclusion &&
+    compareArrays(a.steps, b.steps) &&
+    compareStepLookup(a.stepLookup, b.stepLookup)
+  )
+}
+
+function compareStepLookup(a: StepLookup, b: StepLookup): boolean {
+  const aArray = Object.entries(a);
+  const bArray = Object.entries(b);
+
+  if (aArray.length !== bArray.length) {
+    return false;
+  }
+
+  for (let i = 0; i < aArray.length; i++) {
+    if (!compareSteps(aArray[i][1], bArray[i][1])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function compareSteps(a: FlatStep | undefined, b: FlatStep | undefined): boolean {
+  if (a === undefined && b === undefined) {
+    return true;
+  }
+
+  if (a === undefined || b === undefined) {
+    return false;
+  }
+
+  if (isFlatLine(a) && isFlatLine(b)) {
+    return compareLines(a, b);
+  }
+
+  if (!isFlatLine(a) && !isFlatLine(b)) {
+    return compareBoxes(a, b);
+  }
+
+  return false;
+}
+
+function compareLines(a: FlatLine, b: FlatLine): boolean {
+  return (
+    a.uuid === b.uuid &&
+    a.parent === b.parent &&
+    a.statement === b.statement &&
+    a.rule === b.rule &&
+    compareArrays(a.arguments, b.arguments) &&
+    a.usedArguments === b.usedArguments
+  )
+}
+
+function compareBoxes(a: FlatBox, b: FlatBox): boolean {
+  return (
+    a.uuid === b.uuid &&
+    a.parent === b.parent &&
+    compareArrays(a.steps, b.steps)
+  )
 }
 
 export function getSequent(proof: FlatProof): string {

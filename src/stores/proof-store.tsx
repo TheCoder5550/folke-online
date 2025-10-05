@@ -1,6 +1,6 @@
 import { devtools, persist} from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
-import { cloneProof, closeBoxWith, convertToBox, convertToLine, createEmptyProof, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, getUUIDOfRowAbove, insertAfter, insertBefore, insertInto, moveAfter, proofToHaskellProof, removeFromProof, setArgument, setRule, setStatement, unflattenProof } from '../helpers/proof-helper';
+import { cloneProof, closeBoxWith, compareProofs, convertToBox, convertToLine, createEmptyProof, createNewBox, createNewLine, flattenProof, getUUIDOfLastRow, getUUIDOfRowAbove, insertAfter, insertBefore, insertInto, moveAfter, proofToHaskellProof, removeFromProof, setArgument, setRule, setStatement, unflattenProof } from '../helpers/proof-helper';
 import { createStore, useStore } from 'zustand';
 import { createContext, use, useState } from 'react';
 import { clamp, downloadText, getUUID, mod } from '../helpers/generic-helper';
@@ -658,8 +658,7 @@ export const createProofStore = (initialProof: FlatProof, localStorageName: stri
 
                 const new_ = cloneProof(proofData.proof);
 
-                // TODO: Use compare function
-                if (JSON.stringify(old) !== JSON.stringify(new_)) {
+                if (!compareProofs(old, new_)) {
                   const historyItem: History = {
                     type: "ChangeProof",
                     old: old,
