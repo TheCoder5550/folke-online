@@ -15,7 +15,7 @@ import { IoReturnDownBack } from "react-icons/io5";
 import { createDragHandler } from "../../helpers/drag-drop";
 import useContextMenuStore from "../../stores/context-menu-store";
 import { useScreenSize } from "../../helpers/use-screen-size";
-import { isKeybindPressed, showKeybind } from "../../helpers/keybinds";
+import { isKeybindPressed, showKeybindName } from "../../helpers/keybinds";
 import { HiOutlineEllipsisVertical } from "react-icons/hi2";
 
 interface ProofSingleRowProps {
@@ -204,26 +204,26 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
       {
         label: "Remove Line",
         icon: <MdDelete />,
-        shortcut: showKeybind("proof-remove"),
+        shortcut: showKeybindName("proof-remove"),
         action: remove,
         type: "danger",
       },
       {
         label: "Insert Line Above",
         icon: <TbRowInsertTop />,
-        shortcut: showKeybind("proof-insertBefore"),
+        shortcut: showKeybindName("proof-insertBefore"),
         action: insertBefore,
       },
       {
         label: "Insert Line Below",
         icon: <TbRowInsertBottom />,
-        shortcut: showKeybind("proof-insertAfter"),
+        shortcut: showKeybindName("proof-insertAfter"),
         action: insertAfter,
       },
       {
         label: "Close Box (Insert Line Below Box)",
         icon: <IoReturnDownBack />,
-        shortcut: showKeybind("proof-closeBox"),
+        shortcut: showKeybindName("proof-closeBox"),
         action: closeBox,
         enabled: closeBoxEnabled,
       },
@@ -241,13 +241,13 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
       {
         label: "Convert Line to Box",
         icon: <TbBox />,
-        shortcut: showKeybind("proof-toBox"),
+        shortcut: showKeybindName("proof-toBox"),
         action: toBox,
       },
       {
         label: "Remove Box Around Line",
         icon: <TbBoxOff />,
-        shortcut: showKeybind("proof-toLine"),
+        shortcut: showKeybindName("proof-toLine"),
         action: toLine,
         enabled: toLineEnabled
       },
@@ -343,25 +343,25 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
           <button type="button" title="Drag to re-arrange proof" className={cls(styles["action-button"], styles["drag"])} onMouseDown={startDrag}>
             <MdDragIndicator />
           </button>
-          <button type="button" title={`Remove line (${showKeybind("proof-remove")})`} className={cls(styles["action-button"], styles["delete"])} onClick={remove}>
+          <button type="button" title={`Remove line (${showKeybindName("proof-remove")})`} className={cls(styles["action-button"], styles["delete"])} onClick={remove}>
             <MdDelete />
           </button>
-          <button type="button" title={`Insert line above (${showKeybind("proof-insertBefore")})`} className={styles["action-button"]} onClick={insertBefore}>
+          <button type="button" title={`Insert line above (${showKeybindName("proof-insertBefore")})`} className={styles["action-button"]} onClick={insertBefore}>
             <TbRowInsertTop />
           </button>
-          <button type="button" title={`Insert line below (${showKeybind("proof-insertAfter")})`} className={styles["action-button"]} onClick={insertAfter}>
+          <button type="button" title={`Insert line below (${showKeybindName("proof-insertAfter")})`} className={styles["action-button"]} onClick={insertAfter}>
             <TbRowInsertBottom />
           </button>
-          <button type="button" title={`Convert line to box (${showKeybind("proof-toBox")})`} className={styles["action-button"]} onClick={toBox}>
+          <button type="button" title={`Convert line to box (${showKeybindName("proof-toBox")})`} className={styles["action-button"]} onClick={toBox}>
             <TbBox />
           </button>
           {toLineEnabled && (
-            <button type="button" title={`Remove box around line (${showKeybind("proof-toLine")})`} className={styles["action-button"]} onClick={toLine}>
+            <button type="button" title={`Remove box around line (${showKeybindName("proof-toLine")})`} className={styles["action-button"]} onClick={toLine}>
               <TbBoxOff />
             </button>
           )}
           {closeBoxEnabled && (
-            <button type="button" title={`Close box (Insert line below box) (${showKeybind("proof-closeBox")})`} className={styles["action-button"]} onClick={closeBox}>
+            <button type="button" title={`Close box (Insert line below box) (${showKeybindName("proof-closeBox")})`} className={styles["action-button"]} onClick={closeBox}>
               <IoReturnDownBack />
             </button>
           )}

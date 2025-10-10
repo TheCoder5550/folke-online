@@ -1,7 +1,7 @@
 import type React from "react";
 import { titleCase } from "./generic-helper";
 
-interface Keybind {
+export interface Keybind {
   ctrl?: boolean;
   shift?: boolean;
   alt?: boolean;
@@ -52,20 +52,34 @@ export const KEYBINDS = {
   },
   "proof-nextField": {
     key: "Enter",
+  },
+  "editor-newProof": {
+    alt: true,
+    key: "KeyN",
+  },
+  "editor-deleteProof": {
+    alt: true,
+    key: "Delete",
   }
 }
 
-export function showKeybind(keybindName: keyof typeof KEYBINDS, separator = "+"): string {
+export type KeybindId = keyof typeof KEYBINDS;
+
+export function showKeybindName(keybindName: KeybindId, separator = "+"): string {
   const keybinds = getKeybinds(keybindName);
   if (keybinds.length === 0) {
     return "";
   }
 
   const first = keybinds[0];
-  const ctrl = first.ctrl ?? false;
-  const shift = first.shift ?? false;
-  const alt = first.alt ?? false;
-  const key = titleCase(first.key.toLowerCase().replaceAll("key", ""));
+  return showKeybind(first, separator);
+}
+
+export function showKeybind(keybind: Keybind, separator = "+"): string {
+  const ctrl = keybind.ctrl ?? false;
+  const shift = keybind.shift ?? false;
+  const alt = keybind.alt ?? false;
+  const key = titleCase(keybind.key.toLowerCase().replaceAll("key", ""));
 
   const parts = [];
   if (ctrl) parts.push("Ctrl");
@@ -77,7 +91,7 @@ export function showKeybind(keybindName: keyof typeof KEYBINDS, separator = "+")
   return str;
 }
 
-export function isKeybindPressed(keybindName: keyof typeof KEYBINDS, event: KeyboardEvent | React.KeyboardEvent): boolean {
+export function isKeybindPressed(keybindName: KeybindId, event: KeyboardEvent | React.KeyboardEvent): boolean {
   if (!(keybindName in KEYBINDS)) {
     throw new Error("Invalid keybind: " + keybindName);
   }
@@ -95,7 +109,7 @@ export function isKeybindPressed(keybindName: keyof typeof KEYBINDS, event: Keyb
   return false;
 }
 
-function getKeybinds(keybindName: keyof typeof KEYBINDS): Keybind[] {
+function getKeybinds(keybindName: KeybindId): Keybind[] {
   if (!(keybindName in KEYBINDS)) {
     throw new Error("Invalid keybind: " + keybindName);
   }

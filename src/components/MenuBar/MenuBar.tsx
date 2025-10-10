@@ -4,6 +4,7 @@ import { memo, useEffect, useRef, useState, type JSX } from "react";
 import styles from "./MenuBar.module.css";
 import { cls } from "../../helpers/generic-helper";
 import { FaChevronRight } from "react-icons/fa";
+import { showKeybind, showKeybindName, type Keybind, type KeybindId } from "../../helpers/keybinds";
 
 export type MenuBarData = MenuBarItem[];
 
@@ -14,6 +15,7 @@ export interface MenuBarItem {
   children?: MenuBarItem[];
   action?: () => boolean | void;
   enabled?: boolean;
+  shortcut?: KeybindId | Keybind;
 }
 
 interface MenuBarProps {
@@ -224,8 +226,10 @@ function Dropdown({ items, closeAll, preventParentChange, ...props }: DropdownPr
           >
             {child.icon ?? <span></span>}
             <span>{child.label}</span>
-            {child.children && (
+            {child.children ? (
               <FaChevronRight />
+            ) : (
+              <span>{showShortcut(child.shortcut)}</span>
             )}
           </button>
         ))}
@@ -244,4 +248,16 @@ function Dropdown({ items, closeAll, preventParentChange, ...props }: DropdownPr
       )}
     </div>
   )
+}
+
+function showShortcut(shortcut: KeybindId | Keybind | undefined): string {
+  if (typeof shortcut === "undefined") {
+    return "";
+  }
+
+  if (typeof shortcut === "string") {
+    return showKeybindName(shortcut);
+  }
+
+  return showKeybind(shortcut);
 }

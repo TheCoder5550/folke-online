@@ -11,7 +11,7 @@ import { ImRedo, ImUndo } from "react-icons/im";
 import StaticProofRenderer from "./StaticProofRenderer/StaticProofRenderer";
 import { FaLightbulb } from "react-icons/fa6";
 import Modal from "./Modal/Modal";
-import { isKeybindPressed, showKeybind } from "../helpers/keybinds";
+import { isKeybindPressed, showKeybindName } from "../helpers/keybinds";
 import { cls } from "../helpers/generic-helper";
 import { getSequent } from "../helpers/proof-helper";
 
@@ -88,10 +88,10 @@ export default function PracticeProofRenderer(props: PracticeProofRendererProps)
             <button title={"Insert a box below the last line"} className={"action-button"} type="button" onClick={insertBoxAfterLast}>+ New box</button>
           </div>
           <div style={{ display: "flex", gap: "0.25rem" }}>
-            <button title={`Undo (${showKeybind("undo")})`} className={"ghost-button"} type="button" onClick={undo}>
+            <button title={`Undo (${showKeybindName("undo")})`} className={"ghost-button"} type="button" onClick={undo}>
               <ImUndo />
             </button>
-            <button title={`Redo (${showKeybind("redo")})`} className={"ghost-button"} type="button" onClick={redo}>
+            <button title={`Redo (${showKeybindName("redo")})`} className={"ghost-button"} type="button" onClick={redo}>
               <ImRedo />
             </button>
             <button title={"Remove everything"} className={"ghost-button"} type="button" onClick={startOver}>

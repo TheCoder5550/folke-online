@@ -1,7 +1,7 @@
 import styles from "./ActionBar.module.css";
 import { ImRedo, ImUndo } from "react-icons/im";
 import useProofStore from "../../stores/proof-store";
-import React, { useEffect, useRef, useState, type JSX } from "react";
+import React, { useCallback, useEffect, useRef, useState, type JSX } from "react";
 import { createEmptyProof, flattenProof, getSequent, haskellProofToProof, isProofEmpty } from "../../helpers/proof-helper";
 import { MdDelete, MdOutlineMotionPhotosAuto } from "react-icons/md";
 import ValidateButton from "../ValidateButton/ValidateButton";
@@ -49,24 +49,6 @@ export default function ActionBar(props: ActionBarProps) {
     }))
     .reverse();
 
-  useEffect(() => {
-    const keydown = (e: KeyboardEvent) => {
-      if (isKeybindPressed("undo", e)) {
-        undo();
-        e.preventDefault();
-      }
-      if (isKeybindPressed("redo", e)) {
-        redo();
-        e.preventDefault();
-      }
-    };
-
-    window.addEventListener("keydown", keydown);
-    return () => {
-      window.removeEventListener("keydown", keydown);
-    }
-  }, [ undo, redo ]);
-
   const fileRef = useRef<HTMLInputElement>(null);
 
   const openUpload = () => {
@@ -100,20 +82,20 @@ export default function ActionBar(props: ActionBarProps) {
     e.target.value = "";
   }
 
-  const removeActiveProof = () => {
+  const removeActiveProof = useCallback(() => {
     if (confirm("Are you sure you want the reset the proof? Everything will be deleted!")) {
       removeProof(activeIndex);
     }
-  };
+  }, [ activeIndex ]);
 
-  const newProof = () => {
+  const newProof = useCallback(() => {
     if (latestIsEmpty) {
       setActiveProof(-1);
       return;
     }
 
     addProof(createEmptyProof());
-  }
+  }, [ latestIsEmpty ]);
 
   const menuBarData: MenuBarData = [
     {
@@ -123,6 +105,7 @@ export default function ActionBar(props: ActionBarProps) {
           icon: <FaFile />,
           label: "New Proof",
           action: newProof,
+          shortcut: "editor-newProof",
         },
         {
           icon: <FaFolder />,
@@ -153,6 +136,7 @@ export default function ActionBar(props: ActionBarProps) {
           label: "Delete Proof",
           danger: true,
           action: removeActiveProof,
+          shortcut: "editor-deleteProof",
         },
       ],
     },
@@ -163,11 +147,13 @@ export default function ActionBar(props: ActionBarProps) {
           icon: <ImUndo />,
           label: "Undo",
           action: undo,
+          shortcut: "undo",
         },
         {
           icon: <ImRedo />,
           label: "Redo",
           action: redo,
+          shortcut: "redo",
         },
         {
           icon: <MdOutlineMotionPhotosAuto />,
@@ -200,6 +186,33 @@ export default function ActionBar(props: ActionBarProps) {
       ]
     }
   ]
+
+  // Global key binds
+  useEffect(() => {
+    const keydown = (e: KeyboardEvent) => {
+      if (isKeybindPressed("undo", e)) {
+        undo();
+        e.preventDefault();
+      }
+      if (isKeybindPressed("redo", e)) {
+        redo();
+        e.preventDefault();
+      }
+      if (isKeybindPressed("editor-newProof", e)) {
+        newProof();
+        e.preventDefault();
+      }
+      if (isKeybindPressed("editor-deleteProof", e)) {
+        removeActiveProof();
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener("keydown", keydown);
+    return () => {
+      window.removeEventListener("keydown", keydown);
+    }
+  }, [ undo, redo, newProof, removeActiveProof ]);
 
   return (
     <div className={styles["action-bar"]}>

@@ -13,6 +13,7 @@ export default function DarkModeToggle() {
   return (
     <button
       type="button"
+      title={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
       onClick={() => setTheme(v =>switchTheme(v))}
       style={{
         display: "flex",
