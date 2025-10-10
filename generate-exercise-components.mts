@@ -77,7 +77,10 @@ async function generateMarkdowns() {
         }
 
         const split = sequent.split("|-");
-        const premises = split[0].split(";").map(p => p.trim());
+        const premises = split[0]
+          .split(";")
+          .map(p => p.trim())
+          .filter(p => p !== "");
         const conclusion = split[1].trim();
 
         const token = {                                 // Token to generate

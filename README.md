@@ -1,24 +1,26 @@
 <img src="logo.png" alt="Folke logo" width="200" />
 
 # Folke online
-Web version of [Folke](https://github.com/lambducas/folke)
+Folke is an interactive proof editor for propositional and first-order logic. It is based on the course [DAT060 Logic in computer science](https://www.chalmers.se/en/education/your-studies/find-course-and-programme-syllabi/course-syllabus/DAT060/) on Chalmers.
+
+This is a web version of the [original version of Folke](https://github.com/lambducas/folke).
 
 ## Live demo
 [https://thecoder5550.github.io/folke-online/](https://thecoder5550.github.io/folke-online/)
 
 ## Development
-Tech-stack:
+### Tech stack
 * **React**: to simplify state managment, supports components with JSX, update only parts of UI that changes state
 * **Typescript**: add types to javascript
 * **Vite**: Compile typescript and allows for hot reloading
 * **Haskell**: Folke is built with haskell
 * **Docker**: Automatically install needed programs and utilities
 
-Requirements (windows):
+### Requirements (windows)
 * Docker with WSL enabled
 * VSCode with dev container extensions installed
 
-Install (windows):
+### Install (windows)
 1. Clone the repo inside WSL (hot reloading doesn't work otherwise)
 1. Open the cloned repo in VSCode
 1. Re-open in dev container (to automatically install node, ghc, ghc-wasm and cabal packages)
@@ -28,14 +30,17 @@ Install (windows):
     ```
 1. Build haskell and generate components
     ```bash
-    source build.sh
+    make
     ```
 1. Start dev server with hot reloading enabled
     ```bash
     npm run dev
     ```
 
-Build:
+### Install (linux)
+Follow the instruction for the windows installation but clone the repo normally without WSL.
+
+### Build
 1. Build everything
     ```bash
     npm run build
@@ -44,3 +49,9 @@ Build:
     ```bash
     npm run preview
     ```
+
+### Generate components from Markdown
+Run the following make script to convert Markdown files into `.tsx` components. This is a lot faster than rebuilding the whole project.
+```bash
+make generate-components
+```
