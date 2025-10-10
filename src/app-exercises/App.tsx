@@ -3,30 +3,25 @@ import { useEffect, useState } from 'react';
 import ErrorBoundary from '../components/ErrorBoundary';
 import ExerciseList from '../components/ExerciseList/ExerciseList';
 import Header from '../components/Header/Header';
-import { EXAM_CATEGORIES, COMPONENT_MAP as EXAM_COMPONENT_MAP } from '../exercise-components/exam-data';
-import { COMPONENT_MAP as EXERCISE_COMPONENT_MAP } from '../exercise-components/exercise-data';
+import { EXAM_CATEGORIES } from '../exercise-components/exam-data';
+import { COMPONENTS, IDS, NAMES } from "../exercise-components/id-data";
 import ContextMenu from '../components/ContextMenu/ContextMenu';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { WasmProvider } from '../helpers/wasm-provider';
 import Footer from "../components/Footer/Footer";
-import { IDS, NAMES } from "../exercise-components/id-data";
 import ToolbarFooter from "../components/ToolbarFooter/ToolbarFooter";
-
-const ALL_COMPONENTS = {
-  ...EXAM_COMPONENT_MAP,
-  ...EXERCISE_COMPONENT_MAP
-}
 
 function getComponentById(id: string | null) {
   if (id == null) {
     return null;
   }
 
-  if (ALL_COMPONENTS.hasOwnProperty(id)) {
-    return ALL_COMPONENTS[id as keyof typeof ALL_COMPONENTS];
+  const index = IDS.indexOf(id);
+  if (index === -1) {
+    return null;
   }
 
-  return null;
+  return COMPONENTS[index];
 }
 
 function App() {

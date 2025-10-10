@@ -1,13 +1,14 @@
 import styles from "./ExerciseList.module.css";
 import { FaCheckCircle, FaRegCircle } from "react-icons/fa";
-import { EXAM_CATEGORIES, COMPONENT_MAP as EXAM_COMPONENT_MAP } from "../../exercise-components/exam-data.ts";
-import { COMPONENT_MAP as EXERCISE_COMPONENT_MAP } from "../../exercise-components/exercise-data.ts";
+import { EXAM_CATEGORIES } from "../../exercise-components/exam-data.ts";
+import { EXERCISE_CATEGORIES } from "../../exercise-components/exercise-data.ts";
 import { IDS, NAMES } from "../../exercise-components/id-data.ts";
 import useProgressStore from "../../stores/progress-store.ts";
 import { cls } from "../../helpers/generic-helper.ts";
 import { FaCircleHalfStroke } from "react-icons/fa6";
+import React from "react";
 
-const totalExercises = Object.keys(EXAM_COMPONENT_MAP).length + Object.keys(EXERCISE_COMPONENT_MAP).length;
+const totalExercises = IDS.length;
 
 interface ExerciseListProps {
   id: string | null;
@@ -18,6 +19,8 @@ export default function ExerciseList(props: ExerciseListProps) {
   const completed = useProgressStore((state) => state.getCompleted());
   const percent = getPercent(completed, totalExercises);
   const examCategories = Object.entries(EXAM_CATEGORIES).sort((a, b) => parseInt(b[0]) - parseInt(a[0]));
+
+  const exerciseCategories = Object.entries(EXERCISE_CATEGORIES).sort((a, b) => sortCategories(a[0], b[0]));
 
   return (
     <>
@@ -32,9 +35,13 @@ export default function ExerciseList(props: ExerciseListProps) {
           <span>{completed}/{totalExercises} completed</span>
         </div>
 
-        <h2>Exercise sheets</h2>
-        {Object.entries(EXERCISE_COMPONENT_MAP).map(([id]) => (
-          <ListItem key={id} id={id} select={() => props.setId(id)} isSelected={props.id === id} />
+        {exerciseCategories.map(([category, componentMap]) => (
+          <React.Fragment key={category}>
+            <h2>{category}</h2>
+            {Object.entries(componentMap).map(([id]) => (
+              <ListItem key={id} id={id} select={() => props.setId(id)} isSelected={props.id === id} />
+            ))}
+          </React.Fragment>
         ))}
 
         <h2>Practice old exams</h2>
@@ -96,4 +103,22 @@ function formatExamDate(date: string): string {
   const day = date.slice(4, 6);
 
   return `${year}-${month}-${day}`;
+}
+
+function sortCategories(a: string, b: string) {
+  const priority = [
+    "getting started",
+    "using the rules",
+  ];
+
+  let aPrio = priority.indexOf(a.toLocaleLowerCase().trim());
+  let bPrio = priority.indexOf(b.toLocaleLowerCase().trim());
+  if (aPrio === -1) aPrio = Infinity;
+  if (bPrio === -1) bPrio = Infinity;
+
+  if (aPrio === bPrio) {
+    return a.localeCompare(b);
+  }
+
+  return aPrio - bPrio;
 }

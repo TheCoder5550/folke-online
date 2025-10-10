@@ -1,24 +1,44 @@
 import * as fs from 'node:fs/promises';
 import * as path from "node:path";
 import { marked, type TokenizerAndRendererExtension } from 'marked';
+import type { PathLike } from 'node:fs';
 
 const proofCollection = "./folke/assets/examples/exams";
-const markdownCollection = "./src/assets/exercises-markdown";
+const markdownCollection = "./src/exercise-markdown";
 const outputDir = "./src/exercise-components";
 
+const exercises: Record<string, string[]> = {};
 const allFileNames: string[] = [];
+const nameOverride: Record<string, string> = {};
+const orderOverride: Record<string, number> = {};
 
 await generateMarkdowns();
 await generateExams();
 
-await generateIdList(allFileNames);
+await generateIdList();
 
-async function generateIdList(fileNames: string[]) {
+async function generateIdList() {
+  const fileNames = [
+    ...Object.values(exercises).flat(),
+    ...allFileNames,
+  ]
+
+  const imports = fileNames
+    .map(f => getComponentName(f))
+    .map(c => `import ${c} from "./${c}"`).join("\n");
+
+  const components = fileNames.map(f => `${getComponentName(f)}`).join(",\n");
   const ids = fileNames.map(f => `"${f}"`).join(",\n");
-  const names = fileNames.map(f => `"${getName(f)}"`).join(",\n");
+  const names = fileNames.map(f => `"${getExerciseName(f)}"`).join(",\n");
 
   const content = `
 // AUTO-GENERATED
+
+${imports}
+
+export const COMPONENTS = [
+${components}
+]
 
 export const IDS = [
 ${ids}
@@ -34,96 +54,48 @@ ${names}
   await fs.writeFile(path.join(outputDir, outFileName), data);
 }
 
-function getName(fileName: string): string {
-  if (path.extname(fileName) === ".md") {
-    const n = path.basename(fileName, ".md")
-      .replaceAll("-", " ")
-      .replaceAll("_", " ");
-    return toTitleCase(n);
-  }
-  else if (path.extname(fileName) === ".folke") {
-    return "Question " + getExamQuestion(fileName);
-  }
-
-  return fileName;
-}
-
 // #region Generate markdown
 
 async function generateMarkdowns() {
-  const proofExt: TokenizerAndRendererExtension = {
-    name: 'proof',
-    level: 'block',                                     // Is this a block-level or inline-level tokenizer?
-    start(src) { return src.match(/!p/)?.index; }, // Hint to Marked.js to stop and check for a match
-    tokenizer(src, _tokens) {
-      const str = src;
-      const regex = /^!proof(?:\[(.+?)=(.+?)\])(?:\[(.+?)=(.+?)\])?/;
-      const match = str.match(regex);
-      if (match) {
-        let sequent = "";
-        if (match[1] === "sequent") {
-          sequent = match[2];
-        }
-        else if (match[3] === "sequent") {
-          sequent = match[4];
-        }
+  useMarkdownProofExtension();
 
-        let solution = "";
-        if (match[1] === "solution") {
-          solution = match[2];
-        }
-        else if (match[3] === "solution") {
-          solution = match[4];
-        }
+  const dirs = await listDirectories(markdownCollection);
+  for (const dir of dirs) {
+    let files = await fs.readdir(path.join(markdownCollection, dir));
+    files = files.filter(file => path.extname(file) === ".md");
+    exercises[dir] = files;
 
-        const split = sequent.split("|-");
-        const premises = split[0]
-          .split(";")
-          .map(p => p.trim())
-          .filter(p => p !== "");
-        const conclusion = split[1].trim();
-
-        const token = {                                 // Token to generate
-          type: 'proof',                                // Should match "name" above
-          raw: match[0],                                // Text to consume from the source
-          premises,
-          conclusion,
-          solution
-        };
-        return token;
-      }
-    },
-    renderer(token) {
-      const premises = `[${token.premises.map((p: string) => `"${p}"`).join(",")}]`;
-      const conclusion = `"${token.conclusion}"`;
-      const solution = token.solution;
-      
-      return `
-<ProofStoreProvider initialProof={createExercise(${premises}, ${conclusion})} localStorageName='$STORAGE_NAME$'>
-  <PracticeProofRenderer onValid={() => completeSubExercise(id, $SUB_QUESTION_INDEX$, $TOTAL_SUB_QUESTIONS$)} solution={${solution}} />
-</ProofStoreProvider>
-
-      `.trim();
+    for (const file of files) {
+      const content = await fs.readFile(path.join(markdownCollection, dir, file), { encoding: 'utf8' });
+      await generateExerciseFromMarkdown(path.join(markdownCollection, dir), file, content);
     }
-  };
-
-  marked.use({ extensions: [proofExt] });
-
-  let files = await fs.readdir(markdownCollection);
-  files = files.filter(file => path.extname(file) === ".md");
-  allFileNames.push(...files);
-  
-  for (const file of files) {
-    const content = await fs.readFile(path.join(markdownCollection, file),  { encoding: 'utf8' });
-    await generateExerciseFromMarkdown(file, content);
   }
 
-  await generateMarkdownList(files);
+  await generateMarkdownList(exercises);
 }
 
-async function generateExerciseFromMarkdown(fileName: string, fileContent: string) {
-  const compName = getMarkdownComponentName(fileName);
+async function generateExerciseFromMarkdown(workdir: string, fileName: string, fileContent: string) {
+  const compName = getComponentName(fileName);
   const outFileName = compName + ".tsx";
+
+  // Remove front matter
+  const frontMatter: Record<string, string> = {};
+  fileContent = parseFrontMatter(fileContent, frontMatter);
+
+  // Use name specified in markdown file
+  if ("name" in frontMatter) {
+    nameOverride[fileName] = frontMatter["name"];
+  }
+
+  if ("order" in frontMatter) {
+    const order = parseInt(frontMatter["order"]);
+    if (isNaN(order)) {
+      throw new Error("Invalid 'order' in front matter: " + frontMatter["order"]);
+    }
+    orderOverride[fileName] = order;
+  }
+
+  // Parse markdown
   const parsedMarkdown = await marked.parse(fileContent);
 
   let content = `
@@ -173,9 +145,9 @@ ${parsedMarkdown}
       continue;
     }
 
-    const p = path.join(markdownCollection, solution);
+    const p = path.join(workdir, solution);
     try {
-      let solutionContent = await fs.readFile(p,  { encoding: 'utf8' });
+      let solutionContent = await fs.readFile(p, { encoding: 'utf8' });
       solutionContent = JSON.stringify(JSON.parse(solutionContent));
       content = content.replace(full, `solution={flattenProof(haskellProofToProof(${solutionContent}))}`);
       content = content.replace("//$FLATTEN_PROOF_IMPORTS$", "import { flattenProof, haskellProofToProof } from \"../helpers/proof-helper\";");
@@ -193,12 +165,20 @@ ${parsedMarkdown}
   await fs.writeFile(path.join(outputDir, outFileName), data);
 }
 
-async function generateMarkdownList(fileNames: string[]) {
-  const componentNames = fileNames.map(f => getMarkdownComponentName(f));
-  const imports = componentNames.map(c => `import ${c} from "./${c}"`).join("\n");
+async function generateMarkdownList(exercises: Record<string, string[]>) {
+  // Take order into account
+  for (const [_key, value] of Object.entries(exercises)) {
+    value.sort((a, b) => (orderOverride[a] ?? Infinity) - (orderOverride[b] ?? Infinity))
+  }
 
-  const componentMap = fileNames
-    .map(fileName => `"${fileName}": ${getMarkdownComponentName(fileName)}`)
+  const imports = Object
+    .values(exercises)
+    .flat()
+    .map(f => getComponentName(f))
+    .map(c => `import ${c} from "./${c}"`).join("\n");
+
+  const categoriesMap = Object.entries(exercises)
+    .map(([key, value]) => `"${key}": \{${value.map(v => `"${v}": ${getComponentName(v)}`).join(", ")}\}`)
     .join(",\n");
 
   const content = `
@@ -206,8 +186,8 @@ async function generateMarkdownList(fileNames: string[]) {
 
 ${imports}
 
-export const COMPONENT_MAP = {
-${componentMap}
+export const EXERCISE_CATEGORIES = {
+${categoriesMap}
 }
   `.trim();
 
@@ -216,8 +196,74 @@ ${componentMap}
   await fs.writeFile(path.join(outputDir, outFileName), data);
 }
 
-function getMarkdownComponentName(fileName: string) {
-  return "Exercise_" +  toTitleCase(path.basename(fileName, ".md").replaceAll("-", "_").replaceAll(" ", "_"));
+function useMarkdownProofExtension() {
+  const proofExt: TokenizerAndRendererExtension = {
+    name: 'proof',
+    level: 'block',                                     // Is this a block-level or inline-level tokenizer?
+    start(src) { return src.match(/!p/)?.index; }, // Hint to Marked.js to stop and check for a match
+    tokenizer(src, _tokens) {
+      const str = src;
+      const regex = /^!proof(?:\[(.+?)=(.+?)\])(?:\[(.+?)=(.+?)\])?/;
+      const match = str.match(regex);
+      if (match) {
+        let sequent = "";
+        if (match[1] === "sequent") {
+          sequent = match[2];
+        }
+        else if (match[3] === "sequent") {
+          sequent = match[4];
+        }
+
+        let solution = "";
+        if (match[1] === "solution") {
+          solution = match[2];
+        }
+        else if (match[3] === "solution") {
+          solution = match[4];
+        }
+
+        const split = sequent.split("|-");
+        if (split.length !== 2) {
+          console.log(match, sequent, solution);
+          throw new Error("Invalid sequent: " + sequent);
+        }
+        const premises = split[0]
+          .split(";")
+          .map(p => p.trim())
+          .filter(p => p !== "");
+        const conclusion = split[1].trim();
+
+        const token = {                                 // Token to generate
+          type: 'proof',                                // Should match "name" above
+          raw: match[0],                                // Text to consume from the source
+          premises,
+          conclusion,
+          solution
+        };
+        return token;
+      }
+    },
+    renderer(token) {
+      const premises = `[${token.premises.map((p: string) => `"${p}"`).join(",")}]`;
+      const conclusion = `"${token.conclusion}"`;
+      const solution = token.solution;
+      
+      return `
+<ProofStoreProvider initialProof={createExercise(${premises}, ${conclusion})} localStorageName='$STORAGE_NAME$'>
+  <PracticeProofRenderer onValid={() => completeSubExercise(id, $SUB_QUESTION_INDEX$, $TOTAL_SUB_QUESTIONS$)} solution={${solution}} />
+</ProofStoreProvider>
+
+      `.trim();
+    }
+  };
+
+  marked.use({ extensions: [proofExt] });
+}
+
+async function listDirectories(source: PathLike) {
+  return (await fs.readdir(source, { withFileTypes: true }))
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name)
 }
 
 // #endregion
@@ -322,10 +368,6 @@ ${objectEntries}
   await fs.writeFile(path.join(outputDir, outFileName), data);
 }
 
-function getComponentName(fileName: string) {
-  return "Exam_" + toTitleCase(path.basename(fileName, ".folke").replaceAll("-", "_"));
-}
-
 function getExamQuestion(fileName: string) {
   const removeExt = path.basename(fileName, ".folke");
   const parts = removeExt.split("_").slice(2);
@@ -336,6 +378,38 @@ function getExamQuestion(fileName: string) {
   return `${parts[0]} (${parts.slice(1).join(" ")})`
 }
 
+// #endregion
+
+function getExerciseName(fileName: string): string {
+  if (fileName in nameOverride) {
+    return nameOverride[fileName];
+  }
+
+  if (path.extname(fileName) === ".md") {
+    const n = path.basename(fileName, ".md")
+      .replaceAll("-", " ")
+      .replaceAll("_", " ");
+    return toTitleCase(n);
+  }
+  else if (path.extname(fileName) === ".folke") {
+    return "Question " + getExamQuestion(fileName);
+  }
+
+  return fileName;
+}
+
+function getComponentName(fileName: string): string {
+  const ext = path.extname(fileName);
+  if (ext === ".md") {
+    return "Exercise_" +  toTitleCase(path.basename(fileName, ".md").replaceAll("-", "_").replaceAll(" ", "_"));
+  }
+  if (ext === ".folke") {
+    return "Exam_" + toTitleCase(path.basename(fileName, ".folke").replaceAll("-", "_"));
+  }
+
+  throw new Error("Unknown file ext: " + ext);
+}
+
 function toTitleCase(str: string) {
   return str.replace(
     /\w\S*/g,
@@ -343,4 +417,25 @@ function toTitleCase(str: string) {
   );
 }
 
-// #endregion
+function parseFrontMatter(content: string, frontMatter: Record<string, string>): string {
+  const regionRegex = /---\n(.*)\n---/s;
+  const region = content.match(regionRegex);
+  if (!region || !region[1]) {
+    return content;
+  }
+
+  const lines = region[1].split("\n");
+  for (const line of lines) {
+    const parts = line.match(/(\w*):(.*)/);
+    if (!parts) {
+      continue;
+    }
+
+    const key = parts[1].trim();
+    const value = parts[2].trim();
+
+    frontMatter[key] = value;
+  }
+
+  return content.replace(regionRegex, "");
+}
