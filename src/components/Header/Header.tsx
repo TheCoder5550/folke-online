@@ -1,5 +1,6 @@
 import styles from "./Header.module.css";
 import logoUrl from "../../../logo.png";
+import DarkModeToggle from "../DarkModeToggle/DarkModeToggle";
 
 const isProd = import.meta.env.PROD;
 const isPages = window.location.hostname === "thecoder5550.github.io";
@@ -20,6 +21,10 @@ export default function Header() {
         <a href={`${BASE_PATH}/editor/`}>Editor</a>
         <a href={`${BASE_PATH}/exercises/`}>Exercises</a>
         <a href={`${BASE_PATH}/guide/`}>Guide</a>
+      </div>
+
+      <div className={styles["theme-toggle"]}>
+        <DarkModeToggle />
       </div>
     </header>
   )

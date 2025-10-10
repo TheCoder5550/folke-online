@@ -34,3 +34,24 @@
 .header a:hover {
   text-decoration: underline;
 }
+
+.theme-toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+}
+
+@media screen and (max-width: 640px) {
+  .header {
+    gap: 1rem;
+  }
+
+  .logo {
+    width: 7em;
+  }
+
+  .links {
+    gap: 1rem;
+  }
+}
