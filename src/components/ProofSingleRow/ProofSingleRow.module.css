@@ -27,7 +27,6 @@
 }
 
 .proof-row.correct {
-  font-weight: bold;
   color: rgb(var(--correct-color-rgb));
 }
 

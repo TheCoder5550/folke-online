@@ -24,7 +24,7 @@ export default function Premise(props: PremiseProps) {
       paddingLeft: isMobile ? undefined : "calc(0.25rem + 0.5rem + 1px)",
       marginRight: isMobile ? undefined : "2.75rem",
       fontFamily: "monospace",
-      fontSize: isMobile ? "0.8rem" : "1rem"
+      fontSize: isMobile ? "0.8rem" : "1rem",
     }}>
       <span className={rowStyles["number"]}>
         <ManualLineNumber lineNumber={props.lineNumber} hasError={hasError} />
