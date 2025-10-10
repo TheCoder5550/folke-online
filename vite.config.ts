@@ -20,6 +20,7 @@ export default defineConfig({
     })
   ],
   
+  publicDir: "./public",
   base: "./",
   build: {
     rollupOptions: {
