@@ -21,7 +21,7 @@ RUN export PREFIX="${GHC_USER}/.ghc-wasm" \
 # Install normal ghc
 # From https://github.com/ExtremaIS/lsupg-haskell/blob/4a33818d5906d39c905b95f30a7845ace833e21c/docker/Dockerfile
 ARG GHC_VERSION=9.10.2
-ARG HLS_VERSION=2.10.0.0
+ARG HLS_VERSION=2.11.0.0
 ARG CABAL_VERSION=3.12.1.0
 
 RUN apk upgrade --no-cache \
