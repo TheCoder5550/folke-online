@@ -134,7 +134,7 @@
                                                 "_arguments": [
                                                     "15",
                                                     "16",
-                                                    "u:=u=x₂"
+                                                    "x:=x=x₂"
                                                 ],
                                                 "_rule": "=E",
                                                 "_statement": "x₁=x₂",
@@ -145,7 +145,7 @@
                                                 "_arguments": [
                                                     "13",
                                                     "17",
-                                                    "u:=x₁=u"
+                                                    "x:=x₁=x"
                                                 ],
                                                 "_rule": "=E",
                                                 "_statement": "x₁=x₀",
@@ -156,7 +156,7 @@
                                                 "_arguments": [
                                                     "18",
                                                     "8",
-                                                    "u:=Q(u)"
+                                                    "x:=Q(x)"
                                                 ],
                                                 "_rule": "=E",
                                                 "_statement": "Q(x₀)",

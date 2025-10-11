@@ -51,7 +51,7 @@
                                         "_arguments": [
                                             "7",
                                             "6",
-                                            "u:=P(u, y₀) ∨ P(y₀, u)"
+                                            "x:=P(x, y₀) ∨ P(y₀, x)"
                                         ],
                                         "_rule": "=E",
                                         "_statement": "P(y₀, y₀) ∨ P(y₀, y₀)",

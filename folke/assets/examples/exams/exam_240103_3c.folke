@@ -76,7 +76,7 @@
                         "_arguments": [
                             "10",
                             "5",
-                            "u:=S(u)"
+                            "x:=S(x)"
                         ],
                         "_rule": "=E",
                         "_statement": "S(a)",

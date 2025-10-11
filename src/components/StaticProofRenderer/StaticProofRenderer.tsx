@@ -73,7 +73,7 @@ function Line(props: LineProps) {
   let args = props.step.arguments
     .slice(0, props.step.usedArguments)
     .join(", ")
-    .replaceAll("u:=", "𝝓(u)≡");
+    .replaceAll("x:=", "𝝓(x)≡");
 
   if (props.step.usedArguments >= 2) {
     args = "(" + args + ")";

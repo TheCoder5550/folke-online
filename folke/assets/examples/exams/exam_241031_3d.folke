@@ -49,7 +49,7 @@
                         "_arguments": [
                             "6",
                             "2",
-                            "u:=P(u,b)"
+                            "x:=P(x,b)"
                         ],
                         "_rule": "=E",
                         "_statement": "P(b, b)",
@@ -67,7 +67,7 @@
                         "_arguments": [
                             "6",
                             "8",
-                            "u:=u=a"
+                            "x:=x=a"
                         ],
                         "_rule": "=E",
                         "_statement": "b = a",
@@ -78,7 +78,7 @@
                         "_arguments": [
                             "9",
                             "7",
-                            "u:=P(b, u)"
+                            "x:=P(b, x)"
                         ],
                         "_rule": "=E",
                         "_statement": "P(b, a)",

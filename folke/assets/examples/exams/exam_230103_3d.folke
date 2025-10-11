@@ -63,7 +63,7 @@
                                         "_arguments": [
                                             "6",
                                             "7",
-                                            "u:=u=y₀"
+                                            "x:=x=y₀"
                                         ],
                                         "_rule": "=E",
                                         "_statement": "x₀ = y₀",

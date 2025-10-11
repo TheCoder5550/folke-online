@@ -135,7 +135,7 @@
                                                 "_arguments": [
                                                     "14",
                                                     "15",
-                                                    "u:=u=z₀"
+                                                    "x:=x=z₀"
                                                 ],
                                                 "_rule": "=E",
                                                 "_statement": "x₀ = z₀",
@@ -146,7 +146,7 @@
                                                 "_arguments": [
                                                     "16",
                                                     "13",
-                                                    "u:=y₀=u"
+                                                    "x:=y₀=x"
                                                 ],
                                                 "_rule": "=E",
                                                 "_statement": "y₀ = z₀",

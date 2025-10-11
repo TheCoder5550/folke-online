@@ -35,7 +35,7 @@
                         "_arguments": [
                             "3",
                             "4",
-                            "u:=u=f(f(x₀))"
+                            "x:=x=f(f(x₀))"
                         ],
                         "_rule": "=E",
                         "_statement": "x₀ = f(f(x₀))",

@@ -274,8 +274,8 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     const placeholder = ruleData?.argumentPlaceholders?.[i] ?? ("Arg " + (i + 1));
 
     if (step.rule === "=E" && i === 2) {
-      arg = trimPrefix(arg, "u:=");
-      prefix = "u:="
+      arg = trimPrefix(arg, "x:=");
+      prefix = "x:="
     }
 
     argumentInputs.push(

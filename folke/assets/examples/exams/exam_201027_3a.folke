@@ -48,7 +48,7 @@
                 "_arguments": [
                     "5",
                     "6",
-                    "u:=Q(u)"
+                    "x:=Q(x)"
                 ],
                 "_rule": "=E",
                 "_statement": "Q(a)",

@@ -70,7 +70,7 @@
                                                                         "_arguments": [
                                                                             "6",
                                                                             "7",
-                                                                            "u:=R(x₀,u)"
+                                                                            "x:=R(x₀,x)"
                                                                         ],
                                                                         "_rule": "=E",
                                                                         "_statement": "R(x₀, w₀)",
@@ -81,7 +81,7 @@
                                                                         "_arguments": [
                                                                             "5",
                                                                             "8",
-                                                                            "u:=R(u,w₀)"
+                                                                            "x:=R(x,w₀)"
                                                                         ],
                                                                         "_rule": "=E",
                                                                         "_statement": "R(z₀, w₀)",

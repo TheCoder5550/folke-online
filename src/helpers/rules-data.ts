@@ -183,7 +183,7 @@ export const RULE_META_DATA: { [id: string]: RuleMetaData | undefined } = {
     name: "Equality elimination",
     description: "",
     nrArguments: 3,
-    argumentLabels: ["", "", "𝝓(u)≡"],
+    argumentLabels: ["", "", "𝝓(x)≡"],
     argumentInputLengths: [35, 35, 150],
     argumentPlaceholders: ["Row", "Row", "Sub. func."],
     usageComponent: EqualityElim,

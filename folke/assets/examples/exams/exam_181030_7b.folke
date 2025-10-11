@@ -39,7 +39,7 @@
                         "_arguments": [
                             "4",
                             "5",
-                            "u:=f(f(u))=a"
+                            "x:=f(f(x))=a"
                         ],
                         "_rule": "=E",
                         "_statement": "f(f(a)) = a",
@@ -50,7 +50,7 @@
                         "_arguments": [
                             "6",
                             "4",
-                            "u:=f(u)=a"
+                            "x:=f(x)=a"
                         ],
                         "_rule": "=E",
                         "_statement": "f(a) = a",
