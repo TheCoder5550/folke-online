@@ -172,7 +172,10 @@ checkProofFE env [step] i localIdx
             let refs_t = [RefRange i (i - 1 + countSteps (FE.SubProof steps))]
             let newEnv = push (pushPos env refs_t)
             _ <- checkProofFE newEnv steps i 0
-            Err [] newEnv (createTypeError newEnv "Last step in proof cannot be a box.")
+
+            -- Boxes are allowed as the last step but will act as
+            -- if the last line is Nil
+            Ok [] (Proof [] (getPrems env) Nil, env)
     | FE.Line {} <- step = do
         (new_env, step_t) <- checkStepFE (pushPos env [RefLine i]) step localIdx
         case step_t of
@@ -215,18 +218,22 @@ checkStepFE env step localIdx = case step of
         
     FE.Line form rule numofargs args -> do
         let currentRef = head (pos env)
+        
+        -- Check syntax before anything else
+        _ <- parseForm env form
+
+        -- Check if line is empty
         let formIsEmpty = strip form == pack ""
         let ruleIsEmpty = strip rule == pack ""
-        
         if formIsEmpty && ruleIsEmpty then 
             let env_with_ref = addRefs env [currentRef] (ArgForm Nil)
             in Ok [createEmptyLineWarning env_with_ref] (env_with_ref, ArgForm Nil)
             
-        else if ruleIsEmpty then 
-            Err [] env (createNoRuleProvidedError env)
+        -- else if ruleIsEmpty then 
+        --     Err [] env (createNoRuleProvidedError env)
 
-        else if formIsEmpty then 
-            Err [] env (createNoFormulaProvidedError env)
+        -- else if formIsEmpty then 
+        --     Err [] env (createNoFormulaProvidedError env)
             
         else case rule of
             -- Handle premises
@@ -272,7 +279,7 @@ checkStepFE env step localIdx = case step of
 
             -- Handle general rule applications
             _
-                | depth env /= 0 && localIdx == 0 ->
+                | (not ruleIsEmpty) && depth env /= 0 && localIdx == 0 ->
                     Err [] env (createTypeError env "First line in box must be an assumption or a fresh variable.")
                 | otherwise -> do
                     form_t <- checkFormFE env form

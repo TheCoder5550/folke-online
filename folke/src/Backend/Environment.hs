@@ -102,6 +102,7 @@ import Data.Maybe (listToMaybe)
 import Data.Char (toLower)
 
 import Data.Map as Map (Map)
+import Data.Text (strip, pack)
 
 ----------------------------------------------------------------------
 -- Environment Creation and Manipulation
@@ -304,48 +305,60 @@ popPos env n = env {pos = drop (fromIntegral n) (pos env)}
 
 -- | Apply a rule to a list of arguments and check the result
 applyRule :: Env -> String -> [Arg] -> Formula -> Result Formula
-applyRule e name args res =
-    let env = e{rule=name}
-        availableRules = Map.keys (rules env) ++ Map.keys (user_rules env)
-    in case Map.lookup name (rules env) of
-        Just rule_f ->
-            case rule_f env (zip [1..] args) res of
-                Err warns env_e err -> Err warns env_e err
-                Ok warns res_t ->
-                    if cmp env res_t res then Ok warns res_t
-                    else Err warns env (createRuleConcError env (name ++ " gives " ++ show res_t ++ " not " ++ show res))
-        Nothing -> case Map.lookup name (user_rules env) of
-            Just rule_s -> case applyUDefRule env rule_s (zip [1..] args) of 
-                Err warns env_e err -> Err warns env_e err
-                Ok warns res_t ->
-                    if cmp env res_t res then Ok warns res_t
-                    else Err warns env (createRuleConcError env (name ++ " gives " ++ show res_t ++ " not " ++ show res))
-            Nothing -> 
-                let
-                    prefixMatches = filter (List.isPrefixOf name) availableRules
-                    caseInsensitiveMatches = 
-                        if null prefixMatches then
-                            filter (\r -> map toLower name `List.isPrefixOf` map toLower r) availableRules
-                        else []
-                    
-                    substringMatches = 
-                        if null prefixMatches && null caseInsensitiveMatches then
-                            filter (\r -> name `List.isInfixOf` r || 
-                                         map toLower name `List.isInfixOf` map toLower r) availableRules
-                        else []
-                    
-                    allSuggestions = take 5 (prefixMatches ++ caseInsensitiveMatches ++ substringMatches)
-                    
-                    baseError = createRuleNotFoundError env name
-                    updatedError = 
-                        if null allSuggestions 
-                        then baseError
-                        else baseError { 
-                            errSuggestions = errSuggestions baseError ++ 
-                                ["Did you mean: " ++ 
-                                List.intercalate ", " allSuggestions ++ "?"]
-                        }
-                in Err [] env updatedError
+applyRule e name args res = do
+    let ruleIsEmpty = strip (pack name) == pack ""
+    if ruleIsEmpty then 
+        Err [] e (createNoRuleProvidedError e)
+    else
+        let env = e{rule=name}
+            availableRules = Map.keys (rules env) ++ Map.keys (user_rules env)
+        in case Map.lookup name (rules env) of
+            Just rule_f ->
+                case rule_f env (zip [1..] args) res of
+                    Err warns env_e err -> Err warns env_e err
+                    Ok warns res_t ->
+                        if cmp env res_t res then Ok warns res_t
+                        else Err warns env (createRuleConcError env (name ++ " gives " ++ show res_t ++ " not " ++ show res))
+            Nothing -> case Map.lookup name (user_rules env) of
+                Just rule_s -> case applyUDefRule env rule_s (zip [1..] args) of 
+                    Err warns env_e err -> Err warns env_e err
+                    Ok warns res_t ->
+                        if cmp env res_t res then Ok warns res_t
+                        else Err warns env (createRuleConcError env (name ++ " gives " ++ show res_t ++ " not " ++ show res))
+                Nothing -> 
+                    let
+                        baseError = createRuleNotFoundError env name
+                        updatedError = appendSuggestedRules name availableRules baseError
+                    in Err [] env updatedError
+
+-- | Add hints for similar rules if the rule is incorrect
+appendSuggestedRules :: String -> [String] -> Error -> Error
+appendSuggestedRules name availableRules baseError =
+    let
+        prefixMatches = filter (List.isPrefixOf name) availableRules
+        caseInsensitiveMatches = 
+            if null prefixMatches then
+                filter (\r -> map toLower name `List.isPrefixOf` map toLower r) availableRules
+            else []
+        
+        substringMatches = 
+            if null prefixMatches && null caseInsensitiveMatches then
+                filter (\r -> name `List.isInfixOf` r || 
+                                map toLower name `List.isInfixOf` map toLower r) availableRules
+            else []
+        
+        allSuggestions = take 5 (prefixMatches ++ caseInsensitiveMatches ++ substringMatches)
+
+        updatedError = 
+            if null allSuggestions 
+            then baseError
+            else baseError { 
+                errSuggestions = errSuggestions baseError ++ 
+                    ["Did you mean: " ++ 
+                    List.intercalate ", " allSuggestions ++ "?"]
+            }
+
+    in updatedError
 
 -- | Apply a user-defined rule
 applyUDefRule :: Env -> UDefRule -> [(Integer, Arg)] -> Result Formula
