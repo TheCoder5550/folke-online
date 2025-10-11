@@ -25,5 +25,7 @@ Start by creating an empty row and use `∧EL` to get A. Insert another row belo
 <br />
 
 ## Creating a box
-Prove the sequent `P & Q |- P -> Q`. To be able to use the `→I` rule, you first have to create a box. Add an empty row and press the box icon next to it or press `Ctrl+B` to add a box around the row. First assume P and then use `∧ER` to get Q. Add a row below the box by pressing `Ctrl+Enter`. Use the →I rule and type `2-3` as the box.
+Prove the sequent `P & Q |- P -> Q`. To be able to use the `->I` rule, you first have to create a box. Add an empty row and press the box icon next to it or press `Ctrl+B` to add a box around the row. First assume P and then use `∧ER` to get Q. Add a row below the box by pressing `Ctrl+Enter`. Use the `->I` rule and type `2-3` as the box.
+
+**Using the rules:** Press "View Rules" at the bottom of the screen to view all available rules and how to use them.
 !proof[sequent=P & Q |- P -> Q][solution=getting-started-3.folke]
