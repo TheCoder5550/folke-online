@@ -6,20 +6,22 @@ interface Props {
 
 interface State {
   hasError: boolean;
+  message: string;
 }
 
 class ErrorBoundary extends Component<Props, State> {
   public state: State = {
-    hasError: false
+    hasError: false,
+    message: "",
   };
-
-  public static getDerivedStateFromError(): State {
-    // Update state so the next render will show the fallback UI.
-    return { hasError: true };
-  }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Uncaught error:", error, errorInfo);
+
+    this.setState({
+      hasError: true,
+      message: error.toString(),
+    })
   }
 
   public render() {
@@ -29,6 +31,7 @@ class ErrorBoundary extends Component<Props, State> {
           padding: "2rem"
         }}>
           <h1>Sorry, there was an error.</h1>
+          <p>{this.state.message}</p>
           <p>Try refreshing the page</p>
           <p>If that doesn't work, try clearing cookies and page data</p>
           <button
