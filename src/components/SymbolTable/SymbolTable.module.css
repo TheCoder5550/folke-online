@@ -19,13 +19,3 @@
   padding: 0.25rem 0;
   margin-left: -0.25rem;
 }
-
-.shortcut {
-  display: inline-flex;
-  margin: 0.25rem;
-  padding: 0 0.5em;
-
-  font-family: monospace;
-  background: rgb(var(--text-rgb), 0.1);
-  border-radius: 2px;
-}

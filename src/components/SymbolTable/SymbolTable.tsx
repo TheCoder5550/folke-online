@@ -2,6 +2,7 @@ import React from "react";
 import { getSpecialCharacterAliases, SYMBOLS } from "../../helpers/special-characters";
 import styles from "./SymbolTable.module.css";
 import { cls } from "../../helpers/generic-helper";
+import Chip from "../Chip/Chip";
 
 export default function SymbolTable() {
   return (
@@ -17,9 +18,9 @@ export default function SymbolTable() {
           <span>{symbol.symbol}</span>
           <div className={styles["shortcut-container"]}>
             {getSpecialCharacterAliases(symbol.symbol).map(shortcut => (
-              <Shortcut key={shortcut}>
+              <Chip key={shortcut}>
                 {shortcut}
-              </Shortcut>
+              </Chip>
             ))}
           </div>
 
@@ -27,15 +28,5 @@ export default function SymbolTable() {
         </React.Fragment>
       ))}
     </div>
-  )
-}
-
-type ShortcutProps = React.PropsWithChildren;
-
-function Shortcut({ children }: ShortcutProps) {
-  return (
-    <span className={styles["shortcut"]}>
-      {children}
-    </span>
   )
 }

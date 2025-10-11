@@ -4,7 +4,7 @@ import Line from "./Line";
 export default function LEM() {
   return (
     <Container>
-      <Line statement="p | !p" rule="LEM" />
+      <Line lineNumber="i" statement="p | !p" rule="LEM" />
     </Container>
   )
 }
