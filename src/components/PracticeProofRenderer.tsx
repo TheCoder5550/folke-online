@@ -14,6 +14,8 @@ import Modal from "./Modal/Modal";
 import { isKeybindPressed, showKeybindName } from "../helpers/keybinds";
 import { cls } from "../helpers/generic-helper";
 import { getSequent } from "../helpers/proof-helper";
+import { useScreenSize } from "../helpers/use-screen-size";
+import LastRowActions from "./LastRowActions";
 
 interface PracticeProofRendererProps {
   solution?: FlatProof;
@@ -21,6 +23,7 @@ interface PracticeProofRendererProps {
 }
 
 export default function PracticeProofRenderer(props: PracticeProofRendererProps) {
+  const isMobile = useScreenSize() === "mobile";
   const [showSolution, setShowSolution] = useState(false);
   const dispatch = useProofStore((state) => state.dispatch);
   const sequent = useProofStore((state) => getSequent(state.getProof()));
@@ -29,18 +32,6 @@ export default function PracticeProofRenderer(props: PracticeProofRendererProps)
     if (confirm("Are you sure you want to spoil the solution?")) {
       setShowSolution(true)
     }
-  }
-
-  const insertLineAfterLast = () => {
-    dispatch({
-      type: ProofDispatchActionTypeEnum.InsertLineAfterLast,
-    })
-  }
-
-  const insertBoxAfterLast = () => {
-    dispatch({
-      type: ProofDispatchActionTypeEnum.InsertBoxAfterLast,
-    })
   }
 
   const startOver = () => {
@@ -82,11 +73,8 @@ export default function PracticeProofRenderer(props: PracticeProofRendererProps)
       <StepsRenderer />
 
       <div className={styles["align"]} style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-        <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            <button title={"Insert a line below the last line"} className={"action-button"} type="button" onClick={insertLineAfterLast}>+ New line</button>
-            <button title={"Insert a box below the last line"} className={"action-button"} type="button" onClick={insertBoxAfterLast}>+ New box</button>
-          </div>
+        <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", gap: "0.5rem", justifyContent: "space-between" }}>
+          <LastRowActions />
           <div style={{ display: "flex", gap: "0.25rem" }}>
             <button title={`Undo (${showKeybindName("undo")})`} className={"ghost-button"} type="button" onClick={undo}>
               <ImUndo />

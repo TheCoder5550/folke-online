@@ -392,6 +392,7 @@ export const ProofDispatchActionTypeEnum = {
   ToLine: "ToLine",
   InsertLineAfterLast: "InsertLineAfterLast",
   InsertBoxAfterLast: "InsertBoxAfterLast",
+  CloseLastBoxWithLine: "CloseLastBoxWithLine",
   CloseBoxWithLine: "CloseBoxWithLine",
   CloseBoxWithBox: "CloseBoxWithBox",
   MoveAfter: "MoveAfter",
@@ -465,6 +466,9 @@ export type ProofDispatchAction =
     }
   | {
       type: typeof ProofDispatchActionTypeEnum.InsertBoxAfterLast;
+    }
+  | {
+      type: typeof ProofDispatchActionTypeEnum.CloseLastBoxWithLine;
     }
   | {
       type: typeof ProofDispatchActionTypeEnum.CloseBoxWithLine;
@@ -888,6 +892,15 @@ function reducer(draft: {
       });
       break;
     }
+    case ProofDispatchActionTypeEnum.CloseLastBoxWithLine: {
+      const line = createNewLine();
+      const lastRow = getUUIDOfLastRow(draft.proof);
+      if (lastRow) {
+        closeBoxWith(draft.proof, lastRow, line);
+        setFocus(line.uuid);
+      }
+      break;
+    }
     case ProofDispatchActionTypeEnum.CloseBoxWithLine: {
       const line = createNewLine();
       closeBoxWith(draft.proof, action.uuid, line);
@@ -906,6 +919,10 @@ function reducer(draft: {
       moveAfter(draft.proof, action.moveThis, action.afterThis);
       break;
     }
+
+    // default: {
+    //   throw new Error(action.type + " is missing from switch statement")
+    // }
   }
 }
 
