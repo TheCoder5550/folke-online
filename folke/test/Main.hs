@@ -29,9 +29,9 @@ testGoodProof proofPath = TestCase $ do
 testBadProof :: FilePath -> Test
 testBadProof proofPath = TestCase $ do
     case checkJsonFile proofPath of
-        Err _warns _env err -> do
-            putStrLn ("\nError message: " ++ show err ++ "\n")
-            assertBool ("Proof is incorrect: " ++ proofPath) True
+        Err _warns _env _err -> do
+            -- putStrLn ("\nError message: " ++ show _err ++ "\n")
+            assertBool ("Proof is incorrect as expected: " ++ proofPath) True
         Ok _warns _ -> do
             assertFailure "Wrong result: Proof is incorrect but reported as correct\n"
 
@@ -167,7 +167,6 @@ main = do
     let incorrectTests = TestList (testProofs testBadProof incorrect)
     
     -- Run all test including replace tests
-    putStrLn "Running tests...\n"
     let tests = TestList [
             TestLabel "Correct proofs" correctTests,
             TestLabel "Incorrect proofs" incorrectTests,

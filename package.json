@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "make && tsc -b && vite build",
+    "preview": "vite preview",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "test": "make test"
   },
   "dependencies": {
     "@bjorn3/browser_wasi_shim": "^0.4.2",

@@ -11,3 +11,6 @@ generate-components: generate-exercise-components.mjs
 	mkdir src/exercise-components
 
 	node generate-exercise-components.mjs
+
+test:
+	cd folke && cabal test && cd ..
