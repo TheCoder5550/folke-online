@@ -1,13 +1,9 @@
 import styles from "./Header.module.css";
 import logoUrl from "../../../logo.png";
 import DarkModeToggle from "../DarkModeToggle/DarkModeToggle";
+import { getBasePath } from "../../helpers/generic-helper";
 
-const isProd = import.meta.env.PROD;
-const isPages = window.location.hostname === "thecoder5550.github.io";
-
-const BASE_PATH = isProd && isPages ?
-  `${window.location.origin}/folke-online` :
-  "";
+const BASE_PATH = getBasePath();
 
 export default function Header() {
   return (

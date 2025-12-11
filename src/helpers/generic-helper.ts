@@ -100,3 +100,16 @@ export function compareArrays<T>(a: T[], b: T[]): boolean {
 
   return true;
 }
+
+/**
+ * Get the domain root. Will be a subdirectory in prod.
+ * @returns {string}
+ */
+export function getBasePath() {
+  const isPages = window.location.hostname === "thecoder5550.github.io";
+  const BASE_PATH = isPages ?
+    `${window.location.origin}/folke-online` :
+    "";
+  
+  return BASE_PATH;
+}

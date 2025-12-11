@@ -14,6 +14,21 @@
   --header-color-rgb: 247, 241, 217;
 
   color: rgb(var(--text-rgb));
+
+  /* Light theme (default) */
+  --background-rgb: 249, 251, 253;
+  --text-rgb: 33, 53, 71;
+
+  --card-background-rgb: 255, 255, 255;
+  --card-shadow: 0 0.5rem 2rem -1rem rgba(0, 0, 0, 0.3);
+  
+  --error-color-rgb: 255, 50, 50;
+  --error-background-rgb: 255, 240, 240;
+
+  --correct-color-rgb: 50, 150, 50;
+  --correct-background-rgb: 240, 255, 240;
+
+  --hover-line-rgb: 243, 231, 210;
 }
 
 [data-theme="dark"] {
@@ -30,22 +45,6 @@
   --correct-background-rgb: 240, 255, 240;
 
   --hover-line-rgb: 49, 45, 38;
-}
-
-[data-theme="light"] {
-  --background-rgb: 249, 251, 253;
-  --text-rgb: 33, 53, 71;
-
-  --card-background-rgb: 255, 255, 255;
-  --card-shadow: 0 0.5rem 2rem -1rem rgba(0, 0, 0, 0.3);
-  
-  --error-color-rgb: 255, 50, 50;
-  --error-background-rgb: 255, 240, 240;
-
-  --correct-color-rgb: 50, 150, 50;
-  --correct-background-rgb: 240, 255, 240;
-
-  --hover-line-rgb: 243, 231, 210;
 }
 
 ::-webkit-scrollbar {
@@ -93,6 +92,15 @@ h2 {
 
 h3 {
   margin: 0;
+}
+
+summary {
+  cursor: pointer;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 a {
