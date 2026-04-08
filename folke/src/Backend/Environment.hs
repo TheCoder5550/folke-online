@@ -689,17 +689,26 @@ ruleOrIR env forms _ = Err [] env (createArgCountError env
 
 -- | Elimination of disjunction
 ruleOrE :: Env -> [(Integer, Arg)] -> Formula -> Result Formula
-ruleOrE env [(_, ArgForm (Or a b)), (j, ArgProof (Proof _ [p1] c1)), 
-              (k, ArgProof (Proof _ [p2] c2))] _ =
-    if cmp env a p1 then
-        if cmp env b p2 then
-            if cmp env c1 c2 then Ok [] c1 
-            else Err [] env (createRuleConcError env 
-                 "The conclusions of the two boxes did not match.")
-        else Err [] env (createRuleArgError env k 
-             ("The assumption in the box (" ++ show p2 ++ ") did not match the right hand side of the ∨ statement (" ++ show b ++ ")."))
-    else Err [] env (createRuleArgError env j 
-         ("The assumption in the box (" ++ show p1 ++ ") did not match the left hand side of the ∨ statement (" ++ show a ++ ")."))
+ruleOrE env [
+        (_, ArgForm (Or a b)),
+        (j, ArgProof (Proof _ [p1] c1)),
+        (k, ArgProof (Proof _ [p2] c2))
+    ] _ =
+    if ((cmp env a p1) && (cmp env b p2)) || ((cmp env a p2) && (cmp env b p1)) then
+        if cmp env c1 c2 then
+            Ok [] c1
+        else
+            Err [] env (createRuleConcError env "The conclusions of the two boxes did not match.")
+    else
+        if cmp env a p1 then
+            if cmp env b p2 then
+                if cmp env c1 c2 then Ok [] c1 
+                else Err [] env (createRuleConcError env 
+                    "The conclusions of the two boxes did not match.")
+            else Err [] env (createRuleArgError env k 
+                ("The assumption in the box (" ++ show p2 ++ ") did not match the right hand side of the ∨ statement (" ++ show b ++ ")."))
+        else Err [] env (createRuleArgError env j 
+            ("The assumption in the box (" ++ show p1 ++ ") did not match the left hand side of the ∨ statement (" ++ show a ++ ")."))
 ruleOrE env [b@(_, ArgProof _), a@(_, ArgForm _), c@(_, ArgProof _)] r = 
     ruleOrE env [a, b, c] r
 ruleOrE env [b@(_, ArgProof _), c@(_, ArgProof _), a@(_, ArgForm _)] r = 

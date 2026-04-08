@@ -55,3 +55,9 @@ Run the following make script to convert Markdown files into `.tsx` components. 
 ```bash
 make generate-components
 ```
+
+### Testing
+Run the folke proof validator on a set of pre-written proofs:
+```bash
+npm run test
+```

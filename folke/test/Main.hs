@@ -159,10 +159,11 @@ main = do
     exams <- collectJsonFiles "assets/examples/exams"
     book <- collectJsonFiles "assets/examples/book"
     simple <- collectJsonFiles "test/proofs/simple_tests"
+    correct <- collectJsonFiles "test/proofs/correct"
     incorrect <- collectJsonFiles "test/proofs/incorrect"
     
     -- Create tests for all proof files
-    let jsonFiles = exams ++ book ++ simple
+    let jsonFiles = exams ++ book ++ simple ++ correct
     let correctTests = TestList (testProofs testGoodProof jsonFiles)
     let incorrectTests = TestList (testProofs testBadProof incorrect)
     
