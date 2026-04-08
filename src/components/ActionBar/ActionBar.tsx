@@ -5,9 +5,9 @@ import React, { useCallback, useEffect, useRef, useState, type JSX } from "react
 import { createEmptyProof, flattenProof, getSequent, haskellProofToProof, isProofEmpty } from "../../helpers/proof-helper";
 import { MdDelete, MdOutlineMotionPhotosAuto } from "react-icons/md";
 import ValidateButton from "../ValidateButton/ValidateButton";
-import { FaDownload, FaFile, FaFileImport, FaFolder } from "react-icons/fa6";
+import { FaBug, FaDownload, FaFile, FaFileImport, FaFolder } from "react-icons/fa6";
 import SymbolDictionary from "../SymbolDictionary/SymbolDictionary";
-import { cls } from "../../helpers/generic-helper";
+import { cls, redirect } from "../../helpers/generic-helper";
 import ToggleButton from "../ToggleButton/ToggleButton";
 import { useScreenSize } from "../../helpers/use-screen-size";
 import useWasm from "../../helpers/wasm-provider";
@@ -16,6 +16,7 @@ import MenuBar, { type MenuBarData } from "../MenuBar/MenuBar";
 import { useShallow } from "zustand/shallow";
 import { RULE_META_DATA, type RuleMetaData } from "../../helpers/rules-data";
 import RuleModal from "../RuleModal";
+import ReportModal from "../ReportBug/ReportModal";
 
 interface ActionBarProps {
   viewSidebar: boolean;
@@ -27,6 +28,7 @@ export default function ActionBar(props: ActionBarProps) {
   
   const [autoValidate, setAutoValidate] = useState(true);
   const [rule, setRule] = useState<[string, RuleMetaData] | undefined>();
+  const [showReport, setShowReport] = useState(false);
 
   const wasm = useWasm();
   const undo = useProofStore((state) => state.undo);
@@ -163,10 +165,15 @@ export default function ActionBar(props: ActionBarProps) {
             return false;
           },
         },
+        {
+          label: !isMobile && props.viewSidebar ? "Hide Sidebar" : "Show Sidebar",
+          enabled: !isMobile,
+          action: () => props.setViewSidebar(s => !s)
+        },
       ]
     },
     {
-      label: "View",
+      label: "Help",
       children: [
         {
           label: "Rule Guide",
@@ -179,10 +186,14 @@ export default function ActionBar(props: ActionBarProps) {
             })
         },
         {
-          label: !isMobile && props.viewSidebar ? "Hide Sidebar" : "Show Sidebar",
-          enabled: !isMobile,
-          action: () => props.setViewSidebar(s => !s)
-        }
+          label: "Go to guide",
+          action: () => redirect("./guide/"),
+        },
+        {
+          label: "Report Bug",
+          icon: <FaBug />,
+          action: () => setShowReport(true),
+        },
       ]
     }
   ]
@@ -258,6 +269,7 @@ export default function ActionBar(props: ActionBarProps) {
       </div>
 
       <RuleModal rule={rule} closeModal={() => setRule(undefined)} />
+      <ReportModal open={showReport} closeModal={() => setShowReport(false)} />
     </div>
   )
 }

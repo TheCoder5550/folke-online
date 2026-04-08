@@ -1,12 +1,16 @@
+import { useState } from 'react';
 import ContextMenu from '../components/ContextMenu/ContextMenu';
 import ErrorBoundary from '../components/ErrorBoundary';
 import Footer from '../components/Footer/Footer';
 import Header from '../components/Header/Header';
 import KeybindsTable from '../components/KeybindsTable/KeybindsTable';
+import ReportModal from '../components/ReportBug/ReportModal';
 import RulesTable from '../components/RulesTable/RulesTable';
 import SymbolTable from '../components/SymbolTable/SymbolTable';
 
 function App() {
+  const [showReport, setShowReport] = useState(false);
+
   return (
     <>
       <ErrorBoundary>
@@ -42,6 +46,7 @@ function App() {
                   <li><a href="#symbol-shortcuts">Symbol shortcuts</a></li>
                   <li><a href="#keyboard-shortcuts">Keyboard shortcuts</a></li>
                   <li><a href="#extra-shortcuts">Extra shortcuts</a></li>
+                  <li><a href="#report">Report bug</a></li>
                 </ol>
               </div>
             </div>
@@ -87,6 +92,18 @@ function App() {
               <li>Type <code>box</code> in the statement field to create a box around the row.</li>
               <li>Press <code>Enter</code> when focused on the last input field on a row when the proof is complete to hide the keyboard (on mobile). This means that it is not possible to insert a new row using <code>Enter</code> when a proof is complete and correct.</li>
             </ul>
+
+            <br /><br />
+
+            <h2 id="report">Report bug</h2>
+            <p>
+                <a href="#" onClick={(e) => {
+                  e.preventDefault();
+                  setShowReport(true)
+                }}>Click here</a> to report bugs.
+            </p>
+
+            <ReportModal open={showReport} closeModal={() => setShowReport(false)} />
           </div>
         </div>
         

@@ -103,13 +103,20 @@ export function compareArrays<T>(a: T[], b: T[]): boolean {
 
 /**
  * Get the domain root. Will be a subdirectory in prod.
- * @returns {string}
  */
 export function getBasePath() {
   const isPages = window.location.hostname === "thecoder5550.github.io";
   const BASE_PATH = isPages ?
     `${window.location.origin}/folke-online` :
-    "";
+    `${window.location.origin}`;
   
   return BASE_PATH;
+}
+
+/**
+ * Relative url redirect
+ */
+export function redirect(page: string) {
+  const fullUrl = new URL(page, getBasePath());
+  window.location.href = fullUrl.toString();
 }

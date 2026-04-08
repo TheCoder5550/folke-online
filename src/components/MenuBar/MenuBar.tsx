@@ -101,7 +101,10 @@ export default function MenuBar(props: MenuBarProps) {
           key={index}
           type="button"
           className={cls(styles["menu-button"], openState === index && styles["active"])}
-          onClick={() => toggleOpen(index)}
+          onClick={() => {
+            item.action?.();
+            toggleOpen(index)
+          }}
           onMouseEnter={() => {
             if (anyOpen) {
               handleOpen(index)

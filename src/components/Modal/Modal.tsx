@@ -1,8 +1,8 @@
 import styles from "./Modal.module.css";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
-type ModalProps = React.InputHTMLAttributes<HTMLDivElement> & React.PropsWithChildren & {
+export type ModalProps = React.InputHTMLAttributes<HTMLDivElement> & React.PropsWithChildren & {
   open: boolean;
   closeModal: () => void;
 };
@@ -16,6 +16,19 @@ export default function Modal({ children, ...props }: ModalProps) {
     }
     else {
       document.body.style.overflow = "";
+    }
+
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.code === "Escape") {
+        props.closeModal();
+      }
+    }
+
+    if (props.open) {
+      document.addEventListener("keydown", handleKey);
+    }
+    return () => {
+      document.removeEventListener("keydown", handleKey);
     }
   }, [ props.open ]);
 

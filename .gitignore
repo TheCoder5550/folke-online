@@ -34,3 +34,6 @@ generate-exercise-components.mjs
 
 # paint.net
 *.pdn
+
+# Env
+.env

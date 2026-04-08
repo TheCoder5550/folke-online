@@ -21,3 +21,7 @@
   width: 100%;
   max-width: calc(1000px - 4rem);
 }
+
+.align-right {
+  margin-left: auto;
+}
