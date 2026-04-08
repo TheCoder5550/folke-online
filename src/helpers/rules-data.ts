@@ -37,7 +37,7 @@ export interface RuleMetaData {
   exampleComponents?: (() => JSX.Element)[];
 }
 
-export const RULE_META_DATA: { [id: string]: RuleMetaData | undefined } = {
+export const RULE_META_DATA: { [id: string]: RuleMetaData } = {
   "premise": {
     name: "Premise",
     description: "Premises are automatically added to the beginning of proofs.",

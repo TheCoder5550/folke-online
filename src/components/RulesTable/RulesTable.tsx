@@ -13,10 +13,6 @@ export default function RulesTable() {
       <h3>Name</h3>
 
       {Object.entries(RULE_META_DATA).map(([key, value]) => {
-        if (!value) {
-          return;
-        }
-
         return (
           <React.Fragment key={key}>
             <span style={{ fontFamily: "monospace" }}>{key}</span>

@@ -28,7 +28,11 @@ export default function AutocompleteInput(props: AutocompleteInputProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const matchingSuggestions = suggestions.filter(s => s.label.includes(props.value) || s.values.some(v => v.includes(props.value)));
+  const trimmedValue = props.value.trim().toLocaleLowerCase();
+  const matchingSuggestions = suggestions.filter(s => (
+    s.label.toLocaleLowerCase().includes(trimmedValue) ||
+    s.values.some(v => v.toLocaleLowerCase().includes(trimmedValue)
+  )));
   const anyMatch = matchingSuggestions.length !== 0;
   if (matchingSuggestions.length === 0) {
     matchingSuggestions.push({

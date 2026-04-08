@@ -181,7 +181,7 @@ export default function ActionBar(props: ActionBarProps) {
             Object.entries(RULE_META_DATA).map(([rule, data]) => {
               return {
                 label: rule,
-                action: () => data && setRule([rule, data])
+                action: () => setRule([rule, data])
               }
             })
         },

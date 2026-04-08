@@ -19,7 +19,7 @@ export default function ToolbarFooter() {
         Object.entries(RULE_META_DATA).map(([rule, data]) => {
           return {
             label: rule,
-            action: () => data && setRule([rule, data])
+            action: () => setRule([rule, data])
           }
         })
     }

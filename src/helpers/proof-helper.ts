@@ -1,5 +1,5 @@
 import { compareArrays, getUUID, insertAtIndex, logProxy, mapObject, sum } from "./generic-helper";
-import { RULE_META_DATA } from "./rules-data";
+import { RULE_META_DATA, type RuleMetaData } from "./rules-data";
 import { makeSpecialCharacters } from "./special-characters";
 
 export function createExercise(premises: string[], conclusion: string): FlatProof {
@@ -189,7 +189,7 @@ export function setRule(proof: FlatProof, uuid: UUID, rule: string) {
     throw new Error("Not a line");
   }
 
-  const foundRule = RULE_META_DATA[rule];
+  const foundRule = getRuleMetaData(rule);
   if (foundRule) {
     step.usedArguments = foundRule.nrArguments;
   }
@@ -720,7 +720,7 @@ export function proofToHaskellProof(proof: Proof): HaskellProof {
         tag: "Line",
         _arguments: step.arguments,
         _usedArguments: step.usedArguments,
-        _rule: step.rule,
+        _rule: standardizeRule(step.rule),
         _statement: step.statement,
       }
     }
@@ -764,4 +764,21 @@ export function haskellProofToProof(proof: HaskellProof): Proof {
     conclusion: proof._sequent._conclusion,
     steps: proof._sequent._steps.map(convertStep),
   }
+}
+
+function standardizeRule(rule: string): string {
+  const found = Object.keys(RULE_META_DATA).find(name => rulesMatch(rule, name));
+  return found ?? rule;
+}
+
+export function getRuleMetaData(rule: string): RuleMetaData | undefined {
+  const data = Object.entries(RULE_META_DATA).find(([name, _data]) => {
+    return rulesMatch(rule, name);
+  })?.[1];
+
+  return data;
+}
+
+function rulesMatch(a: string, b: string): boolean {
+  return a.trim().toLocaleLowerCase() === b.trim().toLocaleLowerCase();
 }

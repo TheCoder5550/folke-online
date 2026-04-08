@@ -21,10 +21,6 @@ export default function RuleDictionary(props: RuleDictionaryProps) {
       {/* <h2>Rules</h2> */}
       <div className={styles["list"]}>
         {Object.entries(RULE_META_DATA).map(([rule, data]) => {
-          if (!data) {
-            return <span key={rule}></span>
-          }
-
           return (
             <button title={data?.name} type="button" key={rule} className={cls("action-button", styles["list-item"])} onClick={() => setRule([rule, data])}>
               {rule}

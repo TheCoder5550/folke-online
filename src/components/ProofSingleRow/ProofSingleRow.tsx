@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useRef, type JSX } from "react";
 import styles from "./ProofSingleRow.module.css"
-import { canCloseBox, canConvertToLine, getLineNumber, getNestedLevel, isFlatLine, isLineEmpty } from "../../helpers/proof-helper";
+import { canCloseBox, canConvertToLine, getLineNumber, getNestedLevel, getRuleMetaData, isFlatLine, isLineEmpty } from "../../helpers/proof-helper";
 import { TbBox, TbBoxOff, TbRowInsertBottom, TbRowInsertTop } from "react-icons/tb";
 import AutocompleteInput, { type Suggestion } from "../AutocompleteInput/AutocompleteInput";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../../stores/proof-store";
@@ -269,7 +269,7 @@ export default function ProofSingleRow(props: ProofSingleRowProps) {
     let arg = step.arguments[i] ?? "";
     let prefix = "";
     const isLast = (i === step.usedArguments - 1);
-    const ruleData = RULE_META_DATA[step.rule];
+    const ruleData = getRuleMetaData(step.rule);
     const inputWidth = ruleData?.argumentInputLengths?.[i];
     const placeholder = ruleData?.argumentPlaceholders?.[i] ?? ("Arg " + (i + 1));
 
