@@ -10,9 +10,6 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-env:
-  VITE_SUPPORT_MAIL: ${{ secrets.VITE_SUPPORT_MAIL }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,6 +30,8 @@ jobs:
       # Build the project in docker container
       - name: Containerized Build
         uses: ./.github/actions/build-in-docker
+        with:
+          VITE_SUPPORT_MAIL: ${{ vars.VITE_SUPPORT_MAIL }}
 
       # Upload to GitHub Pages
       - name: Setup Pages
