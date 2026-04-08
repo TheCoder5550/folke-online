@@ -1,5 +1,6 @@
 ---
 name: Law of Excluded Middle (LEM)
+order: 7
 ---
 
 # Law of Excluded Middle

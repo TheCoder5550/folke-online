@@ -1,5 +1,6 @@
 ---
 name: Proof By Contradiction (PBC)
+order: 8
 ---
 
 # Proof By Contradiction

@@ -1,0 +1,1 @@
+{"_sequent":{"_conclusion":"b = a","_premises":["a = b"],"_steps":[{"tag":"Line","_arguments":[],"_usedArguments":0,"_rule":"=I","_statement":"a = a"},{"tag":"Line","_arguments":["1","2","x:=x=a"],"_usedArguments":3,"_rule":"=E","_statement":"b = a"}]}}
