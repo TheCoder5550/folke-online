@@ -10,6 +10,9 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  VITE_SUPPORT_MAIL: ${{ secrets.VITE_SUPPORT_MAIL }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
