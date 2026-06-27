@@ -20,6 +20,7 @@ RUN export PREFIX="${GHC_USER}/.ghc-wasm" \
 
 # Install normal ghc
 # From https://github.com/ExtremaIS/lsupg-haskell/blob/4a33818d5906d39c905b95f30a7845ace833e21c/docker/Dockerfile
+ARG GHCUP_VERSION=0.1.50.2
 ARG GHC_VERSION=9.10.2
 ARG HLS_VERSION=2.11.0.0
 ARG CABAL_VERSION=3.12.1.0
@@ -44,7 +45,7 @@ RUN apk upgrade --no-cache \
         xz \
     # Install ghcup
     && curl --fail --output '/usr/local/bin/ghcup' \
-        'https://downloads.haskell.org/ghcup/x86_64-linux-ghcup' \
+        "https://downloads.haskell.org/~ghcup/${GHCUP_VERSION}/x86_64-linux-ghcup-${GHCUP_VERSION}" \
     && chmod 0755 '/usr/local/bin/ghcup' \
     #
     # Cabal
