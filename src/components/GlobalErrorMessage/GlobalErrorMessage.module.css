@@ -1,0 +1,15 @@
+.container {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.report {
+  text-align: right;
+  font-style: italic;
+  font-size: 0.75rem;
+}
+
+.report a {
+  text-decoration: underline;
+  color: inherit;
+}

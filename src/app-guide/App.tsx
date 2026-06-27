@@ -4,7 +4,7 @@ import ErrorBoundary from '../components/ErrorBoundary';
 import Footer from '../components/Footer/Footer';
 import Header from '../components/Header/Header';
 import KeybindsTable from '../components/KeybindsTable/KeybindsTable';
-import ReportModal from '../components/ReportBug/ReportModal';
+import ReportModal from '../components/ReportModal/ReportModal';
 import RulesTable from '../components/RulesTable/RulesTable';
 import SymbolTable from '../components/SymbolTable/SymbolTable';
 

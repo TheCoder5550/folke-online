@@ -1,3 +1,4 @@
+import styles from "./ReportModal.module.css"
 import Modal, { type ModalProps } from "../Modal/Modal";
 
 export default function ReportModal(props: ModalProps) {
@@ -12,10 +13,10 @@ export default function ReportModal(props: ModalProps) {
       <p>Send an email to <a href={link}>{mail}</a> if you find a bug, got an incorrectly validated proof, or if you don't understand something.</p>
 
       <span>Please include the following:</span>
-      <ol>
-        <li>A detailed description on what is incorrect/what the bug is.</li>
+      <ol className={styles.list}>
+        <li>A detailed description on what is incorrect/what the bug is. Also include a screenshot of your proof in the email.</li>
         <li>What you think the correct behaviour should be.</li>
-        <li>Where you found the error. Include the url of the page with the error and what you did to trigger the error.</li>
+        <li>Where you found the error. Include the url of the page with the error.</li>
       </ol>
 
       <span>Thanks,<br />The Folke Team</span>

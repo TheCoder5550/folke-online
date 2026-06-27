@@ -5,7 +5,7 @@ import StepsRenderer from "./StepsRenderer";
 import useProofStore, { ProofDispatchActionTypeEnum } from "../stores/proof-store";
 import ValidateButton from "./ValidateButton/ValidateButton";
 import { LuListRestart } from "react-icons/lu";
-import GlobalErrorMessage from "./GlobalErrorMessage";
+import { GlobalErrorMessageMemo } from "./GlobalErrorMessage/GlobalErrorMessage";
 import { useCallback, useEffect, useState } from "react";
 import { ImRedo, ImUndo } from "react-icons/im";
 import StaticProofRenderer from "./StaticProofRenderer/StaticProofRenderer";
@@ -125,7 +125,7 @@ export default function PracticeProofRenderer(props: PracticeProofRendererProps)
           </div>
         </div>
 
-        <GlobalErrorMessage />
+        <GlobalErrorMessageMemo />
       </div>
 
 

@@ -16,7 +16,7 @@ import MenuBar, { type MenuBarData } from "../MenuBar/MenuBar";
 import { useShallow } from "zustand/shallow";
 import { RULE_META_DATA, type RuleMetaData } from "../../helpers/rules-data";
 import RuleModal from "../RuleModal";
-import ReportModal from "../ReportBug/ReportModal";
+import ReportModal from "../ReportModal/ReportModal";
 
 interface ActionBarProps {
   viewSidebar: boolean;

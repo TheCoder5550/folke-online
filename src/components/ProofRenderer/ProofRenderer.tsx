@@ -5,7 +5,7 @@ import StepsRenderer from "../StepsRenderer";
 import { makeSpecialCharacters } from "../../helpers/special-characters";
 import { PremiseFieldMemo } from "../PremiseField";
 import { ConclusionFieldMemo } from "../ConclusionField";
-import { GlobalErrorMessageMemo } from "../GlobalErrorMessage";
+import { GlobalErrorMessageMemo } from "../GlobalErrorMessage/GlobalErrorMessage";
 import LastRowActions from "../LastRowActions";
 
 export default function ProofRenderer() {
