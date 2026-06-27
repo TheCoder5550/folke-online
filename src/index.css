@@ -76,6 +76,7 @@ body {
   min-width: 320px;
   min-height: 100vh; */
 
+  min-width: 400px;
   min-height: 100vh;
   background: rgb(var(--background-rgb));
 }
@@ -233,7 +234,6 @@ input[type=text]::placeholder {
 .paper-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
   padding-top: 4rem;
   padding-bottom: 70vh;
 }
@@ -246,6 +246,9 @@ input[type=text]::placeholder {
   background: rgb(var(--card-background-rgb));
   width: 100%;
   max-width: 1000px;
+  min-width: 870px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .paper.invisible {
@@ -268,6 +271,7 @@ input[type=text]::placeholder {
     border: none;
     margin-top: -1rem;
     background: none;
+    min-width: unset;
   }
 
   h1 {
