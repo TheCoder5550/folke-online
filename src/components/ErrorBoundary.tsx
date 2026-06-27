@@ -1,5 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
-import { getBasePath } from "../helpers/generic-helper";
+import { redirectHome } from "../helpers/generic-helper";
 
 interface Props {
   children?: ReactNode;
@@ -78,10 +78,6 @@ class ErrorBoundary extends Component<Props, State> {
 }
 
 export default ErrorBoundary;
-
-function redirectHome() {
-  window.location.href = getBasePath() + "/";
-}
 
 function clearData() {
   if (!confirm("Are you sure you want to clear the data? All exercise progress and created proofs will be lost!")) {

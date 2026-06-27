@@ -7,7 +7,7 @@ import { MdDelete, MdOutlineMotionPhotosAuto } from "react-icons/md";
 import ValidateButton from "../ValidateButton/ValidateButton";
 import { FaBug, FaDownload, FaFile, FaFileImport, FaFolder } from "react-icons/fa6";
 import SymbolDictionary from "../SymbolDictionary/SymbolDictionary";
-import { cls, redirect } from "../../helpers/generic-helper";
+import { cls, redirectRelative } from "../../helpers/generic-helper";
 import ToggleButton from "../ToggleButton/ToggleButton";
 import { useScreenSize } from "../../helpers/use-screen-size";
 import useWasm from "../../helpers/wasm-provider";
@@ -187,7 +187,7 @@ export default function ActionBar(props: ActionBarProps) {
         },
         {
           label: "Go to guide",
-          action: () => redirect("./guide/"),
+          action: () => redirectRelative("./guide/"),
         },
         {
           label: "Report Bug",
