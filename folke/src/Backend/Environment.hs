@@ -453,6 +453,10 @@ replacePlaceholders env _ _ = Err [] env (createUnknownError env "Unimplemented.
 -- Formula manipulation
 ----------------------------------------------------------------------
 
+-- | Check if the term `x_0` is used in `formula`
+usesTermInFormula :: Term -> Formula -> Bool
+usesTermInFormula x_0 formula = Set.member x_0 (freeVarForm formula)
+
 -- | Check if a term can be freely substituted for a variable in a formula
 isFreeFor :: Env -> Term -> Term -> Formula -> Result Bool
 isFreeFor _ _ _ Bot = Ok [] True
@@ -917,22 +921,31 @@ ruleAllI env [(_, ArgProof (Proof [t] [] a))] (All x b) =
 ruleAllI env [(_, ArgProof (Proof [_] [] _))] _ = 
     Err [] env (createRuleConcError env "The conclusion must be a ∀ formula.")
 ruleAllI env [(i, _)] _ = 
-    Err [] env (createRuleArgError env i "Must be a proof.")
+    Err [] env (createRuleArgError env i "Must be a box.")
 ruleAllI env forms _ = 
     Err [] env (createArgCountError env (toInteger $ List.length forms) 1)
 
 -- | Elimination of existential quantifier
 ruleSomeE :: Env -> [(Integer, Arg)] -> Formula -> Result Formula
-ruleSomeE env [(_, ArgForm (Some x a)), (_, ArgProof (Proof [x_0] [b] c))] _ = 
+ruleSomeE env [(_, ArgForm (Some x a)), (_, ArgProof (Proof [x_0] [b] c))] _ =
     case replaceInFormula env x x_0 a of
         Err warns env_e err -> Err warns env_e err
-        Ok warns d -> if cmp env b d then Ok warns c 
-                     else Err warns env (createRuleConcError env 
-                          (show a ++ "[" ++ show x_0 ++ "/" ++ show x ++ 
-                           "] resulted in " ++ show d ++ " and not " ++ 
-                           show b ++ " as expected."))
+        Ok warns d ->
+            if cmp env b d then
+                if usesTermInFormula x_0 c then
+                    Err [] env (createRuleConcError env
+                        ("The fresh variable \"" ++ show x_0 ++
+                        "\" cannot be used outside the box."))
+                else
+                    Ok warns c
+            else
+                Err warns env
+                    (createRuleConcError env 
+                        (show a ++ "[" ++ show x_0 ++ "/" ++ show x ++ 
+                        "] resulted in " ++ show d ++ " and not " ++ 
+                        show b ++ " as expected."))
 ruleSomeE env [(_, ArgForm (Some _ _)), (j, b)] _ = 
-    Err [] env (createRuleArgError env j ("Must be a proof not " ++ show b ++ "."))
+    Err [] env (createRuleArgError env j ("Must be a box, not " ++ show b ++ "."))
 ruleSomeE env [(i, a), (_, _)] _ = 
     Err [] env (createRuleArgError env i 
          ("Must be an ∃ formula not " ++ show a ++ "."))
