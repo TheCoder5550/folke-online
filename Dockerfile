@@ -14,7 +14,7 @@ ARG GHC_USER="/home/node"
 RUN export PREFIX="${GHC_USER}/.ghc-wasm" \
     # Select ghc version
     && export FLAVOUR="9.10" \
-    && apk add --update --no-cache shadow bash curl ca-certificates jq unzip zstd make \
+    && apk add --update --no-cache shadow bash curl ca-certificates jq unzip zstd make python3 \
     && curl https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/bootstrap.sh | sh \
     && chown -R node:node ${GHC_USER}/.ghc-wasm
 
